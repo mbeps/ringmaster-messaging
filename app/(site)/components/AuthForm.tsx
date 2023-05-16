@@ -69,7 +69,17 @@ const AuthForm: React.FC = () => {
   const socialAction = (action: string) => {
     setIsLoading(true);
 
-    // todo: NextAuth third party sign in
+    signIn(action, { redirect: false })
+      .then((callback) => {
+        if (callback?.error) {
+          toast.error("Invalid credentials!");
+        }
+
+        if (callback?.ok) {
+          toast.success("Logged In");
+        }
+      })
+      .finally(() => setIsLoading(false));
   };
 
   return (
