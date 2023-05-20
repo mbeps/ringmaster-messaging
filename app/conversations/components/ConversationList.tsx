@@ -41,29 +41,28 @@ const ConversationList: React.FC<ConversationListProps> = ({
       <div className="px-5">
         <div className="flex justify-between mb-4 pt-4">
           <div className="text-2xl font-bold text-neutral-800">Messages</div>
-
           <div
             className="
-						rounded-md 
-						p-2 
-						bg-gray-100 
-						text-gray-600 
-						cursor-pointer 
-						hover:opacity-75 
-						transition
-					"
+                rounded-md 
+                p-2 
+                bg-gray-100 
+                text-gray-600 
+                cursor-pointer 
+                hover:opacity-75 
+                transition
+              "
           >
             <MdOutlineGroupAdd size={20} />
           </div>
         </div>
+        {items.map((item) => (
+          <ConversationBox
+            key={item.id}
+            data={item}
+            selected={conversationId === item.id}
+          />
+        ))}
       </div>
-      {items.map((item) => (
-        <ConversationBox
-          key={item.id}
-          data={item}
-          selected={conversationId === item.id}
-        />
-      ))}
     </aside>
   );
 };
