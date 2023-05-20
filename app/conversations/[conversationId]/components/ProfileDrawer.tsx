@@ -53,9 +53,9 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
           <div className="fixed inset-0 bg-black bg-opacity-40" />
         </Transition.Child>
 
-        <div className="fixed inset-0 overflow-hidden">
+        <div className="fixed inset-0 overflow-hidden flex items-center justify-center">
           <div className="absolute inset-0 overflow-hidden">
-            <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
+            <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 p-4">
               <Transition.Child
                 as={Fragment}
                 enter="transform transition ease-in-out duration-500"
@@ -65,8 +65,8 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
                 leaveFrom="translate-x-0"
                 leaveTo="translate-x-full"
               >
-                <Dialog.Panel className="pointer-events-auto w-screen max-w-md">
-                  <div className="flex h-full flex-col overflow-y-scroll bg-white py-6 shadow-xl">
+                <Dialog.Panel className="pointer-events-auto w-screen max-w-md rounded-xl bg-white shadow-lg">
+                  <div className="flex h-full flex-col overflow-y-scroll bg-white py-6 shadow-xl rounded-xl">
                     <div className="px-4 sm:px-6">
                       <div className="flex items-start justify-end">
                         <div className="ml-3 flex h-7 items-center">
