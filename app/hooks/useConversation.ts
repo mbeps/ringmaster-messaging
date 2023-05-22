@@ -32,6 +32,7 @@ const useConversation = () => {
    */
   const isOpen: boolean = useMemo(() => !!conversationId, [conversationId]);
 
+  // `useMemo` to ensure that the references to `isOpen` and `conversationId` remain stable unless they change.
   return useMemo(
     () => ({
       isOpen,
