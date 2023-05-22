@@ -7,6 +7,11 @@ interface AvatarGroupProps {
   users?: User[];
 }
 
+/**
+ * Avatar group component which displays the first 3 users from the list.
+ * @param { users = [] }: list of users in the group
+ * @returns (JSX.Element): avatar group component with 3 users from the list
+ */
 const AvatarGroup: React.FC<AvatarGroupProps> = ({ users = [] }) => {
   const slicedUsers = users.slice(0, 3);
 
