@@ -78,7 +78,18 @@ const AuthForm: React.FC = () => {
       axios
         .post("/api/register", data)
         .then(() => signIn("credentials", data)) // automatically log in after registering
-        .catch(() => toast.error("Something went wrong"))
+        .catch((error) => {
+          if (error.response) {
+            // The request was made and the server responded with a status code that falls out of the range of 2xx
+            toast.error(error.response.data);
+          } else if (error.request) {
+            // The request was made but no response was received
+            toast.error("No response from server. Please try again later.");
+          } else {
+            // Something happened in setting up the request that triggered an Error
+            toast.error("Something went wrong");
+          }
+        })
         .finally(() => setIsLoading(false));
     }
 
