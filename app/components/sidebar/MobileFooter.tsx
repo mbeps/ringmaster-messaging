@@ -4,6 +4,15 @@ import useConversation from "@/app/hooks/useConversation";
 import useRoutes from "@/app/hooks/useRoutes";
 import MobileItem from "./MobileItem";
 
+/**
+ * A footer component displayed at the button allowing the user to navigate through the app.
+ * It displays:
+ *  - User's conversations
+ *  - All the contacts
+ *  - Log out button
+ * The footer is displayed on mobile.
+ * @returns (JSX.Element): mobile footer component
+ */
 const MobileFooter = () => {
   const routes = useRoutes();
   const { isOpen } = useConversation();

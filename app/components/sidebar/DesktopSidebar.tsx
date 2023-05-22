@@ -13,11 +13,22 @@ interface DesktopSidebarProps {
   currentUser: User;
 }
 
+/**
+ * A sidebar component displayed on the side allowing the user to navigate through the app.
+ * It displays:
+ *  - User's conversations
+ *  - All the contacts
+ *  - Log out button
+ *  - User's avatar (opens the settings modal)
+ * The sidebar is displayed on desktop.
+ *
+ * @param {User} currentUser: current user
+ * @returns (JSX.Element): desktop sidebar component
+ */
 const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ currentUser }) => {
   const routes = useRoutes();
+  // keeps track of the settings modal state
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-
-  console.log({ currentUser }, "TEST");
 
   return (
     <>
