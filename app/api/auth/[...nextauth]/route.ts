@@ -15,6 +15,8 @@ import prisma from "@/app/libs/prismadb";
  *  - Secret
  *  - Debug mode
  * These options define how the authentication process will be handled and which authentication methods are supported.
+ * The third party providers will sign the user in if the account exists, otherwise they will create a new account.
+ * The credentials provider will sign the user in if the credentials are valid, otherwise it will throw an error.
  */
 export const authOptions: AuthOptions = {
   // specifies the adapter to be used by NextAuth for session management and authentication state persistence
