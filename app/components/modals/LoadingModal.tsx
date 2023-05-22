@@ -4,6 +4,10 @@ import React, { Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { ClipLoader } from "react-spinners";
 
+/**
+ * Displays a loading animation over the page while loading.
+ * @returns (JSX.Element): loading modal component
+ */
 const LoadingModal = () => {
   return (
     <Transition.Root show as={Fragment}>

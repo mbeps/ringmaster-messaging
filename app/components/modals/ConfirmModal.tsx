@@ -11,27 +11,43 @@ import useConversation from "@/app/hooks/useConversation";
 import { toast } from "react-hot-toast";
 
 interface ConfirmModalProps {
-  isOpen?: boolean;
-  onClose: () => void;
+  isOpen?: boolean; // when the modal is open
+  onClose: () => void; // when the modal is closed
 }
 
+/**
+ * Modal to confirm the deletion of a conversation.
+ * It asks the user whether they are certain they want to delete the conversation.
+ * If the user confirms, the conversation is deleted.
+ * If the user cancels, the modal is closed.
+ *
+ * @param param0 { isOpen, onClose}: when the modal is open, when the modal is closed
+ * @returns (JSX.Element): confirmation modal component
+ */
 const ConfirmModal: React.FC<ConfirmModalProps> = ({ isOpen, onClose }) => {
   const router = useRouter();
+  // conversation to be deleted
   const { conversationId } = useConversation();
+  // loading the deletion of the conversation
   const [isLoading, setIsLoading] = useState(false);
 
+  /**
+   * Deletes the desired conversation.
+   * Once the conversation is deleted,
+   * the modal is closed and the user is redirected to the conversations page.
+   */
   const onDelete = useCallback(() => {
-    setIsLoading(true);
+    setIsLoading(true); // start loading
 
     axios
-      .delete(`/api/conversations/${conversationId}`)
+      .delete(`/api/conversations/${conversationId}`) // delete the conversation
       .then(() => {
-        onClose();
-        router.push("/conversations");
-        router.refresh();
+        onClose(); // close the modal
+        router.push("/conversations"); // redirect to the conversations page
+        router.refresh(); // refresh the page
       })
-      .catch(() => toast.error("Something went wrong!"))
-      .finally(() => setIsLoading(false));
+      .catch(() => toast.error("Something went wrong!")) // if there is an error, display an error message
+      .finally(() => setIsLoading(false)); // stop loading
   }, [router, conversationId, onClose]);
 
   return (

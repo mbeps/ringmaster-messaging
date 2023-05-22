@@ -4,12 +4,20 @@ import Modal from "@/app/components/modals/Modal";
 import Image from "next/image";
 
 interface ImageModalProps {
-  isOpen?: boolean;
-  onClose: () => void;
-  src?: string | null;
+  isOpen?: boolean; // is the modal open?
+  onClose: () => void; // function to close the modal
+  src?: string | null; // the image source
 }
 
+/**
+ * Opens an image in a modal to make the image bigger.
+ * This is used in the chat page to open an image in a modal.
+ *
+ * @param param0 { isOpen, onClose, src}: ImageModalProps
+ * @returns (JSX.Element | null): The image modal component
+ */
 const ImageModal: React.FC<ImageModalProps> = ({ isOpen, onClose, src }) => {
+  // check if there is an image source
   if (!src) {
     return null;
   }
