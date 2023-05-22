@@ -1,6 +1,17 @@
 import prisma from "@/app/libs/prismadb";
 import getCurrentUser from "./getCurrentUser";
 
+/**
+ * Gets a list of conversations for the current user.
+ * This includes:
+ *  - Users that are part of this conversation
+ *  - Messages that are part of this conversation
+ * The list of messages is sorted in descending order by the last message sent.
+ *  This is so that the most recent message is at the top of the list.
+ * The user must be logged in to retrieve the list of conversations.
+ *
+ * @returns {Promise<Conversation[]>} - Returns a list of conversations
+ */
 const getConversations = async () => {
   const currentUser = await getCurrentUser();
 
