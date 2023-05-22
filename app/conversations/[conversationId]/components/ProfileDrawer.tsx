@@ -13,13 +13,30 @@ import { IoClose, IoTrash } from "react-icons/io5";
 import useActiveList from "@/app/hooks/useActiveList";
 
 interface ProfileDrawerProps {
-  isOpen: boolean;
-  onClose: () => void;
+  isOpen: boolean; // whether the drawer is open
+  onClose: () => void; // function to close the drawer
   data: Conversation & {
     users: User[];
-  };
+  }; // the conversation data and list of users
 }
 
+/**
+ * The profile drawer component which opens from the side of the screen.
+ * This component is used to display the profile of the other user or group.
+ * For single user conversations, it displays :
+ *  - the user's avatar
+ *  - the user's name
+ *  - the user's email
+ *  - the date the user joined
+ * For group conversations, it displays:
+ *  - the group's avatar
+ *  - the group's name
+ *  - the number of members
+ *  - the list of members
+ * There is also a delete button which opens a confirmation modal.
+ * @param {isOpen, onClose, data}: required props for the component
+ * @returns (JSX.Element): the profile drawer component
+ */
 const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
   isOpen,
   onClose,
@@ -30,19 +47,28 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
   const { members } = useActiveList();
   const isActive = members.indexOf(otherUser.email!) !== -1;
 
+  /**
+   * Gets the date the other user joined.
+   */
   const joinedDate = useMemo(() => {
     return format(new Date(otherUser.createdAt), "PP");
   }, [otherUser.createdAt]);
 
+  /**
+   * Gets the title of the conversation.
+   */
   const title = useMemo(() => {
     return data.name || otherUser.name;
   }, [data.name, otherUser.name]);
 
+  /**
+   * Gets the status text for the user or the number of members for the group.
+   */
   const statusText = useMemo(() => {
     if (data.isGroup) {
       return `${data.users.length} members`;
-    }
-    return isActive ? "Online" : "Offline";
+    } // number of members in the group
+    return isActive ? "Online" : "Offline"; // status of the other user
   }, [data.isGroup, data.users.length, isActive]);
 
   return (

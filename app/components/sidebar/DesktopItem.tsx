@@ -9,6 +9,11 @@ interface DesktopItemProps {
   active?: boolean;
 }
 
+/**
+ * A desktop item component displayed on the side allowing the user to navigate through the app.
+ * @param param0 { label, href, icon: Icon, active, onClick}: props for the desktop item component
+ * @returns (JSX.Element): desktop item component
+ */
 const DesktopItem: React.FC<DesktopItemProps> = ({
   label,
   href,

@@ -19,14 +19,26 @@ interface SettingsModalProps {
   currentUser: User;
 }
 
+/**
+ * Opens a modal for editing the user's profile.
+ * This allows the user to edit their profile picture and name given they are logged in.
+ *
+ * @param param0 { isOpen, onClose, currentUser}: SettingsModalProps
+ * @returns (JSX.Element): settings modal for editing the user's profile
+ */
 const SettingsModal: React.FC<SettingsModalProps> = ({
   isOpen,
   onClose,
   currentUser = {},
 }) => {
   const router = useRouter();
+  // loading state for updating the user's profile
   const [isLoading, setIsLoading] = useState(false);
 
+  /**
+   * React hook form handles the form state.
+   * Takes the name of the user and the image.
+   */
   const {
     register,
     handleSubmit,
@@ -40,25 +52,39 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
     },
   });
 
+  // Watches changes in the image
   const image = watch("image");
 
+  /**
+   * Handles the upload of the image to Cloudinary.
+   * Once the image is uploaded, the URL of the image is set as the value of the image field.
+   * This URL will be stored in the database.
+   *
+   * @param result: URL of the image uploaded to Cloudinary
+   */
   const handleUpload = (result: any) => {
     setValue("image", result.info.secure_url, {
       shouldValidate: true,
     });
   };
 
+  /**
+   * Handles the submission of the form to update the user's profile.
+   * it sets the new name and image of the user using the API.
+   *
+   * @param data { name, image }: new name and image of the user
+   */
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    setIsLoading(true);
+    setIsLoading(true); // start loading the update of the user's profile
 
     axios
-      .post("/api/settings", data)
+      .post("/api/settings", data) // update the user's profile
       .then(() => {
-        router.refresh();
-        onClose();
+        router.refresh(); // refresh the page
+        onClose(); // close the modal
       })
-      .catch(() => toast.error("Something went wrong!"))
-      .finally(() => setIsLoading(false));
+      .catch(() => toast.error("Something went wrong!")) // if there is an error, display an error message
+      .finally(() => setIsLoading(false)); // stop loading the update of the user's profile
   };
 
   return (

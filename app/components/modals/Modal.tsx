@@ -5,11 +5,18 @@ import { Dialog, Transition } from "@headlessui/react";
 import { IoClose } from "react-icons/io5";
 
 interface ModalProps {
-  isOpen?: boolean;
-  onClose: () => void;
-  children: React.ReactNode;
+  isOpen?: boolean; // whether the modal is open or not
+  onClose: () => void; // function to close the modal
+  children: React.ReactNode; // children of the modal (the body)
 }
 
+/**
+ * Base modal component which is displayed on top of the page.
+ * The body of the modal is passed as a child.
+ *
+ * @param param0 : ModalProps
+ * @returns (JSX.Element): base modal component
+ */
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
   return (
     <Transition.Root show={isOpen} as={Fragment}>

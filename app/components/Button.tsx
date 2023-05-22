@@ -1,15 +1,21 @@
 import clsx from "clsx";
 
 interface ButtonProps {
-  type?: "button" | "submit" | "reset" | undefined;
-  fullWidth?: boolean;
-  children?: React.ReactNode;
-  onClick?: () => void;
-  secondary?: boolean;
-  danger?: boolean;
-  disabled?: boolean;
+  type?: "button" | "submit" | "reset" | undefined; // type of the button
+  fullWidth?: boolean; // if the button should be full width
+  children?: React.ReactNode; // children of the button to be rendered inside
+  onClick?: () => void; // onClick function
+  secondary?: boolean; // if the button should be secondary
+  danger?: boolean; // if the button should be danger
+  disabled?: boolean; // if the button should be disabled
 }
 
+/**
+ * Button component that renders a button with the given children.
+ * Depending on the props, the button will be styles differently and will have different functionality.
+ * @param param0 { type, fullWidth, children, onClick, secondary, danger, disabled}: ButtonProps
+ * @returns (JSX.Element): button component
+ */
 const Button: React.FC<ButtonProps> = ({
   type = "button",
   fullWidth,

@@ -1,3 +1,8 @@
+/**
+ * Displayed when there are no chats
+ *
+ * @returns (JSX.Element): empty state component
+ */
 const EmptyState = () => {
   return (
     <div

@@ -8,6 +8,12 @@ interface UserListProps {
   items: User[];
 }
 
+/**
+ * Displays a list of users who exist in the platform.
+ * When a user is clicked, a conversation is created with that user.
+ * @param {items}: a list of users that need to be displayed
+ * @returns (JSX.Element): list of users
+ */
 const UserList: React.FC<UserListProps> = ({ items }) => {
   return (
     <aside
@@ -38,6 +44,7 @@ const UserList: React.FC<UserListProps> = ({ items }) => {
             Clowns
           </div>
         </div>
+        {/* For each user it maps a clickable box */}
         {items.map((contact) => (
           <UserBox key={contact.id} data={contact} />
         ))}

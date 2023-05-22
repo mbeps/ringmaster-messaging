@@ -13,18 +13,33 @@ import { useRouter } from "next/navigation";
 
 type Variant = "LOGIN" | "REGISTER";
 
+/**
+ * Authentication form which handles both login and registration.
+ * There are 2 variants: LOGIN and REGISTER.
+ * @returns (JSX.Element)
+ */
 const AuthForm: React.FC = () => {
+  // gets the current session
   const session = useSession();
   const router = useRouter();
+  // initial variant is LOGIN but it can be changed to REGISTER
   const [variant, setVariant] = useState<Variant>("LOGIN");
+  // loading state for the authentication process
   const [isLoading, setIsLoading] = useState(false);
 
+  /**
+   * If the user is already authenticated, redirect to the users page.
+   * This is to prevent the user from accessing the login page when they are already logged in.
+   */
   useEffect(() => {
     if (session?.status === "authenticated") {
       router.push("/users");
     }
   }, [session?.status, router]);
 
+  /**
+   * Toggles the variant between LOGIN and REGISTER.
+   */
   const toggleVariant = useCallback(() => {
     if (variant === "LOGIN") {
       setVariant("REGISTER");
@@ -33,6 +48,10 @@ const AuthForm: React.FC = () => {
     }
   }, [variant]);
 
+  /**
+   * React Hook Form for handling the form state.
+   * Keeps track of the input values and errors.
+   */
   const {
     register,
     handleSubmit,
@@ -45,9 +64,16 @@ const AuthForm: React.FC = () => {
     },
   });
 
+  /**
+   * Handles the form submission for authentication.
+   * If the variant is REGISTER, it will register the user.
+   * If the variant is LOGIN, it will log the user in and redirect to the users page.
+   * @param data (FieldValues): form data for signing in or registering
+   */
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true);
 
+    // register the user
     if (variant === "REGISTER") {
       axios
         .post("/api/register", data)
@@ -56,6 +82,7 @@ const AuthForm: React.FC = () => {
         .finally(() => setIsLoading(false));
     }
 
+    // log the user in
     if (variant === "LOGIN") {
       if (variant === "LOGIN") {
         signIn("credentials", {
@@ -77,6 +104,10 @@ const AuthForm: React.FC = () => {
     }
   };
 
+  /**
+   * Handles authentication with third party providers.
+   * @param action (string): either "github" or "google"
+   */
   const socialAction = (action: string) => {
     setIsLoading(true);
 

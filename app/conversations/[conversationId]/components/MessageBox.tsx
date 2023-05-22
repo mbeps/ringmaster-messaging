@@ -15,11 +15,25 @@ interface MessageBoxProps {
   isLast?: boolean;
 }
 
+/**
+ * Message box component which displays the message and avatar.
+ * If the message is an image, it will display the image instead.
+ * If the message is text, it will display the text inside the bubble.
+ * If the message is the last message and is owned by the user, it will display the seen list.
+ * If the sender is the user, it will display the message on the right side and the color will be red.
+ * If the receiver is the user, it will display the message on the left side and the color will be gray.
+ * @param {data, isLast}: message box props
+ * @returns (JSX.Element): message box component
+ */
 const MessageBox: React.FC<MessageBoxProps> = ({ data, isLast }) => {
+  // gets the current session
   const session = useSession();
+  // keeps track of whether the image modal is open or not
   const [imageModalOpen, setImageModalOpen] = useState(false);
 
+  // checks if the message was sent by the current user
   const isOwn = session.data?.user?.email === data?.sender?.email;
+  // creates a string for the people who have seen the message
   const seenList = (data.seen || [])
     .filter((user) => user.email !== data?.sender?.email)
     .map((user) => user.name)

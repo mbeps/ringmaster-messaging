@@ -19,35 +19,62 @@ interface ConversationListProps {
   users: User[];
 }
 
+/**
+ * Displays the list of conversations that a user has.
+ *
+ * @param {initialItems, users}: ConversationListProps
+ * @returns (JSX.Element): list of conversations
+ */
 const ConversationList: React.FC<ConversationListProps> = ({
   initialItems,
   users,
 }) => {
+  // gets the current session
   const session = useSession();
   const [items, setItems] = useState(initialItems);
   const router = useRouter();
   const { conversationId, isOpen } = useConversation();
   const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
 
+  /**
+   * The pusher key is the user's email.
+   * This is used to subscribe to the user's channel.
+   * When a new message is received, the pusher key is used to determine if the message is for the current user.
+   * If the message is for the current user, the message will be displayed in real time.
+   */
   const pusherKey = useMemo(() => {
     return session.data?.user?.email;
   }, [session.data?.user?.email]);
 
+  /**
+   * Handles updates, new conversations, and conversation removals, and cleans up the subscription and event listeners when the component unmounts.
+   * When the component unmounts, it unsubscribes from the Pusher channel and removes the event listeners.
+   */
   useEffect(() => {
+    // checks if there is a pusher key
     if (!pusherKey) {
       return;
     }
 
+    // subscribe to the user's channel
     pusherClient.subscribe(pusherKey);
 
+    /**
+     * Called when a conversation is updated.
+     * Updates the items state by mapping through the current conversations and replacing the one with the updated conversation.
+     *
+     * @param conversation (FullConversationType): the conversation that was updated
+     */
     const updateHandler = (conversation: FullConversationType) => {
       setItems((current) =>
         current.map((currentConversation) => {
+          // loop through the conversations
           if (currentConversation.id === conversation.id) {
+            // if the conversation already exists
             return {
               ...currentConversation,
               messages: conversation.messages,
-            };
+            }; // update the messages
           }
 
           return currentConversation;
@@ -55,16 +82,28 @@ const ConversationList: React.FC<ConversationListProps> = ({
       );
     };
 
+    /**
+     * Called when a new conversation is received. I
+     * Updates the items state by adding the new conversation to the beginning of the array if it doesn't already exist.
+     *
+     * @param conversation (FullConversationType): the conversation that was added
+     */
     const newHandler = (conversation: FullConversationType) => {
       setItems((current) => {
         if (find(current, { id: conversation.id })) {
           return current;
-        }
+        } // if the conversation already exists, do not add it to the list
 
         return [conversation, ...current];
       });
     };
 
+    /**
+     * called when a conversation is removed.
+     * Updates the items state by removing the conversation from the array.
+     *
+     * @param conversation (FullConversationType): the conversation that was removed
+     */
     const removeHandler = (conversation: FullConversationType) => {
       setItems((current) => {
         return [...current.filter((convo) => convo.id !== conversation.id)];

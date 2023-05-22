@@ -2,16 +2,27 @@ import { NextResponse } from "next/server";
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import prisma from "@/app/libs/prismadb";
 
+/**
+ * A post request route for updating the user's settings (name and image).
+ * The user must be logged in to update their settings.
+ *
+ * @param request (Request): the new name and image of the user
+ * @returns (NextResponse): the updated user with the new name and image or an error
+ */
 export async function POST(request: Request) {
   try {
+    // get current user who is logged in (updates their settings)
     const currentUser = await getCurrentUser();
     const body = await request.json();
+    // extract the name and image from the body of the request
     const { name, image } = body;
 
+    // if the current user is not logged in, return an error
     if (!currentUser?.id) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
+    // find the user using the current user's ID and updates the name and image fields
     const updatedUser = await prisma.user.update({
       where: {
         id: currentUser.id,

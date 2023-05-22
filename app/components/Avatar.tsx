@@ -9,6 +9,13 @@ interface AvatarProps {
   user?: User;
 }
 
+/**
+ * Avatar component for displaying a user's profile picture if it exists or a placeholder image.
+ * It also displays a green dot if the user is active.
+ *
+ * @param { user: User}: user for the avatar
+ * @returns (JSX.Element) : Avatar component
+ */
 const Avatar: React.FC<AvatarProps> = ({ user }) => {
   const { members } = useActiveList();
   const isActive = members.indexOf(user?.email!) !== -1;

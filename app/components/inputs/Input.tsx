@@ -4,15 +4,21 @@ import clsx from "clsx";
 import { FieldErrors, FieldValues, UseFormRegister } from "react-hook-form";
 
 interface InputProps {
-  label: string;
-  id: string;
-  type?: string;
-  required?: boolean;
-  register: UseFormRegister<FieldValues>;
-  errors: FieldErrors;
-  disabled?: boolean;
+  label: string; // label for the input
+  id: string; // id for the input
+  type?: string; // type for the input
+  required?: boolean; // whether the input is required
+  register: UseFormRegister<FieldValues>; // register function from react-hook-form
+  errors: FieldErrors; // errors from react-hook-form
+  disabled?: boolean; // whether the input is disabled
 }
 
+/**
+ * Text input component for forms.
+ * Takes in a label, id, type, required, register, errors, and disabled prop to modify the style and functionality of the input.
+ * @param param0: InputProps
+ * @returns (JSX.Element): an text input component
+ */
 const Input: React.FC<InputProps> = ({
   label,
   id,

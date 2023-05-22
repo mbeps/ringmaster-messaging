@@ -8,11 +8,23 @@ interface IParams {
   conversationId?: string;
 }
 
+/**
+ * A post request route for marking a message as seen.
+ * Updates the seen status of the message in real time.
+ * The user who sees the message is the one who is logged in and part of the conversation.
+ *
+ * @param request (Request)
+ * @param param1 ({ params: IParams }):
+ * @returns (NextResponse)
+ */
 export async function POST(request: Request, { params }: { params: IParams }) {
   try {
+    // Get current user who is logged in (sees the message)
     const currentUser = await getCurrentUser();
+    // conversation where the message is
     const { conversationId } = params;
 
+    // If the current user is not logged in, return an error
     if (!currentUser?.id || !currentUser?.email) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
@@ -32,13 +44,15 @@ export async function POST(request: Request, { params }: { params: IParams }) {
       },
     });
 
+    // If the conversation does not exist, return an error
     if (!conversation) {
       return new NextResponse("Invalid ID", { status: 400 });
     }
 
-    // Find last message
+    // Find last message in the conversation
     const lastMessage = conversation.messages[conversation.messages.length - 1];
 
+    // If there is no last message, return the conversation
     if (!lastMessage) {
       return NextResponse.json(conversation);
     }
@@ -61,7 +75,7 @@ export async function POST(request: Request, { params }: { params: IParams }) {
       },
     });
 
-    // Update all connections with new seen
+    // Update all connections with new seen message in real time
     await pusherServer.trigger(currentUser.email, "conversation:update", {
       id: conversationId,
       messages: [updatedMessage],

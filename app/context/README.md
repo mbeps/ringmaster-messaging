@@ -1,0 +1,11 @@
+The `context` folder in the project contains files that define and manage React Contexts, which enable the sharing of state and functionality across components. Let's explore the functionality of the specific files you mentioned:
+
+1. **AuthContext.tsx**: This file defines the `AuthContext`, which serves as a context provider for authentication-related functionality. It encapsulates state and methods related to user authentication, such as login, logout, and user information. By wrapping components with the `AuthContext` provider, child components can access the authentication-related state and methods throughout the application.
+
+2. **ToasterContext.tsx**: This file defines the `ToasterContext`, which provides a context for managing toast notifications in the application. A toast notification is a non-intrusive message that appears temporarily on the screen to provide feedback or alerts to the user. The `ToasterContext` likely encapsulates state and methods for managing the toast notifications, such as displaying, dismissing, or configuring them. Components that need to display toast notifications can consume the `ToasterContext` and utilize its functionality to show relevant messages to the user.
+
+By using these context providers, components can easily access and update the shared state and functionality without passing props through multiple levels of the component tree. The `context` folder serves as a central location for defining and managing these contexts, promoting code organization, reusability, and separation of concerns.
+
+It's worth noting that other files in the `context` folder may define additional context providers, each serving a specific purpose or encapsulating related state and functionality. These context providers enable different parts of the application to access and manage shared state and behavior, facilitating communication and data flow between components.
+
+Overall, the `context` folder plays a crucial role in implementing global state management and facilitating communication between components in the application. It provides a convenient way to share and access data, state, and functionality across components without tightly coupling them together.

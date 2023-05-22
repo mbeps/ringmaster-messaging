@@ -11,6 +11,12 @@ interface MessageInputProps {
   errors: FieldErrors;
 }
 
+/**
+ * Message input component where there user inputs the text message to be sent.
+ *
+ * @param {placeholder, id, type, required, register}: message input props
+ * @returns (JSX.Element): message input component
+ */
 const MessageInput: React.FC<MessageInputProps> = ({
   placeholder,
   id,

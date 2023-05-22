@@ -5,6 +5,13 @@ interface AuthSocialButtonProps {
   onClick: () => void;
 }
 
+/**
+ * Displays a button with an icon for the third party authentication provider.
+ * Depending on the provider, it will call the `onClick` function with the provider name.
+ *
+ * @param param0: icon and onClick function for the third party authentication provider
+ * @returns (JSX.Element): button with icon for the third party authentication provider
+ */
 const AuthSocialButton: React.FC<AuthSocialButtonProps> = ({
   icon: Icon,
   onClick,

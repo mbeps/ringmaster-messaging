@@ -1,6 +1,14 @@
 import Image from "next/image";
 import AuthForm from "./components/AuthForm";
 
+/**
+ * Root page which is the authentication page.
+ * It displays:
+ *  - Logo
+ *  - Title
+ *  - Authentication Form
+ * @returns (JSX.Element): root page which is the login page
+ */
 const Auth = () => {
   return (
     <div
@@ -16,6 +24,7 @@ const Auth = () => {
       "
     >
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
+        {/* Logo */}
         <Image
           height="24"
           width="24"
@@ -23,7 +32,7 @@ const Auth = () => {
           src="/images/logo.svg"
           alt="Logo"
         />
-
+        {/* Title */}
         <h2
           className="
             mt-6 
@@ -37,6 +46,7 @@ const Auth = () => {
           Sign in to your account
         </h2>
       </div>
+      {/* Authentication Form */}
       <AuthForm />
     </div>
   );

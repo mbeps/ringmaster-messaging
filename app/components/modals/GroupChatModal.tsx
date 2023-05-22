@@ -18,14 +18,27 @@ interface GroupChatModalProps {
   users: User[];
 }
 
+/**
+ * A modal to create a group chat.
+ * The group chat takes:
+ *  - The name of the group chat
+ *  - The list of members
+ * @param param0 { isOpen, onClose, users}
+ * @returns (JSX.Element)
+ */
 const GroupChatModal: React.FC<GroupChatModalProps> = ({
   isOpen,
   onClose,
   users = [],
 }) => {
   const router = useRouter();
+  // loading creation of group chat
   const [isLoading, setIsLoading] = useState(false);
 
+  /**
+   * React hook form handles the form state.
+   * Takes the name of the group chat and the list of members.
+   */
   const {
     register,
     handleSubmit,
@@ -39,22 +52,23 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
     },
   });
 
+  // Watches changes in the list of members
   const members = watch("members");
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    setIsLoading(true);
+    setIsLoading(true); // start loading the creation of the group chat
 
     axios
       .post("/api/conversations", {
         ...data,
         isGroup: true,
-      })
+      }) // create the group chat
       .then(() => {
-        router.refresh();
-        onClose();
+        router.refresh(); // refresh the page
+        onClose(); // close the modal
       })
-      .catch(() => toast.error("Something went wrong!"))
-      .finally(() => setIsLoading(false));
+      .catch(() => toast.error("Something went wrong!")) // if there is an error, display an error message
+      .finally(() => setIsLoading(false)); // stop loading the creation of the group chat
   };
 
   return (
