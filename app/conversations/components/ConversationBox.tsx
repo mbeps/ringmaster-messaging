@@ -17,29 +17,56 @@ interface ConversationBoxProps {
   selected?: boolean;
 }
 
+/**
+ * Conversation Box Component which displays the conversation that can be selected.
+ * It displays:
+ *  - the name of the conversation
+ *  - the last message sent
+ *  - the time the last message was sent
+ *  - the avatar of the other user or the group chat
+ * This component is updated in real time.
+ *
+ * @param {data, selected}: required props for tbe button
+ * @returns (JSX.Element): returns the button for the each conversation
+ */
 const ConversationBox: React.FC<ConversationBoxProps> = ({
   data,
   selected,
 }) => {
+  // get the other user in the conversation
   const otherUser = useOtherUser(data);
+  // gets the current session
   const session = useSession();
   const router = useRouter();
 
+  /**
+   * Redirects to the conversation page when the conversation box is clicked.
+   */
   const handleClick = useCallback(() => {
-    router.push(`/conversations/${data.id}`);
+    router.push(`/conversations/${data.id}`); // redirects to the conversation page
   }, [data, router]);
 
+  /**
+   * Gets the last message in the conversation.
+   */
   const lastMessage = useMemo(() => {
-    const messages = data.messages || [];
+    const messages = data.messages || []; // gets a list of all the messages in the conversation
 
-    return messages[messages.length - 1];
+    return messages[messages.length - 1]; // from the list it gets the last message
   }, [data.messages]);
 
+  /**
+   * Gets the email of the current user who is logged in.
+   */
   const userEmail = useMemo(
     () => session.data?.user?.email,
     [session.data?.user?.email]
   );
 
+  /**
+   * Marks the last message as seen if the current user has seen it.
+   * The user must be logged in to mark the message as seen.
+   */
   const hasSeen = useMemo(() => {
     if (!lastMessage) {
       // if message does not exist then it cannot be seen
@@ -52,9 +79,15 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
       return false;
     }
 
-    return seenArray.filter((user) => user.email === userEmail).length !== 0;
+    return seenArray.filter((user) => user.email === userEmail).length !== 0; // checks if the current user has seen the message
   }, [userEmail, lastMessage]);
 
+  /**
+   * Gets the text of the last message to be displayed in the conversation box.
+   * If the last message is an image, it will display "Image sent".
+   * If the last message is a text, it will display the text.
+   * If there is no conversation yet, it will display "No Conversation Yet".
+   */
   const lastMessageText = useMemo(() => {
     if (lastMessage?.image) {
       // if the last message is an image

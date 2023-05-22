@@ -9,6 +9,11 @@ interface IParams {
   conversationId: string;
 }
 
+/**
+ * Displays the conversation page with the header, body and form.
+ * @param {conversationId}: ID of the current conversation
+ * @returns (JSX.Element) Conversation page
+ */
 const ConversationId = async ({ params }: { params: IParams }) => {
   const conversation = await getConversationById(params.conversationId);
   const messages = await getMessages(params.conversationId);

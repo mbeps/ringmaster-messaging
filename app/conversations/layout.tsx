@@ -3,6 +3,13 @@ import getUsers from "../actions/getUsers";
 import Sidebar from "../components/sidebar/Sidebar";
 import ConversationList from "./components/ConversationList";
 
+/**
+ * Layout for the conversations page.
+ * It has a sidebar and a list of conversations.
+ *
+ * @param param0: children
+ * @returns (JSX.Element)L layout of the conversations page
+ */
 export default async function ConversationsLayout({
   children,
 }: {

@@ -18,12 +18,28 @@ interface HeaderProps {
   };
 }
 
+/**
+ * Header component which displays:
+ *  - Other users avatar, name and status
+ *  - Name of the group, its avatar and number of members
+ * Also contains an button to open the profile drawer which displays additional information about the conversation.
+ * @param { conversation }: conversation data
+ * @returns (JSX.Element): header component
+ */
 const Header: React.FC<HeaderProps> = ({ conversation }) => {
   const otherUser = useOtherUser(conversation);
+  // keep track of whether the drawer is open or not
   const [drawerOpen, setDrawerOpen] = useState(false);
+  // list of active members
   const { members } = useActiveList();
-  const isActive = members.indexOf(otherUser.email!) !== -1;
+  // check if the other user is active
+  const isActive: boolean = members.indexOf(otherUser.email!) !== -1;
 
+  /**
+   * Status text to display in the header.
+   * If the conversation is a group, then display the number of members in the group.
+   * If the conversation is a one-to-one chat, then display the status of the other user.
+   */
   const statusText = useMemo(() => {
     if (conversation.isGroup) {
       return `${conversation.users.length} members`;
