@@ -44,33 +44,33 @@ Ringmaster offers a real-time, responsive messaging platform that enables users 
 ## **Image Sharing**
 - **In-Chat Image Sharing:** Users can send images within the chat itself. Whether it's a memorable photo, an important document, or a quick snapshot of something interesting, Ringmaster makes it easy to share with your contacts.
 
-## **Tech Stack**
+# **Tech Stack**
 
-### **Frontend**
+## **Frontend**
 
 The frontend of the application uses the following technologies:
 
-- [**TypeScript**](https://www.typescriptlang.org/): TypeScript, a statically typed superset of JavaScript, is used to build reliable and maintainable code, providing early error catching and advanced editor support.
+- [**TypeScript**](https://www.typescriptlang.org/): a statically typed superset of JavaScript, is used to build reliable and maintainable code, providing early error catching and advanced editor support.
 
-- [**Next.js**](https://nextjs.org/): The foundation of our frontend is built using Next.js, a popular React framework that offers tools and conventions for building server-side rendered (SSR) and statically generated web applications, enhancing performance and ease of deployment.
+- [**Next.js**](https://nextjs.org/): the foundation of the frontend is built using Next.js, a popular React framework that offers tools and conventions for building server-side rendered (SSR) and statically generated web applications, enhancing performance and ease of deployment.
 
-- [**Tailwind CSS**](https://tailwindcss.com/): Tailwind CSS, a highly customizable, low-level CSS framework, provides utility classes that help us build out custom designs efficiently and responsively.
+- [**Tailwind CSS**](https://tailwindcss.com/):  a highly customizable, low-level CSS framework, provides utility classes that help us build out custom designs efficiently and responsively.
 
-- [**Headless UI**](https://headlessui.dev/): For creating UI components, we rely on Headless UI. This framework allows us to create fully accessible UI components with ease, while giving us complete control over how components look and function.
+- [**Headless UI**](https://headlessui.dev/): for creating UI components, we rely on Headless UI. This framework allows us to create fully accessible UI components with ease, while giving us complete control over how components look and function.
 
-### **Backend**
+## **Backend**
 
 The backend of the application is built with the following technologies:
 
-- [**MongoDB**](https://www.mongodb.com/): MongoDB, a powerful NoSQL database, is used for storing and retrieving data. Its flexibility and scalability make it ideal for our real-time messaging application.
+- [**MongoDB**](https://www.mongodb.com/): a document database, which means it stores data in JSON-like documents. It is used for a variety of applications, including web applications, mobile applications, and big data analytics.
 
 - [**Pusher**](https://pusher.com/): Pusher is used for handling real-time bi-directional communication between users. It allows for quick and reliable message transmission, enabling the real-time experience of Ringmaster.
 
-- [**Prisma**](https://www.prisma.io/): Prisma, an open-source database toolkit, is used to access the MongoDB database. Prisma's auto-generated and type-safe query builder provides a robust and secure layer to interact with our database.
+- [**Prisma**](https://www.prisma.io/): an open-source, next-generation ORM that makes it fun and safe to work with a database like MySQL, Postgres, SQL Server, or MongoDB. It generates a type-safe client that abstracts away the complexity of the database, making it easy to write efficient and bug-free queries.
 
-- [**Axios**](https://axios-http.com/): Axios, a popular promise-based HTTP client, is used for making HTTP requests from our server. It provides a simple and flexible API for our backend services.
+- [**Axios**](https://axios-http.com/): a popular promise-based HTTP client, is used for making HTTP requests from our server. It provides a simple and flexible API for our backend services.
 
-- [**Cloudinary**](https://cloudinary.com/): For storing and serving images, we use Cloudinary. It provides a reliable and efficient cloud-based solution for managing user-uploaded images.
+- [**Cloudinary**](https://cloudinary.com/): for storing and serving images, we use Cloudinary. It provides a reliable and efficient cloud-based solution for managing user-uploaded images.
 
 
 # **Running Application Locally**
