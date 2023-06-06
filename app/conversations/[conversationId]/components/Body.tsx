@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import useConversation from "@/hooks/useConversation";
 import { FullMessageType } from "@/types";
 import MessageBox from "./MessageBox";
-import { pusherClient } from "@/app/libs/pusher";
+import { pusherClient } from "@/libs/pusher";
 import { find } from "lodash";
 
 interface BodyProps {

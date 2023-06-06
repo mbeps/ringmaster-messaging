@@ -10,7 +10,7 @@ import ConversationBox from "./ConversationBox";
 import { User } from "@prisma/client";
 import GroupChatModal from "@/components/modals/GroupChatModal";
 import { useSession } from "next-auth/react";
-import { pusherClient } from "@/app/libs/pusher";
+import { pusherClient } from "@/libs/pusher";
 import { find } from "lodash";
 
 // the initial data will be updated using pusher in real time
