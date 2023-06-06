@@ -9,7 +9,7 @@ import clsx from "clsx";
 
 import Avatar from "@/components/Avatar";
 import useOtherUser from "@/hooks/useOtherUser";
-import { FullConversationType } from "@/app/types";
+import { FullConversationType } from "@/types";
 import AvatarGroup from "@/components/AvatarGroup";
 
 interface ConversationBoxProps {
