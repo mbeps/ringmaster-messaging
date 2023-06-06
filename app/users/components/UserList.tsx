@@ -45,9 +45,11 @@ const UserList: React.FC<UserListProps> = ({ items }) => {
           </div>
         </div>
         {/* For each user it maps a clickable box */}
-        {items.map((contact) => (
-          <UserBox key={contact.id} data={contact} />
-        ))}
+        <div className="space-y-1">
+          {items.map((contact) => (
+            <UserBox key={contact.id} data={contact} />
+          ))}
+        </div>
       </div>
     </aside>
   );
