@@ -3,8 +3,8 @@ import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { User } from "@prisma/client";
 
-import Avatar from "@/app/components/Avatar";
-import LoadingModal from "@/app/components/modals/LoadingModal";
+import Avatar from "@/components/Avatar";
+import LoadingModal from "@/components/modals/LoadingModal";
 
 interface UserBoxProps {
   data: User;

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import getCurrentUser from "@/app/actions/getCurrentUser";
-import prisma from "@/app/libs/prismadb";
-import { pusherServer } from "@/app/libs/pusher";
+import getCurrentUser from "@/actions/getCurrentUser";
+import prisma from "@/libs/prismadb";
+import { pusherServer } from "@/libs/pusher";
 
 /**
  * A post request route to create a new message.

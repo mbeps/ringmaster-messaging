@@ -1,16 +1,16 @@
 "use client";
 
-import useConversation from "@/app/hooks/useConversation";
-import { FullConversationType } from "@/app/types";
+import useConversation from "@/hooks/useConversation";
+import { FullConversationType } from "@/types";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { MdOutlineGroupAdd } from "react-icons/md";
 import ConversationBox from "./ConversationBox";
 import { User } from "@prisma/client";
-import GroupChatModal from "@/app/components/modals/GroupChatModal";
+import GroupChatModal from "@/components/modals/GroupChatModal";
 import { useSession } from "next-auth/react";
-import { pusherClient } from "@/app/libs/pusher";
+import { pusherClient } from "@/libs/pusher";
 import { find } from "lodash";
 
 // the initial data will be updated using pusher in real time

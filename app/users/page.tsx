@@ -1,4 +1,4 @@
-import EmptyState from "@/app/components/EmptyState";
+import EmptyState from "@/components/EmptyState";
 
 /**
  * Displays empty state for the people page.
