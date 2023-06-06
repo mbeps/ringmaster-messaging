@@ -1,4 +1,4 @@
-import getUsers from "../actions/getUsers";
+import getUsers from "../../actions/getUsers";
 import Sidebar from "../components/sidebar/Sidebar";
 import UserList from "./components/UserList";
 

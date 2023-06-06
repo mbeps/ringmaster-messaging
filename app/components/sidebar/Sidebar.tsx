@@ -1,6 +1,6 @@
 import DesktopSidebar from "@/app/components/sidebar/DesktopSidebar";
 import MobileFooter from "./MobileFooter";
-import getCurrentUser from "@/app/actions/getCurrentUser";
+import getCurrentUser from "@/actions/getCurrentUser";
 
 /**
  * A component that allows the user to navigate through the app.
