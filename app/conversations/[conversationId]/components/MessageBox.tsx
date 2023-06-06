@@ -7,7 +7,7 @@ import { format } from "date-fns";
 import { useSession } from "next-auth/react";
 import { FullMessageType } from "@/app/types";
 
-import Avatar from "@/app/components/Avatar";
+import Avatar from "@/components/Avatar";
 import ImageModal from "./ImageModal";
 
 interface MessageBoxProps {

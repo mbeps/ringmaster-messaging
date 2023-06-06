@@ -6,10 +6,10 @@ import { useMemo, useState } from "react";
 import { HiChevronLeft } from "react-icons/hi";
 
 import useOtherUser from "@/app/hooks/useOtherUser";
-import Avatar from "@/app/components/Avatar";
+import Avatar from "@/components/Avatar";
 import { HiEllipsisHorizontal } from "react-icons/hi2";
 import ProfileDrawer from "./ProfileDrawer";
-import AvatarGroup from "@/app/components/AvatarGroup";
+import AvatarGroup from "@/components/AvatarGroup";
 import useActiveList from "@/app/hooks/useActiveList";
 
 interface HeaderProps {

@@ -1,9 +1,9 @@
 "use client";
 
-import Avatar from "@/app/components/Avatar";
-import AvatarGroup from "@/app/components/AvatarGroup";
-import ConfirmModal from "@/app/components/modals/ConfirmModal";
-import Modal from "@/app/components/modals/Modal";
+import Avatar from "@/components/Avatar";
+import AvatarGroup from "@/components/AvatarGroup";
+import ConfirmModal from "@/components/modals/ConfirmModal";
+import Modal from "@/components/modals/Modal";
 import useOtherUser from "@/app/hooks/useOtherUser";
 import { Dialog, Transition } from "@headlessui/react";
 import { Conversation, User } from "@prisma/client";

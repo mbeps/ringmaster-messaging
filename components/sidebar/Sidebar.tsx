@@ -1,4 +1,4 @@
-import DesktopSidebar from "@/app/components/sidebar/DesktopSidebar";
+import DesktopSidebar from "@/components/sidebar/DesktopSidebar";
 import MobileFooter from "./MobileFooter";
 import getCurrentUser from "@/actions/getCurrentUser";
 

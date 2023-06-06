@@ -7,10 +7,10 @@ import { format } from "date-fns";
 import { useSession } from "next-auth/react";
 import clsx from "clsx";
 
-import Avatar from "@/app/components/Avatar";
+import Avatar from "@/components/Avatar";
 import useOtherUser from "@/app/hooks/useOtherUser";
 import { FullConversationType } from "@/app/types";
-import AvatarGroup from "@/app/components/AvatarGroup";
+import AvatarGroup from "@/components/AvatarGroup";
 
 interface ConversationBoxProps {
   data: FullConversationType;
