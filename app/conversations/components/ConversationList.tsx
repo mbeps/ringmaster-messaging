@@ -1,6 +1,6 @@
 "use client";
 
-import useConversation from "@/app/hooks/useConversation";
+import useConversation from "@/hooks/useConversation";
 import { FullConversationType } from "@/app/types";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";

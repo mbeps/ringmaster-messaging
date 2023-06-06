@@ -4,13 +4,13 @@ import Avatar from "@/components/Avatar";
 import AvatarGroup from "@/components/AvatarGroup";
 import ConfirmModal from "@/components/modals/ConfirmModal";
 import Modal from "@/components/modals/Modal";
-import useOtherUser from "@/app/hooks/useOtherUser";
+import useOtherUser from "@/hooks/useOtherUser";
 import { Dialog, Transition } from "@headlessui/react";
 import { Conversation, User } from "@prisma/client";
 import { format } from "date-fns";
 import React, { Fragment, useMemo, useState } from "react";
 import { IoClose, IoTrash } from "react-icons/io5";
-import useActiveList from "@/app/hooks/useActiveList";
+import useActiveList from "@/hooks/useActiveList";
 
 interface ProfileDrawerProps {
   isOpen: boolean; // whether the drawer is open

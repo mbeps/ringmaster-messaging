@@ -2,7 +2,7 @@
 
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
-import useConversation from "@/app/hooks/useConversation";
+import useConversation from "@/hooks/useConversation";
 import { FullMessageType } from "@/app/types";
 import MessageBox from "./MessageBox";
 import { pusherClient } from "@/app/libs/pusher";

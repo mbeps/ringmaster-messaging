@@ -1,6 +1,6 @@
 "use client";
 
-import useActiveChannel from "@/app/hooks/useActiveChannel";
+import useActiveChannel from "@/hooks/useActiveChannel";
 
 /**
  * Active status component which updates the active channel.

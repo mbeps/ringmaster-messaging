@@ -7,7 +7,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import Modal from "@/components/modals/Modal";
 import Button from "@/components/Button";
-import useConversation from "@/app/hooks/useConversation";
+import useConversation from "@/hooks/useConversation";
 import { toast } from "react-hot-toast";
 
 interface ConfirmModalProps {
