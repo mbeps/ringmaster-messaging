@@ -21,6 +21,7 @@
     "bcrypt": "^5.1.0",
     "clsx": "^1.2.1",
     "date-fns": "^2.30.0",
+    "encoding": "^0.1.13",
     "eslint": "8.40.0",
     "eslint-config-next": "13.4.2",
     "lodash": "^4.17.21",

@@ -111,12 +111,12 @@ DATABASE_URL=""
 NEXTAUTH_SECRET=''
 
 # Credentials for GitHub OAuth 
-GITHUB_ID=''
-GITHUB_SECRET=''
+CLIENT_ID_GITHUB=''
+CLIENT_SECRET_GITHUB=''
 
 # Credentials for Google OAuth
-GOOGLE_CLIENT_ID=''
-GOOGLE_CLIENT_SECRET=''
+CLIENT_ID_GOOGLE=''
+CLIENT_SECRET_GOOGLE=''
 
 # For storing images in Cloudinary 
 NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=''
@@ -134,9 +134,9 @@ You'll need to fill in the value for each of these variables. Here's how to get 
 
 - `NEXTAUTH_SECRET`: This can be any random string. It's used to encode your session cookie.
 
-- `GITHUB_ID` and `GITHUB_SECRET`: You can obtain these by creating a new OAuth app in your GitHub account.
+- `CLIENT_ID_GITHUB` and `CLIENT_SECRET_GITHUB`: You can obtain these by creating a new OAuth app in your GitHub account.
 
-- `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`: You can obtain these by setting up a new project in Google Cloud Platform and enabling the Google+ API.
+- `CLIENT_ID_GOOGLE` and `CLIENT_SECRET_GOOGLE`: You can obtain these by setting up a new project in Google Cloud Platform and enabling the Google+ API.
 
 - `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` and `NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET`: You can get these from your Cloudinary account settings. Make sure the `node` setting is unsigned. 
 
