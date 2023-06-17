@@ -24,12 +24,12 @@ export const authOptions: AuthOptions = {
   // specifies the providers to be used by NextAuth for authentication
   providers: [
     GithubProvider({
-      clientId: process.env.GITHUB_ID as string,
-      clientSecret: process.env.GITHUB_SECRET as string,
+      clientId: process.env.CLIENT_ID_GITHUB as string,
+      clientSecret: process.env.CLIENT_SECRET_GITHUB as string,
     }),
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID as string,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+      clientId: process.env.CLIENT_ID_GOOGLE as string,
+      clientSecret: process.env.CLIENT_SECRET_GOOGLE as string,
     }),
     // email and password authentication
     CredentialsProvider({
