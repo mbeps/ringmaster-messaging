@@ -2,8 +2,21 @@ name: CI/CD
 
 on:
   pull_request:
-    branches: 
+    branches:
       - main
+
+env:
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+  CLIENT_ID_GITHUB: ${{ secrets.CLIENT_ID_GITHUB }}
+  CLIENT_SECRET_GITHUB: ${{ secrets.CLIENT_SECRET_GITHUB }}
+  CLIENT_ID_GOOGLE: ${{ secrets.CLIENT_ID_GOOGLE }}
+  CLIENT_SECRET_GOOGLE: ${{ secrets.CLIENT_SECRET_GOOGLE }}
+  NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: ${{ secrets.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME }}
+  NEXT_PUBLIC_CLOUDINARY_PRESET: ${{ secrets.NEXT_PUBLIC_CLOUDINARY_PRESET }}
+  NEXT_PUBLIC_PUSHER_APP_KEY: ${{ secrets.NEXT_PUBLIC_PUSHER_APP_KEY }}
+  PUSHER_APP_ID: ${{ secrets.PUSHER_APP_ID }}
+  PUSHER_SECRET: ${{ secrets.PUSHER_SECRET }}
 
 jobs:
   lint:
@@ -76,5 +89,5 @@ jobs:
       - name: Install dependencies
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
 
-      - name: Build 
+      - name: Build
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
