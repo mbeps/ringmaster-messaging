@@ -96,7 +96,7 @@ cd ringmaster
 Then, install the project dependencies by running:
 
 ```sh
-npm install
+yarn install
 ```
 
 ## 3. **Set Up Environment Variables**
@@ -147,7 +147,7 @@ You'll need to fill in the value for each of these variables. Here's how to get 
 Once you've set up your environment variables, you can run the application using the following command:
 
 ```sh
-npm run dev
+yarn dev
 ```
 
 The application should now be running at `http://localhost:3000`.
