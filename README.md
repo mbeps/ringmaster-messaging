@@ -142,9 +142,29 @@ You'll need to fill in the value for each of these variables. Here's how to get 
 
 - `NEXT_PUBLIC_PUSHER_APP_KEY`, `PUSHER_APP_ID` and `PUSHER_SECRET`: You can get these from your Pusher account.
 
-## 4. **Run the Application**
+## 4. **Setting up Prisma**
 
-Once you've set up your environment variables, you can run the application using the following command:
+Prisma is a database tool used for data access, which is used in this project. Here's how you set it up:
+
+- First, generate the Prisma client by running:
+
+```sh
+yarn prisma generate
+```
+
+- Then, migrate the database:
+
+```sh
+yarn prisma migrate dev --name init
+```
+ 
+This will update your database schema and generate the Prisma Client code. If the database does not exist yet, it will be created for you. 
+
+Remember to run these commands whenever you make changes to your Prisma schema.
+
+## 5. **Run the Application**
+
+Once you've set up your environment variables and Prisma, you can run the application using the following command:
 
 ```sh
 yarn dev
