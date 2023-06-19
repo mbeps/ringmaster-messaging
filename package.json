@@ -7,7 +7,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "prisma": "prisma",
+    "prisma:studio": "prisma studio",
+    "prisma:push": "prisma db push",
+    "prisma:generate": "prisma generate",
+    "docker:compose": "docker-compose -f docker/docker-compose.yml up --build"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.14",
