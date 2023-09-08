@@ -16,6 +16,7 @@ These are the requirements needed to run the project:
 - Node 18 LTS
 - Next.JS 13
 - MongoDB 6
+- Docker 
 
 
 # **Features**
@@ -130,7 +131,7 @@ PUSHER_SECRET=""
 
 You'll need to fill in the value for each of these variables. Here's how to get each one:
 
-- `DATABASE_URL`: This is your MongoDB connection string. You can obtain this from your MongoDB Atlas account.
+- `DATABASE_URL`: This is your MongoDB connection string. This is already pre-filled if you wish to use Docker. Alternatively, you can modify it to use any other provider such as Atlas. 
 
 - `NEXTAUTH_SECRET`: This can be any random string. It's used to encode your session cookie.
 
@@ -142,7 +143,16 @@ You'll need to fill in the value for each of these variables. Here's how to get 
 
 - `NEXT_PUBLIC_PUSHER_APP_KEY`, `PUSHER_APP_ID` and `PUSHER_SECRET`: You can get these from your Pusher account.
 
-## 4. **Setting up Prisma**
+## 4. **Running Database (Docker)**
+This step is necessary if you with to use the Docker image that has been provided. 
+You can also use an alternative service for MongoDB such as Atlas. Make sure to change the connection string on the `.env` file if you wish to do so. 
+
+Run the following command from the root of the project to start your MongoDB container:
+```sh
+docker-compose --env-file .env -f docker/docker-compose.yml up db
+```
+
+## 5. **Setting up Prisma**
 
 Prisma is a database tool used for data access, which is used in this project. Here's how you set it up:
 
@@ -152,17 +162,17 @@ Prisma is a database tool used for data access, which is used in this project. H
 yarn prisma generate
 ```
 
-- Then, migrate the database:
+- Then, push the database schema to the database. 
 
 ```sh
-yarn prisma migrate dev --name init
+yarn prisma db push
 ```
- 
+
 This will update your database schema and generate the Prisma Client code. If the database does not exist yet, it will be created for you. 
 
 Remember to run these commands whenever you make changes to your Prisma schema.
 
-## 5. **Run the Application**
+## 6. **Run the Application**
 
 Once you've set up your environment variables and Prisma, you can run the application using the following command:
 
