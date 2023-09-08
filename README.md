@@ -1,3 +1,7 @@
+<img width="1000" alt="cover" src="https://github.com/mbeps/ringmaster-messaging/assets/58662575/ef0f6397-2865-49fe-8e9a-5523a200dd71">
+
+---
+
 Welcome to the Ringmaster Messaging App, a vibrant and engaging hub for real-time communication. This application is designed to simplify and streamline your digital interaction, allowing you to engage with friends, family, and colleagues seamlessly and securely. 
 
 Ringmaster provides direct, person-to-person messaging, offering a real-time chat experience that feels as close to face-to-face conversation as you can get online. The app's interface is intuitive, making it easy for you to keep track of your conversations and never miss an important message.
