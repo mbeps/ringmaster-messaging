@@ -59,7 +59,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({ isOpen, onClose }) => {
             flex 
             h-12 
             w-12 
-            flex-shrink-0 
+            shrink-0 
             items-center 
             justify-center 
             rounded-full 

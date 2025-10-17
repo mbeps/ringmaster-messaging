@@ -1,9 +1,46 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
 
 html,
 body,
 :root {
   height: 100%;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  /* translucent white by default so content isn't fully obscured */
+  background-color: rgba(255, 255, 255, 0.35);
+  /* subtle blur. supported in modern browsers */
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  /* allow existing transition-opacity to animate opacity */
+  transition: opacity 200ms ease;
+  /* keep it behind dialog panels but above page content (z handled by components)
+     don't set z-index here to avoid surprising overrides */
+}
+
+@media (prefers-color-scheme: dark) {
+  .modal-backdrop {
+    /* darker translucent overlay for dark mode */
+    background-color: rgba(0, 0, 0, 0.45);
+  }
 }

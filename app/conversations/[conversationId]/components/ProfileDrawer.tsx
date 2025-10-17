@@ -88,7 +88,7 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="fixed inset-0 bg-black bg-opacity-40" />
+            <div className="modal-backdrop transition-opacity" />
           </Transition.Child>
 
           <div className="fixed inset-0 overflow-hidden flex items-center justify-center">
@@ -110,7 +110,7 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
                           <div className="ml-3 flex h-7 items-center">
                             <button
                               type="button"
-                              className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                              className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-hidden focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                               onClick={onClose}
                             >
                               <span className="sr-only">Close panel</span>
@@ -155,7 +155,7 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
                                   font-medium 
                                   text-gray-500 
                                   sm:w-40 
-                                  sm:flex-shrink-0
+                                  sm:shrink-0
                                 "
                                   >
                                     Emails
@@ -182,7 +182,7 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
                                   font-medium 
                                   text-gray-500 
                                   sm:w-40 
-                                  sm:flex-shrink-0
+                                  sm:shrink-0
                                 "
                                   >
                                     Email
@@ -209,7 +209,7 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
                                     font-medium 
                                     text-gray-500 
                                     sm:w-40 
-                                    sm:flex-shrink-0
+                                    sm:shrink-0
                                   "
                                     >
                                       Joined

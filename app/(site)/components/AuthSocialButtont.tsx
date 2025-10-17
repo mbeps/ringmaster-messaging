@@ -29,7 +29,7 @@ const AuthSocialButton: React.FC<AuthSocialButtonProps> = ({
         px-4 
         py-3 
         text-gray-500 
-        shadow-sm 
+        shadow-xs 
         ring-1 
         ring-inset 
         ring-gray-300 

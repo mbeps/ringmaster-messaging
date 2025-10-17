@@ -30,15 +30,10 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div
-            className="
-              fixed 
-              inset-0 
-              bg-gray-500 
-              bg-opacity-75 
-              transition-opacity
-            "
-          />
+          {/* Use the modal-backdrop class from globals.css so the background
+              remains visible with a blur while keeping existing opacity
+              transitions from Headless UI */}
+          <div className="modal-backdrop transition-opacity" />
         </Transition.Child>
 
         <div className="fixed inset-0 z-10 overflow-y-auto">
@@ -101,7 +96,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
                       bg-white 
                       text-gray-400 
                       hover:text-gray-500 
-                      focus:outline-none 
+                      focus:outline-hidden 
                       focus:ring-2 
                       focus:ring-red-500 
                       focus:ring-offset-2

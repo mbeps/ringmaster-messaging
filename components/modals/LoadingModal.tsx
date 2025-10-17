@@ -21,15 +21,7 @@ const LoadingModal = () => {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div
-            className="
-              fixed 
-              inset-0 
-              bg-gray-100 
-              bg-opacity-50 
-              transition-opacity
-            "
-          />
+          <div className="modal-backdrop transition-opacity" />
         </Transition.Child>
 
         <div className="fixed inset-0 z-10 overflow-y-auto">
