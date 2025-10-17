@@ -60,14 +60,14 @@ const Header: React.FC<HeaderProps> = ({ conversation }) => {
         bg-white 
         w-full 
         flex 
-        border-b-[1px] 
+        border-b 
         sm:px-4 
         py-3 
         px-4 
         lg:px-6 
         justify-between 
         items-center 
-        shadow-sm
+        shadow-xs
       "
       >
         <div className="flex gap-3 items-center">

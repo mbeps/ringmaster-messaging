@@ -25,7 +25,7 @@ const Select: React.FC<SelectProps> = ({
   disabled,
 }) => {
   return (
-    <div className="z-[100]">
+    <div className="z-100">
       <label
         className="
           block 
