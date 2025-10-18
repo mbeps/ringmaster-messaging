@@ -18,11 +18,11 @@ interface IParams {
  */
 export async function DELETE(
   request: Request,
-  { params }: { params: IParams }
+  { params }: { params: Promise<IParams> }
 ) {
   try {
     // extract the conversation ID from the params
-    const { conversationId } = params;
+    const { conversationId } = await params;
     // get the current user who is logged in (trying to delete the conversation)
     const currentUser = await getCurrentUser();
 
