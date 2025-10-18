@@ -5,7 +5,7 @@ import AvatarGroup from "@/components/AvatarGroup";
 import ConfirmModal from "@/components/modals/ConfirmModal";
 import Modal from "@/components/modals/Modal";
 import useOtherUser from "@/hooks/useOtherUser";
-import { Dialog, Transition } from "@headlessui/react";
+import { Dialog, DialogPanel, Transition, TransitionChild } from "@headlessui/react";
 import { Conversation, User } from "@prisma/client";
 import { format } from "date-fns";
 import React, { Fragment, useMemo, useState } from "react";
@@ -77,9 +77,9 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
         isOpen={isConfirmModalOpen}
         onClose={() => setIsConfirmModalOpen(false)}
       />
-      <Transition.Root show={isOpen} as={Fragment}>
+      <Transition show={isOpen} as={Fragment}>
         <Dialog as="div" className="relative z-50" onClose={onClose}>
-          <Transition.Child
+          <TransitionChild
             as={Fragment}
             enter="ease-out duration-500"
             enterFrom="opacity-0"
@@ -89,12 +89,12 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
             leaveTo="opacity-0"
           >
             <div className="modal-backdrop transition-opacity" />
-          </Transition.Child>
+          </TransitionChild>
 
           <div className="fixed inset-0 overflow-hidden flex items-center justify-center">
             <div className="absolute inset-0 overflow-hidden">
               <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 p-4">
-                <Transition.Child
+                <TransitionChild
                   as={Fragment}
                   enter="transform transition ease-in-out duration-500"
                   enterFrom="translate-x-full"
@@ -103,7 +103,7 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
                   leaveFrom="translate-x-0"
                   leaveTo="translate-x-full"
                 >
-                  <Dialog.Panel className="pointer-events-auto w-screen max-w-md rounded-xl bg-white shadow-lg">
+                  <DialogPanel className="pointer-events-auto w-screen max-w-md rounded-xl bg-white shadow-lg">
                     <div className="flex h-full flex-col overflow-y-scroll bg-white py-6 shadow-xl rounded-xl">
                       <div className="px-4 sm:px-6">
                         <div className="flex items-start justify-end">
@@ -234,13 +234,13 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
                         </div>
                       </div>
                     </div>
-                  </Dialog.Panel>
-                </Transition.Child>
+                  </DialogPanel>
+                </TransitionChild>
               </div>
             </div>
           </div>
         </Dialog>
-      </Transition.Root>
+      </Transition>
     </>
   );
 };

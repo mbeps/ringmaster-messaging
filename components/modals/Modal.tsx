@@ -1,7 +1,7 @@
 "use client";
 
 import React, { Fragment } from "react";
-import { Dialog, Transition } from "@headlessui/react";
+import { Dialog, DialogPanel, Transition, TransitionChild } from "@headlessui/react";
 import { IoClose } from "react-icons/io5";
 
 interface ModalProps {
@@ -19,9 +19,9 @@ interface ModalProps {
  */
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
   return (
-    <Transition.Root show={isOpen} as={Fragment}>
+    <Transition show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-50" onClose={onClose}>
-        <Transition.Child
+        <TransitionChild
           as={Fragment}
           enter="ease-out duration-300"
           enterFrom="opacity-0"
@@ -34,7 +34,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
               remains visible with a blur while keeping existing opacity
               transitions from Headless UI */}
           <div className="modal-backdrop transition-opacity" />
-        </Transition.Child>
+        </TransitionChild>
 
         <div className="fixed inset-0 z-10 overflow-y-auto">
           <div
@@ -48,7 +48,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
               sm:p-0
             "
           >
-            <Transition.Child
+            <TransitionChild
               as={Fragment}
               enter="ease-out duration-300"
               enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
@@ -57,7 +57,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <Dialog.Panel
+              <DialogPanel
                 className="
                   relative 
                   transform 
@@ -108,12 +108,12 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
                   </button>
                 </div>
                 {children}
-              </Dialog.Panel>
-            </Transition.Child>
+              </DialogPanel>
+            </TransitionChild>
           </div>
         </div>
       </Dialog>
-    </Transition.Root>
+    </Transition>
   );
 };
 

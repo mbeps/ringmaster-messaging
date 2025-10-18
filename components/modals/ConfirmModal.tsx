@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useCallback, useState } from "react";
-import { Dialog } from "@headlessui/react";
+import { Dialog, DialogTitle } from "@headlessui/react";
 import { FiAlertTriangle } from "react-icons/fi";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -83,12 +83,12 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({ isOpen, onClose }) => {
             sm:text-left
           "
         >
-          <Dialog.Title
+          <DialogTitle
             as="h3"
             className="text-base font-semibold leading-6 text-gray-900"
           >
             Delete conversation
-          </Dialog.Title>
+          </DialogTitle>
           <div className="mt-2">
             <p className="text-sm text-gray-500">
               Are you sure you want to delete this conversation? This action
