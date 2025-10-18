@@ -77,7 +77,7 @@ const Form: React.FC = () => {
     >
       <CldUploadButton
         options={{ maxFiles: 1 }}
-        onUpload={handleUpload}
+        onSuccess={handleUpload}
         uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_PRESET}
       >
         <HiPhoto size={30} className="text-red-500" />

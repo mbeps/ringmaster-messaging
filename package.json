@@ -37,7 +37,7 @@
     "lodash": "^4.17.21",
     "next": "^15.5.6",
     "next-auth": "^5.0.0-beta.25",
-    "next-cloudinary": "^4.10.1",
+    "next-cloudinary": "^6.16.1",
     "next-superjson-plugin": "^0.5.7",
     "postcss": "8.4.23",
     "pusher": "^5.1.3",
