@@ -1,22 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
+import { auth } from "@/auth";
 import { pusherServer } from "@/libs/pusher";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 /**
- * Handles the authentication process for Pusher, ensuring that only authenticated users can subscribe to specific channels.
- * It verifies the user's session, generates an authorisation response based on the provided channel and user data,
- * and sends it back to the client for authentication with Pusher.
+ * Handles the authentication process for Pusher.
+ * Ensures only authenticated users can subscribe to specific channels.
+ * Uses NextAuth v5's auth() function.
  * 
- * This is an App Router route handler that replaces the Pages Router version.
- * 
- * @param request (NextRequest): The request object containing socket_id and channel_name in the body
- * @returns (NextResponse): The authorisation response for Pusher
+ * @param request - The request object containing socket_id and channel_name
+ * @returns Authorization response for Pusher
  */
 export async function POST(request: NextRequest) {
   try {
-    // Get the user's session
-    const session = await getServerSession(authOptions);
+    // Get the user's session using NextAuth v5
+    const session = await auth();
 
     // If the user doesn't have a session, return a 401 error
     if (!session?.user?.email) {
@@ -40,7 +37,7 @@ export async function POST(request: NextRequest) {
       user_id: session.user.email,
     };
 
-    // Generate an authorisation response based on the provided channel and user data
+    // Generate an authorization response based on the provided channel and user data
     const authResponse = pusherServer.authorizeChannel(
       socketId,
       channelName,

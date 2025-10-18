@@ -19,17 +19,13 @@ type Variant = "LOGIN" | "REGISTER";
  * @returns (JSX.Element)
  */
 const AuthForm: React.FC = () => {
-  // gets the current session
   const session = useSession();
   const router = useRouter();
-  // initial variant is LOGIN but it can be changed to REGISTER
   const [variant, setVariant] = useState<Variant>("LOGIN");
-  // loading state for the authentication process
   const [isLoading, setIsLoading] = useState(false);
 
   /**
    * If the user is already authenticated, redirect to the users page.
-   * This is to prevent the user from accessing the login page when they are already logged in.
    */
   useEffect(() => {
     if (session?.status === "authenticated") {
@@ -48,10 +44,6 @@ const AuthForm: React.FC = () => {
     }
   }, [variant]);
 
-  /**
-   * React Hook Form for handling the form state.
-   * Keeps track of the input values and errors.
-   */
   const {
     register,
     handleSubmit,
@@ -66,71 +58,70 @@ const AuthForm: React.FC = () => {
 
   /**
    * Handles the form submission for authentication.
-   * If the variant is REGISTER, it will register the user.
-   * If the variant is LOGIN, it will log the user in and redirect to the users page.
-   * @param data (FieldValues): form data for signing in or registering
    */
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true);
 
-    // register the user
+    // Register the user
     if (variant === "REGISTER") {
       axios
         .post("/api/register", data)
-        .then(() => signIn("credentials", data)) // automatically log in after registering
+        .then(() => signIn("credentials", { ...data, redirect: false }))
+        .then((callback) => {
+          if (callback?.ok) {
+            toast.success("Account created!");
+            router.push("/users");
+          }
+          if (callback?.error) {
+            toast.error("Registration failed");
+          }
+        })
         .catch((error) => {
           if (error.response) {
-            // The request was made and the server responded with a status code that falls out of the range of 2xx
             toast.error(error.response.data);
           } else if (error.request) {
-            // The request was made but no response was received
             toast.error("No response from server. Please try again later.");
           } else {
-            // Something happened in setting up the request that triggered an Error
             toast.error("Something went wrong");
           }
         })
         .finally(() => setIsLoading(false));
     }
 
-    // log the user in
+    // Log the user in
     if (variant === "LOGIN") {
-      if (variant === "LOGIN") {
-        signIn("credentials", {
-          ...data,
-          redirect: false,
-        })
-          .then((callback) => {
-            if (callback?.error) {
-              toast.error("Invalid credentials!");
-            }
+      signIn("credentials", {
+        ...data,
+        redirect: false,
+      })
+        .then((callback) => {
+          if (callback?.error) {
+            toast.error("Invalid credentials!");
+          }
 
-            if (callback?.ok && !callback?.error) {
-              toast.success("Logged In");
-              router.push("/users");
-            }
-          })
-          .finally(() => setIsLoading(false));
-      }
+          if (callback?.ok && !callback?.error) {
+            toast.success("Logged in!");
+            router.push("/users");
+          }
+        })
+        .finally(() => setIsLoading(false));
     }
   };
 
   /**
    * Handles authentication with third party providers.
-   * @param action (string): either "github" or "google"
+   * Updated for NextAuth v5 - uses callbackUrl for proper redirects
    */
   const socialAction = (action: string) => {
     setIsLoading(true);
 
-    signIn(action, { redirect: false })
-      .then((callback) => {
-        if (callback?.error) {
-          toast.error("Invalid credentials!");
-        }
-
-        if (callback?.ok) {
-          toast.success("Logged In");
-        }
+    signIn(action, { 
+      callbackUrl: "/users",
+      redirect: true  // Changed to true for OAuth
+    })
+      .catch((error) => {
+        toast.error("OAuth authentication failed");
+        console.error("OAuth error:", error);
       })
       .finally(() => setIsLoading(false));
   };
@@ -139,13 +130,13 @@ const AuthForm: React.FC = () => {
     <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
       <div
         className="
-		bg-white
-			px-4
-			py-8
-			shadow
-			sm:rounded-2xl
-			sm:px-10
-		"
+        bg-white
+        px-4
+        py-8
+        shadow
+        sm:rounded-2xl
+        sm:px-10
+      "
       >
         <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
           {variant === "REGISTER" && (
@@ -185,14 +176,7 @@ const AuthForm: React.FC = () => {
 
         <div className="mt-6">
           <div className="relative">
-            <div
-              className="
-                absolute 
-                inset-0 
-                flex 
-                items-center
-              "
-            >
+            <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-300" />
             </div>
             <div className="relative flex justify-center text-sm">
@@ -213,17 +197,8 @@ const AuthForm: React.FC = () => {
             />
           </div>
         </div>
-        <div
-          className="
-            flex 
-            gap-2 
-            justify-center 
-            text-sm 
-            mt-6 
-            px-2 
-            text-gray-500
-          "
-        >
+
+        <div className="flex gap-2 justify-center text-sm mt-6 px-2 text-gray-500">
           <div>
             {variant === "LOGIN"
               ? "New to Ringmaster?"
@@ -237,4 +212,5 @@ const AuthForm: React.FC = () => {
     </div>
   );
 };
+
 export default AuthForm;
