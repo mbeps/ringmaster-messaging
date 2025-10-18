@@ -1,5 +1,4 @@
-import bcrypt from "bcrypt";
-
+import bcrypt from "bcryptjs"; // Changed from "bcrypt"
 import prisma from "@/libs/prismadb";
 import { NextResponse } from "next/server";
 
@@ -49,8 +48,8 @@ export async function POST(request: Request) {
     // Password check
     await checkPassword(password);
 
-    // hashes the password with 12 rounds of salting
-    const hashedPassword = await bcrypt.hash(password, 12);
+    // hashes the password with 10 rounds of salting (consistent with bcryptjs)
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     // create a new user in the database with the provided email, name, and hashed password
     const user = await prisma.user.create({

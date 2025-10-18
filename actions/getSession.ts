@@ -1,14 +1,11 @@
-import { getServerSession } from "next-auth";
-
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { auth } from "@/auth";
 
 /**
- * Get the current session from the server.
- * Uses `getServerSession` from `next-auth` to get the session from the previously defined `authOptions`.
- * This makes it easier to get the session from the server.
+ * Gets the current session from the server.
+ * Uses NextAuth v5's auth() function.
  *
- * @returns (Promise<Session | null>): The current session from the server.
+ * @returns The current session or null
  */
 export default async function getSession() {
-  return await getServerSession(authOptions);
+  return await auth();
 }

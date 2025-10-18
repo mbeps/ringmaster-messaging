@@ -1,24 +1,27 @@
-/**
- * Contains code that runs before a request is completed.
- * Can be used to modify the response by rewriting, redirecting, modifying the request or response headers, or responding directly.
- * Runs before cached content and routes are matched.
- */
-
-import { withAuth } from "next-auth/middleware";
+import { auth } from "@/auth";
 
 /**
- * Defines the middleware that will be used for the pages that are defined in the config.
- * The root page is the sign in page.
+ * NextAuth v5 middleware for protecting routes.
+ * Redirects unauthenticated users to the sign-in page.
  */
-export default withAuth({
-  pages: {
-    signIn: "/",
-  },
+export default auth((req) => {
+  const isLoggedIn = !!req.auth;
+  
+  const protectedRoutes = ["/users", "/conversations"];
+  const isProtectedRoute = protectedRoutes.some(route => 
+    req.nextUrl.pathname.startsWith(route)
+  );
+
+  if (!isLoggedIn && isProtectedRoute) {
+    return Response.redirect(new URL("/", req.url));
+  }
+
+  return null;
 });
 
 /**
- * Protects the pages that are defined in the config.
- * If the user is not authenticated, and they try to access a protected page, they will be redirected to the sign in page.
+ * Matcher configuration for middleware.
+ * Protects /users and /conversations routes and all their sub-routes.
  */
 export const config = {
   matcher: ["/users/:path*", "/conversations/:path*"],
