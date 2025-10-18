@@ -18,8 +18,8 @@
     "docker:database": "docker-compose --env-file .env -f docker/docker-compose.yml up db"
   },
   "dependencies": {
-    "@headlessui/react": "^1.7.14",
     "@auth/prisma-adapter": "^2.10.0",
+    "@headlessui/react": "^1.7.14",
     "@prisma/client": "^5.21.1",
     "@tailwindcss/forms": "^0.5.3",
     "@tailwindcss/postcss": "^4.1.14",
@@ -33,9 +33,9 @@
     "date-fns": "^2.30.0",
     "encoding": "^0.1.13",
     "eslint": "8.40.0",
-    "eslint-config-next": "14.2.18",
+    "eslint-config-next": "^15.5.6",
     "lodash": "^4.17.21",
-    "next": "14.2.18",
+    "next": "^15.5.6",
     "next-auth": "^5.0.0-beta.25",
     "next-cloudinary": "^4.10.1",
     "next-superjson-plugin": "^0.5.7",

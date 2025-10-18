@@ -17,12 +17,15 @@ interface IParams {
  * @param param1 ({ params: IParams }):
  * @returns (NextResponse)
  */
-export async function POST(request: Request, { params }: { params: IParams }) {
+export async function POST(
+  request: Request,
+  { params }: { params: Promise<IParams> }
+) {
   try {
     // Get current user who is logged in (sees the message)
     const currentUser = await getCurrentUser();
     // conversation where the message is
-    const { conversationId } = params;
+    const { conversationId } = await params;
 
     // If the current user is not logged in, return an error
     if (!currentUser?.id || !currentUser?.email) {
