@@ -41,7 +41,7 @@ describe("libs/pusher", () => {
   });
 
   it("wires up the server instance with secure defaults", async () => {
-    const module = await import("@/libs/pusher");
+    const pusherModule = await import("@/libs/pusher");
 
     expect(serverCtor).toHaveBeenCalledWith({
       appId: "app-id",
@@ -50,7 +50,7 @@ describe("libs/pusher", () => {
       cluster: "eu",
       useTLS: true,
     });
-    expect(module.pusherServer).toMatchObject({
+    expect(pusherModule.pusherServer).toMatchObject({
       options: {
         appId: "app-id",
         key: "public-key",
@@ -62,7 +62,7 @@ describe("libs/pusher", () => {
   });
 
   it("configures the client instance for browser usage", async () => {
-    const module = await import("@/libs/pusher");
+    const pusherModule = await import("@/libs/pusher");
 
     expect(clientCtor).toHaveBeenCalledWith("public-key", {
       channelAuthorization: {
@@ -71,7 +71,7 @@ describe("libs/pusher", () => {
       },
       cluster: "eu",
     });
-    expect(module.pusherClient).toMatchObject({
+    expect(pusherModule.pusherClient).toMatchObject({
       key: "public-key",
       options: {
         channelAuthorization: {
