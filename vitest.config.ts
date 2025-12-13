@@ -11,7 +11,6 @@ export default defineConfig({
       provider: "v8",
       reporter: ["text", "lcov"],
       reportsDirectory: "coverage",
-      all: true,
       include: ["actions/**/*.ts", "libs/**/*.ts"],
       thresholds: {
         statements: 100,
