@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import { Dialog, DialogTitle } from "@headlessui/react";
 import { FiAlertTriangle } from "react-icons/fi";
 import axios from "axios";
@@ -24,19 +24,15 @@ interface ConfirmModalProps {
  * @param param0 { isOpen, onClose}: when the modal is open, when the modal is closed
  * @returns (JSX.Element): confirmation modal component
  */
-const ConfirmModal: React.FC<ConfirmModalProps> = ({ isOpen, onClose }) => {
+function ConfirmModal({ isOpen, onClose }: ConfirmModalProps) {
   const router = useRouter();
   // conversation to be deleted
   const { conversationId } = useConversation();
   // loading the deletion of the conversation
   const [isLoading, setIsLoading] = useState(false);
 
-  /**
-   * Deletes the desired conversation.
-   * Once the conversation is deleted,
-   * the modal is closed and the user is redirected to the conversations page.
-   */
-  const onDelete = useCallback(() => {
+  // Deletes the desired conversation
+  const onDelete = () => {
     setIsLoading(true); // start loading
 
     axios
@@ -48,7 +44,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({ isOpen, onClose }) => {
       })
       .catch(() => toast.error("Something went wrong!")) // if there is an error, display an error message
       .finally(() => setIsLoading(false)); // stop loading
-  }, [router, conversationId, onClose]);
+  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>

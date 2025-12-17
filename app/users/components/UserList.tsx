@@ -14,7 +14,7 @@ interface UserListProps {
  * @param {items}: a list of users that need to be displayed
  * @returns (JSX.Element): list of users
  */
-const UserList: React.FC<UserListProps> = ({ items }) => {
+function UserList({ items }: UserListProps) {
   return (
     <aside
       className="

@@ -26,11 +26,11 @@ interface GroupChatModalProps {
  * @param param0 { isOpen, onClose, users}
  * @returns (JSX.Element)
  */
-const GroupChatModal: React.FC<GroupChatModalProps> = ({
+function GroupChatModal({
   isOpen,
   onClose,
   users = [],
-}) => {
+}: GroupChatModalProps) {
   const router = useRouter();
   // loading creation of group chat
   const [isLoading, setIsLoading] = useState(false);

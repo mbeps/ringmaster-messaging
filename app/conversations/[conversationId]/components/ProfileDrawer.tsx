@@ -8,7 +8,7 @@ import useOtherUser from "@/hooks/useOtherUser";
 import { Dialog, DialogPanel, Transition, TransitionChild } from "@headlessui/react";
 import { Conversation, User } from "@prisma/client";
 import { format } from "date-fns";
-import React, { Fragment, useMemo, useState } from "react";
+import React, { Fragment, useState } from "react";
 import { IoClose, IoTrash } from "react-icons/io5";
 import useActiveList from "@/hooks/useActiveList";
 
@@ -37,39 +37,22 @@ interface ProfileDrawerProps {
  * @param {isOpen, onClose, data}: required props for the component
  * @returns (JSX.Element): the profile drawer component
  */
-const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
-  isOpen,
-  onClose,
-  data,
-}) => {
+function ProfileDrawer({ isOpen, onClose, data }: ProfileDrawerProps) {
   const otherUser = useOtherUser(data);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const { members } = useActiveList();
   const isActive = members.indexOf(otherUser.email!) !== -1;
 
-  /**
-   * Gets the date the other user joined.
-   */
-  const joinedDate = useMemo(() => {
-    return format(new Date(otherUser.createdAt), "PP");
-  }, [otherUser.createdAt]);
+  // Gets the date the other user joined
+  const joinedDate = format(new Date(otherUser.createdAt), "PP");
 
-  /**
-   * Gets the title of the conversation.
-   */
-  const title = useMemo(() => {
-    return data.name || otherUser.name;
-  }, [data.name, otherUser.name]);
+  // Gets the title of the conversation
+  const title = data.name || otherUser.name;
 
-  /**
-   * Gets the status text for the user or the number of members for the group.
-   */
-  const statusText = useMemo(() => {
-    if (data.isGroup) {
-      return `${data.users.length} members`;
-    } // number of members in the group
-    return isActive ? "Online" : "Offline"; // status of the other user
-  }, [data.isGroup, data.users.length, isActive]);
+  // Gets the status text for the user or the number of members for the group
+  const statusText = data.isGroup
+    ? `${data.users.length} members`
+    : isActive ? "Online" : "Offline";
 
   return (
     <>

@@ -1,8 +1,6 @@
 "use client";
 
-import { useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { Conversation, Message, User } from "@prisma/client";
 import { format } from "date-fns";
 import { useSession } from "next-auth/react";
 import clsx from "clsx";
@@ -29,78 +27,38 @@ interface ConversationBoxProps {
  * @param {data, selected}: required props for tbe button
  * @returns (JSX.Element): returns the button for the each conversation
  */
-const ConversationBox: React.FC<ConversationBoxProps> = ({
-  data,
-  selected,
-}) => {
+function ConversationBox({ data, selected }: ConversationBoxProps) {
   // get the other user in the conversation
   const otherUser = useOtherUser(data);
   // gets the current session
   const session = useSession();
   const router = useRouter();
 
-  /**
-   * Redirects to the conversation page when the conversation box is clicked.
-   */
-  const handleClick = useCallback(() => {
-    router.push(`/conversations/${data.id}`); // redirects to the conversation page
-  }, [data, router]);
+  // Redirects to the conversation page when the conversation box is clicked
+  const handleClick = () => {
+    router.push(`/conversations/${data.id}`);
+  };
 
-  /**
-   * Gets the last message in the conversation.
-   */
-  const lastMessage = useMemo(() => {
-    const messages = data.messages || []; // gets a list of all the messages in the conversation
+  // Gets the last message in the conversation
+  const messages = data.messages || [];
+  const lastMessage = messages[messages.length - 1];
 
-    return messages[messages.length - 1]; // from the list it gets the last message
-  }, [data.messages]);
+  // Gets the email of the current user who is logged in
+  const userEmail = session.data?.user?.email;
 
-  /**
-   * Gets the email of the current user who is logged in.
-   */
-  const userEmail = useMemo(
-    () => session.data?.user?.email,
-    [session.data?.user?.email]
-  );
+  // Marks the last message as seen if the current user has seen it
+  const seenArray = lastMessage?.seen || [];
+  const hasSeen = lastMessage && userEmail
+    ? seenArray.filter((user) => user.email === userEmail).length !== 0
+    : false;
 
-  /**
-   * Marks the last message as seen if the current user has seen it.
-   * The user must be logged in to mark the message as seen.
-   */
-  const hasSeen = useMemo(() => {
-    if (!lastMessage) {
-      // if message does not exist then it cannot be seen
-      return false;
-    }
-
-    const seenArray = lastMessage.seen || [];
-
-    if (!userEmail) {
-      return false;
-    }
-
-    return seenArray.filter((user) => user.email === userEmail).length !== 0; // checks if the current user has seen the message
-  }, [userEmail, lastMessage]);
-
-  /**
-   * Gets the text of the last message to be displayed in the conversation box.
-   * If the last message is an image, it will display "Image sent".
-   * If the last message is a text, it will display the text.
-   * If there is no conversation yet, it will display "No Conversation Yet".
-   */
-  const lastMessageText = useMemo(() => {
-    if (lastMessage?.image) {
-      // if the last message is an image
-      return "Image sent";
-    }
-
-    if (lastMessage?.body) {
-      // show the text in the body
-      return lastMessage?.body;
-    }
-
-    return "No Conversation Yet";
-  }, [lastMessage]);
+  // Gets the text of the last message to be displayed in the conversation box
+  let lastMessageText = "No Conversation Yet";
+  if (lastMessage?.image) {
+    lastMessageText = "Image sent";
+  } else if (lastMessage?.body) {
+    lastMessageText = lastMessage.body;
+  }
 
   return (
     <div

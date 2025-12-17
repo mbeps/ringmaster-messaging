@@ -14,7 +14,7 @@ import { CldUploadButton } from "next-cloudinary";
  *
  * @returns (JSX.Element): form component with message input and send button
  */
-const Form: React.FC = () => {
+function Form() {
   // retrieve conversation id from context
   const { conversationId } = useConversation();
 

@@ -98,7 +98,6 @@ export async function POST(
 
     return new NextResponse("Success");
   } catch (error) {
-    console.log("ERROR_MESSAGES_SEEN: ", error);
     return new NextResponse("Error", { status: 500 });
   }
 }

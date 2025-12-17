@@ -63,7 +63,6 @@ export async function POST(request: Request) {
     // return the user object
     return NextResponse.json(user);
   } catch (error: any) {
-    console.log("ERROR: Registration Unsuccessful", error);
     return new NextResponse(error.message, { status: 500 });
   }
 }

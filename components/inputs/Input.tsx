@@ -19,7 +19,7 @@ interface InputProps {
  * @param param0: InputProps
  * @returns (JSX.Element): an text input component
  */
-const Input: React.FC<InputProps> = ({
+function Input({
   label,
   id,
   register,
@@ -27,7 +27,7 @@ const Input: React.FC<InputProps> = ({
   errors,
   type = "text",
   disabled,
-}) => {
+}: InputProps) {
   return (
     <div>
       <label

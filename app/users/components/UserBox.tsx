@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { User } from "@prisma/client";
 
@@ -17,14 +17,12 @@ interface UserBoxProps {
  * @param {User}: user for which to render the box
  * @returns (JSX.Element): the user box
  */
-const UserBox: React.FC<UserBoxProps> = ({ data }) => {
+function UserBox({ data }: UserBoxProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
-  /**
-   * Creates a conversation with the user.
-   */
-  const handleClick = useCallback(() => {
+  // Creates a conversation with the user
+  const handleClick = () => {
     setIsLoading(true);
 
     axios
@@ -33,7 +31,7 @@ const UserBox: React.FC<UserBoxProps> = ({ data }) => {
         router.push(`/conversations/${data.data.id}`);
       }) // redirect to conversation
       .finally(() => setIsLoading(false));
-  }, [data, router]);
+  };
 
   return (
     <>

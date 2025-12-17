@@ -1,5 +1,4 @@
 import { useParams } from "next/navigation";
-import { useMemo } from "react";
 
 /**
  * Retrieves and manages the conversation ID from the URL parameters.
@@ -9,37 +8,20 @@ import { useMemo } from "react";
  * @returns {object} - An object containing the `conversationId` and `isOpen`
  */
 const useConversation = () => {
-  const params = useParams(); // retrieve the URL parameters
+  const params = useParams();
 
-  /**
-   * Retrieves the conversation ID from the URL parameters.
-   */
-  const conversationId = useMemo(() => {
-    // if there is no conversation ID, return an empty string
-    if (!params?.conversationId) {
-      return "";
-    }
+  // Retrieve the conversation ID from the URL parameters
+  const conversationId = !params?.conversationId 
+    ? "" 
+    : params.conversationId as string;
 
-    // return conversation ID
-    return params.conversationId as string;
-  }, [params?.conversationId]);
+  // Indicates whether a conversation is open (based on the existence of a conversation ID)
+  const isOpen = !!conversationId;
 
-  /**
-   * Indicates whether a conversation is open (based on the existence of a conversation ID).
-   * If there is a conversation ID, the conversation is open.
-   * If there is no conversation ID, the conversation is not open.
-   * @type {boolean}
-   */
-  const isOpen: boolean = useMemo(() => !!conversationId, [conversationId]);
-
-  // `useMemo` to ensure that the references to `isOpen` and `conversationId` remain stable unless they change.
-  return useMemo(
-    () => ({
-      isOpen,
-      conversationId,
-    }),
-    [isOpen, conversationId]
-  );
+  return {
+    isOpen,
+    conversationId,
+  };
 };
 
 export default useConversation;

@@ -23,7 +23,7 @@ interface DesktopSidebarProps {
  * @param {User} currentUser: current user
  * @returns (JSX.Element): desktop sidebar component
  */
-const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ currentUser }) => {
+function DesktopSidebar({ currentUser }: DesktopSidebarProps) {
   const routes = useRoutes();
   // keeps track of the settings modal state
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
