@@ -3,6 +3,7 @@ import { HiChat } from "react-icons/hi";
 import { HiArrowLeftOnRectangle, HiUsers } from "react-icons/hi2";
 import { signOut } from "next-auth/react";
 import useConversation from "./useConversation";
+import { ROUTES } from "@/libs/routes";
 
 /**
  * Defines the routes displayed in the sidebar, including the label, href, icon, and active state.
@@ -17,15 +18,15 @@ const useRoutes = () => {
   const routes = [
     {
       label: "Chat",
-      href: "/conversations",
+      href: ROUTES.CONVERSATIONS,
       icon: HiChat,
-      active: pathname === "/conversations" || !!conversationId,
+      active: pathname === ROUTES.CONVERSATIONS || !!conversationId,
     },
     {
       label: "Users",
-      href: "/users",
+      href: ROUTES.USERS,
       icon: HiUsers,
-      active: pathname === "/users",
+      active: pathname === ROUTES.USERS,
     },
     {
       label: "Logout",

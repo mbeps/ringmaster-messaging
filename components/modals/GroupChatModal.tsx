@@ -11,6 +11,7 @@ import Modal from "./Modal";
 import Button from "../Button";
 import { toast } from "react-hot-toast";
 import Select from "../inputs/Select";
+import { API_ROUTES } from "@/libs/routes";
 
 interface GroupChatModalProps {
   isOpen?: boolean;
@@ -59,7 +60,7 @@ function GroupChatModal({
     setIsLoading(true); // start loading the creation of the group chat
 
     axios
-      .post("/api/conversations", {
+      .post(API_ROUTES.CONVERSATIONS, {
         ...data,
         isGroup: true,
       }) // create the group chat

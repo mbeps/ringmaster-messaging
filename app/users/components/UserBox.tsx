@@ -5,6 +5,7 @@ import { User } from "@prisma/client";
 
 import Avatar from "@/components/Avatar";
 import LoadingModal from "@/components/modals/LoadingModal";
+import { API_ROUTES, ROUTES } from "@/libs/routes";
 
 interface UserBoxProps {
   data: User;
@@ -26,9 +27,9 @@ function UserBox({ data }: UserBoxProps) {
     setIsLoading(true);
 
     axios
-      .post("/api/conversations", { userId: data.id }) // create conversation
+      .post(API_ROUTES.CONVERSATIONS, { userId: data.id }) // create conversation
       .then((data) => {
-        router.push(`/conversations/${data.data.id}`);
+        router.push(ROUTES.CONVERSATION_ID(data.data.id));
       }) // redirect to conversation
       .finally(() => setIsLoading(false));
   };

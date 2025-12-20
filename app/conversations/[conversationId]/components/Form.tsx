@@ -7,6 +7,7 @@ import { useForm, FieldValues, SubmitHandler } from "react-hook-form";
 import { HiPaperAirplane, HiPhoto } from "react-icons/hi2";
 import MessageInput from "./MessageInput";
 import { CldUploadButton } from "next-cloudinary";
+import { API_ROUTES } from "@/libs/routes";
 
 /**
  * Form component which contains the message input, send button and image upload button.
@@ -41,7 +42,7 @@ function Form() {
    */
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setValue("message", "", { shouldValidate: true }); // once sent clear message input and re-render
-    axios.post("/api/messages", {
+    axios.post(API_ROUTES.MESSAGES, {
       ...data,
       conversationId: conversationId,
     }); // create new message for the current conversation
@@ -55,7 +56,7 @@ function Form() {
    * @param result (any): result from the image upload
    */
   const handleUpload = (result: any) => {
-    axios.post("/api/messages", {
+    axios.post(API_ROUTES.MESSAGES, {
       image: result?.info?.secure_url, // store image URL from Cloudinary in database
       conversationId: conversationId, // store current conversation ID in database
     }); // create new message for the current conversation

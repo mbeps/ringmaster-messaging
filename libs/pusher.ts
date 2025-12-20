@@ -1,6 +1,7 @@
 // Sets up the Pusher client and server libraries
 import PusherServer from "pusher";
 import PusherClient from "pusher-js";
+import { API_ROUTES } from "./routes";
 
 /**
  * Sets up Pusher for server-side use.
@@ -22,7 +23,7 @@ export const pusherClient = new PusherClient(
   process.env.NEXT_PUBLIC_PUSHER_APP_KEY!,
   {
     channelAuthorization: {
-      endpoint: "/api/pusher/auth", //! only supports Next.JS 12
+      endpoint: API_ROUTES.PUSHER_AUTH,
       transport: "ajax",
     },
     cluster: "eu",

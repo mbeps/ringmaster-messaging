@@ -9,6 +9,7 @@ import Modal from "@/components/modals/Modal";
 import Button from "@/components/Button";
 import useConversation from "@/hooks/useConversation";
 import { toast } from "react-hot-toast";
+import { API_ROUTES, ROUTES } from "@/libs/routes";
 
 interface ConfirmModalProps {
   isOpen?: boolean; // when the modal is open
@@ -36,10 +37,10 @@ function ConfirmModal({ isOpen, onClose }: ConfirmModalProps) {
     setIsLoading(true); // start loading
 
     axios
-      .delete(`/api/conversations/${conversationId}`) // delete the conversation
+      .delete(API_ROUTES.CONVERSATION_ID(conversationId)) // delete the conversation
       .then(() => {
         onClose(); // close the modal
-        router.push("/conversations"); // redirect to the conversations page
+        router.push(ROUTES.CONVERSATIONS); // redirect to the conversations page
         router.refresh(); // refresh the page
       })
       .catch(() => toast.error("Something went wrong!")) // if there is an error, display an error message

@@ -11,6 +11,7 @@ import { HiEllipsisHorizontal } from "react-icons/hi2";
 import ProfileDrawer from "./ProfileDrawer";
 import AvatarGroup from "@/components/AvatarGroup";
 import useActiveList from "@/hooks/useActiveList";
+import { ROUTES } from "@/libs/routes";
 
 interface HeaderProps {
   conversation: Conversation & {
@@ -64,7 +65,7 @@ function Header({ conversation }: HeaderProps) {
       >
         <div className="flex gap-3 items-center">
           <Link
-            href="/conversations"
+            href={ROUTES.CONVERSATIONS}
             className="
             lg:hidden 
             block 
