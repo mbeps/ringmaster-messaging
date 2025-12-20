@@ -62,11 +62,14 @@ describe("libs/pusher", () => {
   });
 
   it("configures the client instance for browser usage", async () => {
-    const pusherModule = await import("@/libs/pusher");
+    const [{ API_ROUTES }, pusherModule] = await Promise.all([
+      import("@/libs/routes"),
+      import("@/libs/pusher"),
+    ]);
 
     expect(clientCtor).toHaveBeenCalledWith("public-key", {
       channelAuthorization: {
-        endpoint: "/api/pusher/auth",
+        endpoint: API_ROUTES.PUSHER_AUTH,
         transport: "ajax",
       },
       cluster: "eu",
@@ -75,7 +78,7 @@ describe("libs/pusher", () => {
       key: "public-key",
       options: {
         channelAuthorization: {
-          endpoint: "/api/pusher/auth",
+          endpoint: API_ROUTES.PUSHER_AUTH,
           transport: "ajax",
         },
         cluster: "eu",
