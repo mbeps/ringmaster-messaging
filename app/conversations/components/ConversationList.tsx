@@ -4,7 +4,7 @@ import useConversation from "@/hooks/useConversation";
 import { FullConversationType } from "@/types";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { MdOutlineGroupAdd } from "react-icons/md";
 import ConversationBox from "./ConversationBox";
 import { User } from "@prisma/client";
@@ -25,10 +25,7 @@ interface ConversationListProps {
  * @param {initialItems, users}: ConversationListProps
  * @returns (JSX.Element): list of conversations
  */
-const ConversationList: React.FC<ConversationListProps> = ({
-  initialItems,
-  users,
-}) => {
+function ConversationList({ initialItems, users }: ConversationListProps) {
   // gets the current session
   const session = useSession();
   const [items, setItems] = useState(initialItems);
@@ -36,15 +33,8 @@ const ConversationList: React.FC<ConversationListProps> = ({
   const { conversationId, isOpen } = useConversation();
   const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
 
-  /**
-   * The pusher key is the user's email.
-   * This is used to subscribe to the user's channel.
-   * When a new message is received, the pusher key is used to determine if the message is for the current user.
-   * If the message is for the current user, the message will be displayed in real time.
-   */
-  const pusherKey = useMemo(() => {
-    return session.data?.user?.email;
-  }, [session.data?.user?.email]);
+  // The pusher key is the user's email
+  const pusherKey = session.data?.user?.email;
 
   /**
    * Handles updates, new conversations, and conversation removals, and cleans up the subscription and event listeners when the component unmounts.

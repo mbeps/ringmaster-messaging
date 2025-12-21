@@ -26,11 +26,11 @@ interface SettingsModalProps {
  * @param param0 { isOpen, onClose, currentUser}: SettingsModalProps
  * @returns (JSX.Element): settings modal for editing the user's profile
  */
-const SettingsModal: React.FC<SettingsModalProps> = ({
+function SettingsModal({
   isOpen,
   onClose,
-  currentUser = {},
-}) => {
+  currentUser,
+}: SettingsModalProps) {
   const router = useRouter();
   // loading state for updating the user's profile
   const [isLoading, setIsLoading] = useState(false);

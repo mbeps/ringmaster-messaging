@@ -16,7 +16,7 @@ interface AvatarProps {
  * @param { user: User}: user for the avatar
  * @returns (JSX.Element) : Avatar component
  */
-const Avatar: React.FC<AvatarProps> = ({ user }) => {
+function Avatar({ user }: AvatarProps) {
   const { members } = useActiveList();
   const isActive = members.indexOf(user?.email!) !== -1;
 

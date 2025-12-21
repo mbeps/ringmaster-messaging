@@ -12,7 +12,7 @@ interface AvatarGroupProps {
  * @param { users = [] }: list of users in the group
  * @returns (JSX.Element): avatar group component with 3 users from the list
  */
-const AvatarGroup: React.FC<AvatarGroupProps> = ({ users = [] }) => {
+function AvatarGroup({ users = [] }: AvatarGroupProps) {
   const slicedUsers = users.slice(0, 3);
 
   const positionMap = {

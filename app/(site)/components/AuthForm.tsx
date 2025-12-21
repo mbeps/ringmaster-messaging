@@ -2,7 +2,7 @@
 
 import Button from "@/components/Button";
 import Input from "@/components/inputs/Input";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import AuthSocialButton from "./AuthSocialButtont";
 import { BsGithub, BsGoogle } from "react-icons/bs";
@@ -18,7 +18,7 @@ type Variant = "LOGIN" | "REGISTER";
  * There are 2 variants: LOGIN and REGISTER.
  * @returns (JSX.Element)
  */
-const AuthForm: React.FC = () => {
+function AuthForm() {
   const session = useSession();
   const router = useRouter();
   const [variant, setVariant] = useState<Variant>("LOGIN");
@@ -33,16 +33,10 @@ const AuthForm: React.FC = () => {
     }
   }, [session?.status, router]);
 
-  /**
-   * Toggles the variant between LOGIN and REGISTER.
-   */
-  const toggleVariant = useCallback(() => {
-    if (variant === "LOGIN") {
-      setVariant("REGISTER");
-    } else {
-      setVariant("LOGIN");
-    }
-  }, [variant]);
+  // Toggles the variant between LOGIN and REGISTER
+  const toggleVariant = () => {
+    setVariant(variant === "LOGIN" ? "REGISTER" : "LOGIN");
+  };
 
   const {
     register,

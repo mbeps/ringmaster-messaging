@@ -17,13 +17,13 @@ interface MessageInputProps {
  * @param {placeholder, id, type, required, register}: message input props
  * @returns (JSX.Element): message input component
  */
-const MessageInput: React.FC<MessageInputProps> = ({
+function MessageInput({
   placeholder,
   id,
   type,
   required,
   register,
-}) => {
+}: MessageInputProps) {
   return (
     <div className="relative w-full">
       <input

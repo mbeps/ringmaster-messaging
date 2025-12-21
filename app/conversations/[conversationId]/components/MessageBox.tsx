@@ -25,7 +25,7 @@ interface MessageBoxProps {
  * @param {data, isLast}: message box props
  * @returns (JSX.Element): message box component
  */
-const MessageBox: React.FC<MessageBoxProps> = ({ data, isLast }) => {
+function MessageBox({ data, isLast }: MessageBoxProps) {
   // gets the current session
   const session = useSession();
   // keeps track of whether the image modal is open or not

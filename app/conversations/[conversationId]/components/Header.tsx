@@ -2,7 +2,7 @@
 
 import { Conversation, User } from "@prisma/client";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { HiChevronLeft } from "react-icons/hi";
 
 import useOtherUser from "@/hooks/useOtherUser";
@@ -26,7 +26,7 @@ interface HeaderProps {
  * @param { conversation }: conversation data
  * @returns (JSX.Element): header component
  */
-const Header: React.FC<HeaderProps> = ({ conversation }) => {
+function Header({ conversation }: HeaderProps) {
   const otherUser = useOtherUser(conversation);
   // keep track of whether the drawer is open or not
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -35,18 +35,10 @@ const Header: React.FC<HeaderProps> = ({ conversation }) => {
   // check if the other user is active
   const isActive: boolean = members.indexOf(otherUser.email!) !== -1;
 
-  /**
-   * Status text to display in the header.
-   * If the conversation is a group, then display the number of members in the group.
-   * If the conversation is a one-to-one chat, then display the status of the other user.
-   */
-  const statusText = useMemo(() => {
-    if (conversation.isGroup) {
-      return `${conversation.users.length} members`;
-    }
-
-    return isActive ? "Online" : "Offline";
-  }, [conversation.isGroup, conversation.users.length, isActive]);
+  // Status text to display in the header
+  const statusText = conversation.isGroup
+    ? `${conversation.users.length} members`
+    : isActive ? "Online" : "Offline";
 
   return (
     <>

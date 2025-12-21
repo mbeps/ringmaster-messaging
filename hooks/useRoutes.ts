@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { usePathname } from "next/navigation";
 import { HiChat } from "react-icons/hi";
 import { HiArrowLeftOnRectangle, HiUsers } from "react-icons/hi2";
@@ -15,29 +14,26 @@ const useRoutes = () => {
   // retrieve the conversation ID
   const { conversationId } = useConversation();
 
-  const routes = useMemo(
-    () => [
-      {
-        label: "Chat",
-        href: "/conversations",
-        icon: HiChat,
-        active: pathname === "/conversations" || !!conversationId,
-      },
-      {
-        label: "Users",
-        href: "/users",
-        icon: HiUsers,
-        active: pathname === "/users",
-      },
-      {
-        label: "Logout",
-        onClick: () => signOut(),
-        href: "#", // automatically redirected to login page due to middleware protection
-        icon: HiArrowLeftOnRectangle,
-      },
-    ],
-    [pathname, conversationId]
-  );
+  const routes = [
+    {
+      label: "Chat",
+      href: "/conversations",
+      icon: HiChat,
+      active: pathname === "/conversations" || !!conversationId,
+    },
+    {
+      label: "Users",
+      href: "/users",
+      icon: HiUsers,
+      active: pathname === "/users",
+    },
+    {
+      label: "Logout",
+      onClick: () => signOut(),
+      href: "#", // automatically redirected to login page due to middleware protection
+      icon: HiArrowLeftOnRectangle,
+    },
+  ];
 
   return routes;
 };

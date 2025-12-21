@@ -14,7 +14,7 @@ interface ImageModalProps {
  * @param {isOpen, onClose, src}: props for the image modal
  * @returns (JSX.Element): the image modal component
  */
-const ImageModal: React.FC<ImageModalProps> = ({ isOpen, onClose, src }) => {
+function ImageModal({ isOpen, onClose, src }: ImageModalProps) {
   if (!src) {
     return null;
   }

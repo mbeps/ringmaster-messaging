@@ -15,12 +15,12 @@ interface MobileItemProps {
  * @param param0 { href, icon, active, onClick}: props for the button item
  * @returns (JSX.Element): mobile item component
  */
-const MobileItem: React.FC<MobileItemProps> = ({
+function MobileItem({
   href,
   icon: Icon,
   active,
   onClick,
-}) => {
+}: MobileItemProps) {
   const handleClick = () => {
     // checks if the onClick function is defined as it is optional
     if (onClick) {

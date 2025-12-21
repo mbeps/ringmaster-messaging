@@ -19,7 +19,7 @@ interface BodyProps {
  * @param {initialMessages}: messages in conversation
  * @returns (JSX.Element): Body component with messages
  */
-const Body: React.FC<BodyProps> = ({ initialMessages }) => {
+function Body({ initialMessages }: BodyProps) {
   const bottomRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState(initialMessages);
   const { conversationId } = useConversation();

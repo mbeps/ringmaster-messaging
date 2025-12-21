@@ -16,7 +16,7 @@ interface ButtonProps {
  * @param param0 { type, fullWidth, children, onClick, secondary, danger, disabled}: ButtonProps
  * @returns (JSX.Element): button component
  */
-const Button: React.FC<ButtonProps> = ({
+function Button({
   type = "button",
   fullWidth,
   children,
@@ -24,7 +24,7 @@ const Button: React.FC<ButtonProps> = ({
   secondary,
   danger,
   disabled,
-}) => {
+}: ButtonProps) {
   return (
     <button
       onClick={onClick}

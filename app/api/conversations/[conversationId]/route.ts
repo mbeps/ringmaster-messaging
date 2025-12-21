@@ -69,7 +69,6 @@ export async function DELETE(
 
     return NextResponse.json(deletedConversation);
   } catch (error) {
-    console.log("ERROR CONVERSATION DELETE: ", error);
     return NextResponse.json(null);
   }
 }

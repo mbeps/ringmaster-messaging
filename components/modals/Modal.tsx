@@ -17,7 +17,7 @@ interface ModalProps {
  * @param param0 : ModalProps
  * @returns (JSX.Element): base modal component
  */
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
+function Modal({ isOpen, onClose, children }: ModalProps) {
   return (
     <Transition show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-50" onClose={onClose}>

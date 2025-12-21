@@ -14,13 +14,13 @@ interface DesktopItemProps {
  * @param param0 { label, href, icon: Icon, active, onClick}: props for the desktop item component
  * @returns (JSX.Element): desktop item component
  */
-const DesktopItem: React.FC<DesktopItemProps> = ({
+function DesktopItem({
   label,
   href,
   icon: Icon,
   active,
   onClick,
-}) => {
+}: DesktopItemProps) {
   const handleClick = () => {
     if (onClick) {
       return onClick();

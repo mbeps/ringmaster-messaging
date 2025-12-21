@@ -17,13 +17,13 @@ interface SelectProps {
  * @param param0 : SelectProps
  * @returns (JSX.Element): A select input
  */
-const Select: React.FC<SelectProps> = ({
+function Select({
   label,
   value,
   onChange,
   options,
   disabled,
-}) => {
+}: SelectProps) {
   return (
     <div className="z-100">
       <label

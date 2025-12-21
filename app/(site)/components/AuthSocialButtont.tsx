@@ -12,10 +12,10 @@ interface AuthSocialButtonProps {
  * @param param0: icon and onClick function for the third party authentication provider
  * @returns (JSX.Element): button with icon for the third party authentication provider
  */
-const AuthSocialButton: React.FC<AuthSocialButtonProps> = ({
+function AuthSocialButton({
   icon: Icon,
   onClick,
-}) => {
+}: AuthSocialButtonProps) {
   return (
     <button
       type="button"
