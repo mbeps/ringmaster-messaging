@@ -9,6 +9,7 @@ import Avatar from "@/components/Avatar";
 import useOtherUser from "@/hooks/useOtherUser";
 import { FullConversationType } from "@/types";
 import AvatarGroup from "@/components/AvatarGroup";
+import { ROUTES } from "@/libs/routes";
 
 interface ConversationBoxProps {
   data: FullConversationType;
@@ -36,7 +37,7 @@ function ConversationBox({ data, selected }: ConversationBoxProps) {
 
   // Redirects to the conversation page when the conversation box is clicked
   const handleClick = () => {
-    router.push(`/conversations/${data.id}`);
+    router.push(ROUTES.CONVERSATION_ID(data.id));
   };
 
   // Gets the last message in the conversation

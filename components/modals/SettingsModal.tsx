@@ -12,6 +12,7 @@ import Modal from "../modals/Modal";
 import Button from "../Button";
 import Image from "next/image";
 import { toast } from "react-hot-toast";
+import { API_ROUTES } from "@/libs/routes";
 
 interface SettingsModalProps {
   isOpen?: boolean;
@@ -78,7 +79,7 @@ function SettingsModal({
     setIsLoading(true); // start loading the update of the user's profile
 
     axios
-      .post("/api/settings", data) // update the user's profile
+      .post(API_ROUTES.SETTINGS, data) // update the user's profile
       .then(() => {
         router.refresh(); // refresh the page
         onClose(); // close the modal

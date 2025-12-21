@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import authConfig from "@/auth.config";
 import prisma from "@/libs/prismadb";
+import { ROUTES } from "@/libs/routes";
 
 /**
  * NextAuth v5 configuration with adapter and callbacks.
@@ -16,7 +17,7 @@ export const {
   adapter: PrismaAdapter(prisma),
   session: { strategy: "jwt" },
   pages: {
-    signIn: "/",
+    signIn: ROUTES.AUTH,
   },
   callbacks: {
     async session({ token, session }) {

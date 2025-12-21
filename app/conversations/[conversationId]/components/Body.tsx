@@ -7,6 +7,7 @@ import { FullMessageType } from "@/types";
 import MessageBox from "./MessageBox";
 import { pusherClient } from "@/libs/pusher";
 import { find } from "lodash";
+import { API_ROUTES } from "@/libs/routes";
 
 interface BodyProps {
   initialMessages: FullMessageType[];
@@ -28,7 +29,7 @@ function Body({ initialMessages }: BodyProps) {
    * Marks the message as seen when the conversation is opened.
    */
   useEffect(() => {
-    axios.post(`/api/conversations/${conversationId}/seen`); // mark as seen
+    axios.post(API_ROUTES.CONVERSATION_SEEN(conversationId)); // mark as seen
   }, [conversationId]);
 
   /**
@@ -40,7 +41,7 @@ function Body({ initialMessages }: BodyProps) {
     bottomRef?.current?.scrollIntoView(); // scroll to bottom when conversation is opened
 
     const messageHandler = (message: FullMessageType) => {
-      axios.post(`/api/conversations/${conversationId}/seen`); // mark as seen when new message is received while conversation is open
+      axios.post(API_ROUTES.CONVERSATION_SEEN(conversationId)); // mark as seen when new message is received while conversation is open
 
       setMessages((current) => {
         // if message already exists, update it

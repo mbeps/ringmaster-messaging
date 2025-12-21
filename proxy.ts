@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import { PROTECTED_ROUTES, ROUTES } from "@/libs/routes";
 
 /**
  * Next.js 16 proxy function (formerly middleware).
@@ -8,13 +9,12 @@ import { auth } from "@/auth";
 export default auth((req) => {
   const isLoggedIn = !!req.auth;
   
-  const protectedRoutes = ["/users", "/conversations"];
-  const isProtectedRoute = protectedRoutes.some(route => 
+  const isProtectedRoute = PROTECTED_ROUTES.some(route => 
     req.nextUrl.pathname.startsWith(route)
   );
 
   if (!isLoggedIn && isProtectedRoute) {
-    return Response.redirect(new URL("/", req.url));
+    return Response.redirect(new URL(ROUTES.AUTH, req.url));
   }
 
   return null;

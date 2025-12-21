@@ -10,6 +10,7 @@ import axios from "axios";
 import { toast } from "react-hot-toast";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { ROUTES, API_ROUTES } from "@/libs/routes";
 
 type Variant = "LOGIN" | "REGISTER";
 
@@ -29,7 +30,7 @@ function AuthForm() {
    */
   useEffect(() => {
     if (session?.status === "authenticated") {
-      router.push("/users");
+      router.push(ROUTES.USERS);
     }
   }, [session?.status, router]);
 
@@ -59,12 +60,12 @@ function AuthForm() {
     // Register the user
     if (variant === "REGISTER") {
       axios
-        .post("/api/register", data)
+        .post(API_ROUTES.REGISTER, data)
         .then(() => signIn("credentials", { ...data, redirect: false }))
         .then((callback) => {
           if (callback?.ok) {
             toast.success("Account created!");
-            router.push("/users");
+            router.push(ROUTES.USERS);
           }
           if (callback?.error) {
             toast.error("Registration failed");
@@ -95,7 +96,7 @@ function AuthForm() {
 
           if (callback?.ok && !callback?.error) {
             toast.success("Logged in!");
-            router.push("/users");
+            router.push(ROUTES.USERS);
           }
         })
         .finally(() => setIsLoading(false));
@@ -110,7 +111,7 @@ function AuthForm() {
     setIsLoading(true);
 
     signIn(action, { 
-      callbackUrl: "/users",
+      callbackUrl: ROUTES.USERS,
       redirect: true  // Changed to true for OAuth
     })
       .catch((error) => {
