@@ -1,7 +1,8 @@
 import { auth } from "@/auth";
 
 /**
- * NextAuth v5 middleware for protecting routes.
+ * Next.js 16 proxy function (formerly middleware).
+ * Handles request interception at the network boundary.
  * Redirects unauthenticated users to the sign-in page.
  */
 export default auth((req) => {
@@ -20,7 +21,7 @@ export default auth((req) => {
 });
 
 /**
- * Matcher configuration for middleware.
+ * Matcher configuration for proxy.
  * Protects /users and /conversations routes and all their sub-routes.
  */
 export const config = {
