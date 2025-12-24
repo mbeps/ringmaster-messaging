@@ -1,36 +1,8 @@
 import bcrypt from "bcryptjs"; // Changed from "bcrypt"
 import prisma from "@/libs/prismadb";
 import { NextResponse } from "next/server";
-
-/**
- * Checks if the password meets the following requirements:
- * - at least 8 characters long
- * - at least 1 number
- * - at least 1 special character
- * - at least 1 capital letter
- * - at least 1 lower case letter
- *
- * If the password does not meet the requirements, an error is thrown.
- *
- * @param password (string): password to be checked
- */
-async function checkPassword(password: string) {
-  if (password.length < 8) {
-    throw new Error("Password must be at least 8 characters long");
-  }
-  if (!/\d/.test(password)) {
-    throw new Error("Password must contain at least 1 number");
-  }
-  if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
-    throw new Error("Password must contain at least 1 special character");
-  }
-  if (!/[A-Z]/.test(password)) {
-    throw new Error("Password must contain at least 1 capital letter");
-  }
-  if (!/[a-z]/.test(password)) {
-    throw new Error("Password must contain at least 1 lower case letter");
-  }
-}
+import { RegisterSchema } from "@/schema/RegisterSchema";
+import { ZodError } from "zod";
 
 /**
  * A post request route for registering a new user.
@@ -42,11 +14,9 @@ export async function POST(request: Request) {
   try {
     // get the body of the request
     const body = await request.json();
-    // destructuring the body to get the email, name, and password
-    const { email, name, password } = body;
-
-    // Password check
-    await checkPassword(password);
+    
+    // Validate request body using Zod schema
+    const { email, name, password } = RegisterSchema.parse(body);
 
     // hashes the password with 10 rounds of salting (consistent with bcryptjs)
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -63,6 +33,9 @@ export async function POST(request: Request) {
     // return the user object
     return NextResponse.json(user);
   } catch (error: any) {
+    if (error instanceof ZodError) {
+      return new NextResponse(error.errors[0].message, { status: 400 });
+    }
     return new NextResponse(error.message, { status: 500 });
   }
 }

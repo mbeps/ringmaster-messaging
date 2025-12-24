@@ -12,6 +12,8 @@ import Button from "../Button";
 import { toast } from "react-hot-toast";
 import Select from "../inputs/Select";
 import { API_ROUTES } from "@/libs/routes";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ConversationSchema } from "@/schema/ConversationSchema";
 
 interface GroupChatModalProps {
   isOpen?: boolean;
@@ -47,9 +49,11 @@ function GroupChatModal({
     watch,
     formState: { errors },
   } = useForm<FieldValues>({
+    resolver: zodResolver(ConversationSchema),
     defaultValues: {
       name: "",
       members: [],
+      isGroup: true,
     },
   });
 

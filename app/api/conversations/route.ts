@@ -3,6 +3,8 @@ import { NextResponse } from "next/server";
 
 import prisma from "@/libs/prismadb";
 import { pusherServer } from "@/libs/pusher";
+import { ConversationSchema } from "@/schema/ConversationSchema";
+import { ZodError } from "zod";
 
 /**
  * A post request route to create a new conversation.
@@ -24,17 +26,11 @@ export async function POST(request: Request) {
     const currentUser = await getCurrentUser();
     const body = await request.json();
     // destructuring the body to get the userId, isGroup, members, and name
-    const { userId, isGroup, members, name } = body;
+    const { userId, isGroup, members, name } = ConversationSchema.parse(body);
 
     // if the current user is not logged in, return an error
     if (!currentUser?.id || !currentUser?.email) {
       return new NextResponse("Unauthorized", { status: 400 });
-    }
-
-    // if trying to create a group conversation, but there are no members (or enough members) or no name,
-    // return an error
-    if (isGroup && (!members || members.length < 2 || !name)) {
-      return new NextResponse("Invalid data", { status: 400 });
     }
 
     //^ GROUP CONVERSATIONS
@@ -48,7 +44,7 @@ export async function POST(request: Request) {
           users: {
             // automatically adds members to the group
             connect: [
-              ...members.map((member: { value: string }) => ({
+              ...(members || []).map((member: { value: string }) => ({
                 id: member.value,
               })),
               {
@@ -74,6 +70,10 @@ export async function POST(request: Request) {
     }
 
     //^ SINGLE CONVERSATIONS
+    if (!userId) {
+      return new NextResponse("UserId required", { status: 400 });
+    }
+
     // if conversation already exists, return the existing conversation
     const existingConversations = await prisma.conversation.findMany({
       where: {
@@ -126,6 +126,9 @@ export async function POST(request: Request) {
 
     return NextResponse.json(newConversation);
   } catch (error) {
+    if (error instanceof ZodError) {
+      return new NextResponse(error.errors[0].message, { status: 400 });
+    }
     return new NextResponse("Internal Error", { status: 500 });
   }
 }

@@ -21,6 +21,7 @@
   "dependencies": {
     "@auth/prisma-adapter": "^2.10.0",
     "@headlessui/react": "^2.2.9",
+    "@hookform/resolvers": "3.9.1",
     "@prisma/client": "^5.21.1",
     "@tailwindcss/forms": "^0.5.3",
     "@tailwindcss/postcss": "^4.1.14",
@@ -53,6 +54,7 @@
     "superjson": "^1",
     "tailwindcss": "^4.1.14",
     "typescript": "5.7.2",
+    "zod": "3.24.1",
     "zustand": "^4.3.8"
   },
   "devDependencies": {

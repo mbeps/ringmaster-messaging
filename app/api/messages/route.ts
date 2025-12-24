@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import getCurrentUser from "@/actions/getCurrentUser";
 import prisma from "@/libs/prismadb";
 import { pusherServer } from "@/libs/pusher";
+import { MessageSchema } from "@/schema/MessageSchema";
+import { ZodError } from "zod";
 
 /**
  * A post request route to create a new message.
@@ -17,7 +19,7 @@ export async function POST(request: Request) {
     const currentUser = await getCurrentUser();
     const body = await request.json();
     // extract the message, image, and conversation ID from the body of the request
-    const { message, image, conversationId } = body;
+    const { message, image, conversationId } = MessageSchema.parse(body);
 
     if (!currentUser?.id || !currentUser?.email) {
       return new NextResponse("Unauthorized", { status: 401 });
@@ -86,6 +88,9 @@ export async function POST(request: Request) {
 
     return NextResponse.json(newMessage);
   } catch (error) {
+    if (error instanceof ZodError) {
+      return new NextResponse(error.errors[0].message, { status: 400 });
+    }
     return new NextResponse("Error", { status: 500 });
   }
 }
