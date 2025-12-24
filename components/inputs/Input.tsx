@@ -74,6 +74,11 @@ function Input({
           )}
         />
       </div>
+      {errors[id] && (
+        <span className="text-rose-500 text-sm mt-1">
+          {errors[id]?.message as string}
+        </span>
+      )}
     </div>
   );
 };

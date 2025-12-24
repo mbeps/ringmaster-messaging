@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import getCurrentUser from "@/actions/getCurrentUser";
 import prisma from "@/libs/prismadb";
+import { SettingsSchema } from "@/schema/SettingsSchema";
+import { ZodError } from "zod";
 
 /**
  * A post request route for updating the user's settings (name and image).
@@ -15,7 +17,7 @@ export async function POST(request: Request) {
     const currentUser = await getCurrentUser();
     const body = await request.json();
     // extract the name and image from the body of the request
-    const { name, image } = body;
+    const { name, image } = SettingsSchema.parse(body);
 
     // if the current user is not logged in, return an error
     if (!currentUser?.id) {
@@ -35,6 +37,9 @@ export async function POST(request: Request) {
 
     return NextResponse.json(updatedUser);
   } catch (error) {
+    if (error instanceof ZodError) {
+      return new NextResponse(error.errors[0].message, { status: 400 });
+    }
     return new NextResponse("Error", { status: 500 });
   }
 }

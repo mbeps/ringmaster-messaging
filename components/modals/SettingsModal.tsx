@@ -13,6 +13,8 @@ import Button from "../Button";
 import Image from "next/image";
 import { toast } from "react-hot-toast";
 import { API_ROUTES } from "@/libs/routes";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { SettingsSchema } from "@/schema/SettingsSchema";
 
 interface SettingsModalProps {
   isOpen?: boolean;
@@ -47,6 +49,7 @@ function SettingsModal({
     watch,
     formState: { errors },
   } = useForm<FieldValues>({
+    resolver: zodResolver(SettingsSchema),
     defaultValues: {
       name: currentUser?.name,
       image: currentUser?.image,

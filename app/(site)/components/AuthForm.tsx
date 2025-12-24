@@ -11,6 +11,9 @@ import { toast } from "react-hot-toast";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { ROUTES, API_ROUTES } from "@/libs/routes";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { LoginSchema } from "@/schema/LoginSchema";
+import { RegisterSchema } from "@/schema/RegisterSchema";
 
 type Variant = "LOGIN" | "REGISTER";
 
@@ -43,7 +46,12 @@ function AuthForm() {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<FieldValues>({
+    resolver: (values, context, options) => {
+      const schema = variant === "LOGIN" ? LoginSchema : RegisterSchema;
+      return zodResolver(schema)(values as any, context, options as any);
+    },
     defaultValues: {
       name: "",
       email: "",
