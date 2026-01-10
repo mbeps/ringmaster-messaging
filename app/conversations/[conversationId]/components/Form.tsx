@@ -34,8 +34,13 @@ function Form() {
     resolver: zodResolver(MessageSchema),
     defaultValues: {
       message: "",
+      conversationId: conversationId,
     },
   });
+  
+  useEffect(() => {
+    setValue("conversationId", conversationId);
+  }, [conversationId, setValue]);
 
   /**
    * Function which handles the submission of the form.

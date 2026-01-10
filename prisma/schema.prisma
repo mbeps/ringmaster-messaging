@@ -1,29 +1,22 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "mongodb"
-  url  	   = env("DATABASE_URL")
+  url      = env("DATABASE_URL")
 }
 
-//^ Models
-/// Represents a registered user in the application
 model User {
-  //^ Fields
   id             String    @id @default(auto()) @map("_id") @db.ObjectId
   name           String?
-  email          String?   @unique
+  email          String    @unique
   emailVerified  DateTime?
   image          String?
   hashedPassword String?
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
 
-  //^ Relations
   conversationIds String[]       @db.ObjectId
   conversations   Conversation[] @relation(fields: [conversationIds], references: [id])
 
@@ -32,40 +25,56 @@ model User {
 
   accounts Account[]
   messages Message[]
+  sessions Session[]
 }
 
-/// Represents a user's account on an external service or platform, this is requried by NextAuth
-model Account {
-  //^ Fields
-  id                String  @id @default(auto()) @map("_id") @db.ObjectId
-  userId            String  @db.ObjectId
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String? @db.String
-  access_token      String? @db.String
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String? @db.String
-  session_state     String?
+model Session {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  token     String
+  expiresAt DateTime
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  //^ Relations
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([provider, providerAccountId])
+  @@unique([token])
 }
 
-/// Represents a conversation in the application
+model Account {
+  id                    String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId                String    @db.ObjectId
+  accountId             String
+  providerId            String
+  accessToken           String?
+  refreshToken          String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Verification {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
+}
+
 model Conversation {
-  //^ Fields
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   createdAt     DateTime @default(now())
   lastMessageAt DateTime @default(now())
   name          String?
   isGroup       Boolean?
 
-  //^ Relations
   messagesIds String[]  @db.ObjectId
   messages    Message[]
 
@@ -73,15 +82,12 @@ model Conversation {
   users   User[]   @relation(fields: [userIds], references: [id])
 }
 
-/// Represents a message within a conversation with its content
 model Message {
-  //^ Fields
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   body      String?
   image     String?
   createdAt DateTime @default(now())
 
-  //^ Relations
   seenIds String[] @db.ObjectId
   seen    User[]   @relation("Seen", fields: [seenIds], references: [id])
 

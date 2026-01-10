@@ -4,7 +4,7 @@ import clsx from "clsx";
 import Image from "next/image";
 import { useState } from "react";
 import { format } from "date-fns";
-import { useSession } from "next-auth/react";
+import { authClient } from "@/lib/auth-client";
 import { FullMessageType } from "@/types";
 
 import Avatar from "@/components/Avatar";
@@ -27,7 +27,7 @@ interface MessageBoxProps {
  */
 function MessageBox({ data, isLast }: MessageBoxProps) {
   // gets the current session
-  const session = useSession();
+  const session = authClient.useSession();
   // keeps track of whether the image modal is open or not
   const [imageModalOpen, setImageModalOpen] = useState(false);
 

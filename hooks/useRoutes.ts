@@ -1,9 +1,10 @@
 import { usePathname } from "next/navigation";
 import { HiChat } from "react-icons/hi";
 import { HiArrowLeftOnRectangle, HiUsers } from "react-icons/hi2";
-import { signOut } from "next-auth/react";
+import { authClient } from "@/lib/auth-client";
 import useConversation from "./useConversation";
 import { ROUTES } from "@/libs/routes";
+import { useRouter } from "next/navigation";
 
 /**
  * Defines the routes displayed in the sidebar, including the label, href, icon, and active state.
@@ -14,6 +15,7 @@ const useRoutes = () => {
   const pathname = usePathname();
   // retrieve the conversation ID
   const { conversationId } = useConversation();
+  const router = useRouter();
 
   const routes = [
     {
@@ -30,7 +32,10 @@ const useRoutes = () => {
     },
     {
       label: "Logout",
-      onClick: () => signOut(),
+      onClick: async () => {
+          await authClient.signOut();
+          router.push(ROUTES.AUTH);
+      },
       href: "#", // automatically redirected to login page due to middleware protection
       icon: HiArrowLeftOnRectangle,
     },

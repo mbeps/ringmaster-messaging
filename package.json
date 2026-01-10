@@ -19,7 +19,6 @@
     "docker:database": "docker-compose --env-file .env -f docker/docker-compose.yml up db"
   },
   "dependencies": {
-    "@auth/prisma-adapter": "^2.10.0",
     "@headlessui/react": "^2.2.9",
     "@hookform/resolvers": "3.9.1",
     "@prisma/client": "^5.21.1",
@@ -30,6 +29,8 @@
     "@types/react-dom": "^19.0.0",
     "axios": "^1.4.0",
     "bcryptjs": "^2.4.3",
+    "better-auth": "^1.4.10",
+    "better-call": "^1.1.8",
     "clsx": "^1.2.1",
     "csstype": "^3.0.10",
     "date-fns": "^4.1.0",
@@ -38,7 +39,6 @@
     "eslint-config-next": "^16.0.10",
     "lodash": "^4.17.21",
     "next": "^16.0.10",
-    "next-auth": "^5.0.0-beta.25",
     "next-cloudinary": "^6.16.1",
     "next-superjson-plugin": "^0.5.7",
     "postcss": "8.4.23",

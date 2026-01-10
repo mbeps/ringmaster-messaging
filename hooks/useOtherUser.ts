@@ -1,4 +1,4 @@
-import { useSession } from "next-auth/react";
+import { authClient } from "@/lib/auth-client";
 import { FullConversationType } from "../types";
 import { User } from "@prisma/client";
 
@@ -12,7 +12,7 @@ const useOtherUser = (
   conversation: FullConversationType | { users: User[] }
 ) => {
   // retrieve the current user's session
-  const session = useSession();
+  const session = authClient.useSession();
 
   // gets the current user's email
   const currentUserEmail = session.data?.user?.email;

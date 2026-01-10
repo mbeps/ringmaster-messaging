@@ -9,7 +9,7 @@ import { MdOutlineGroupAdd } from "react-icons/md";
 import ConversationBox from "./ConversationBox";
 import { User } from "@prisma/client";
 import GroupChatModal from "@/components/modals/GroupChatModal";
-import { useSession } from "next-auth/react";
+import { authClient } from "@/lib/auth-client";
 import { pusherClient } from "@/libs/pusher";
 import { find } from "lodash";
 
@@ -27,7 +27,7 @@ interface ConversationListProps {
  */
 function ConversationList({ initialItems, users }: ConversationListProps) {
   // gets the current session
-  const session = useSession();
+  const session = authClient.useSession();
   const [items, setItems] = useState(initialItems);
   const router = useRouter();
   const { conversationId, isOpen } = useConversation();

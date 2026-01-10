@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
-import { useSession } from "next-auth/react";
+import { authClient } from "@/lib/auth-client";
 import clsx from "clsx";
 
 import Avatar from "@/components/Avatar";
@@ -32,7 +32,7 @@ function ConversationBox({ data, selected }: ConversationBoxProps) {
   // get the other user in the conversation
   const otherUser = useOtherUser(data);
   // gets the current session
-  const session = useSession();
+  const session = authClient.useSession();
   const router = useRouter();
 
   // Redirects to the conversation page when the conversation box is clicked

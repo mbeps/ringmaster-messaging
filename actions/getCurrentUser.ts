@@ -1,5 +1,6 @@
-import { auth } from "@/auth";
+import { auth } from "@/lib/auth";
 import prisma from "@/libs/prismadb";
+import { headers } from "next/headers";
 
 /**
  * Gets the current authenticated user with full details from database.
@@ -8,7 +9,9 @@ import prisma from "@/libs/prismadb";
  */
 export default async function getCurrentUser() {
   try {
-    const session = await auth();
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
 
     if (!session?.user?.email) {
       return null;
