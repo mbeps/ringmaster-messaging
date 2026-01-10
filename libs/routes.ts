@@ -11,6 +11,12 @@ export const ROUTES = {
   USERS: "/users",
   CONVERSATIONS: "/conversations",
   CONVERSATION_ID: (id: string) => `/conversations/${id}`,
+  PROFILE: "/profile",
+  PROFILE_ACCOUNT: "/profile/account",
+  PROFILE_SECURITY: "/profile/security",
+  PROFILE_SESSIONS: "/profile/sessions",
+  PROFILE_ACCOUNTS: "/profile/accounts",
+  PROFILE_DANGER: "/profile/danger",
 } as const;
 
 /**
@@ -24,10 +30,11 @@ export const API_ROUTES = {
   MESSAGES: "/api/messages",
   SETTINGS: "/api/settings",
   PUSHER_AUTH: "/api/pusher/auth",
+  ACCOUNT_DELETE: "/api/account/delete",
 } as const;
 
 /**
  * Protected routes that require authentication.
  * Used by middleware to enforce access control.
  */
-export const PROTECTED_ROUTES = [ROUTES.USERS, ROUTES.CONVERSATIONS] as const;
+export const PROTECTED_ROUTES = [ROUTES.USERS, ROUTES.CONVERSATIONS, ROUTES.PROFILE] as const;

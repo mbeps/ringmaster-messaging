@@ -16,6 +16,11 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
   },
+  user: {
+    deleteUser: {
+      enabled: true,
+    },
+  },
   socialProviders: {
     github: {
       clientId: process.env.CLIENT_ID_GITHUB as string,
@@ -27,3 +32,4 @@ export const auth = betterAuth({
     },
   },
 });
+
