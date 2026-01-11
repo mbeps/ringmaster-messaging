@@ -6,7 +6,7 @@ import { HiUser, HiShieldCheck, HiDevicePhoneMobile, HiLink, HiExclamationTriang
 import clsx from "clsx";
 import { ROUTES } from "@/libs/routes";
 
-const profileNavItems = [
+export const profileNavItems = [
   {
     label: "Account",
     href: ROUTES.PROFILE_ACCOUNT,
@@ -48,7 +48,7 @@ function ProfileSidebar() {
   const pathname = usePathname();
 
   return (
-    <nav className="w-64 bg-white border-r min-h-full py-6 px-4">
+    <nav className="hidden md:block w-64 bg-white border-r min-h-full py-6 px-4 flex-col">
       <h2 className="text-lg font-semibold text-gray-900 mb-6 px-3">
         Settings
       </h2>

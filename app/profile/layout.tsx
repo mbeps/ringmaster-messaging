@@ -1,8 +1,7 @@
 import getCurrentUser from "@/actions/getCurrentUser";
 import { redirect } from "next/navigation";
-import ProfileSidebar from "./components/ProfileSidebar";
-import ProfileHeader from "./components/ProfileHeader";
 import { ROUTES } from "@/libs/routes";
+import ProfileLayoutClient from "./components/ProfileLayoutClient";
 
 /**
  * Layout for profile pages.
@@ -19,13 +18,5 @@ export default async function ProfileLayout({
     redirect(ROUTES.AUTH);
   }
 
-  return (
-    <div className="h-full bg-gray-50">
-      <ProfileHeader />
-      <div className="flex h-[calc(100%-64px)]">
-        <ProfileSidebar />
-        <main className="flex-1 overflow-y-auto p-6">{children}</main>
-      </div>
-    </div>
-  );
+  return <ProfileLayoutClient>{children}</ProfileLayoutClient>;
 }
