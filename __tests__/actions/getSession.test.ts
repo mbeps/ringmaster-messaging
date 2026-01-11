@@ -1,23 +1,30 @@
 import { describe, expect, it, vi } from "vitest";
 
-vi.mock("@/auth", () => ({
-  __esModule: true,
-  auth: vi.fn(),
+vi.mock("@/lib/auth", () => ({
+  auth: {
+    api: {
+      getSession: vi.fn(),
+    },
+  },
+}));
+
+vi.mock("next/headers", () => ({
+  headers: vi.fn().mockResolvedValue(new Headers()),
 }));
 
 import getSession from "@/actions/getSession";
-import { auth } from "@/auth";
+import { auth } from "@/lib/auth";
 
-const mockedAuth = auth as unknown as ReturnType<typeof vi.fn>;
+const mockedGetSession = auth.api.getSession as any;
 
 describe("getSession", () => {
-  it("returns whatever auth() resolves with", async () => {
+  it("returns whatever auth.api.getSession() resolves with", async () => {
     const fakeSession = { user: { email: "test@example.com" } };
-    mockedAuth.mockResolvedValue(fakeSession);
+    mockedGetSession.mockResolvedValue(fakeSession);
 
     const result = await getSession();
 
     expect(result).toEqual(fakeSession);
-    expect(mockedAuth).toHaveBeenCalledTimes(1);
+    expect(mockedGetSession).toHaveBeenCalledTimes(1);
   });
 });

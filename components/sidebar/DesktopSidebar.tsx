@@ -1,11 +1,9 @@
 "use client";
 
 import useRoutes from "@/hooks/useRoutes";
-import { useState } from "react";
 import { User } from "@prisma/client";
 import DesktopItem from "./DesktopItem";
-import Avatar from "../Avatar";
-import SettingsModal from "../modals/SettingsModal";
+import ProfileDropdown from "./ProfileDropdown";
 
 interface DesktopSidebarProps {
   currentUser: User;
@@ -17,7 +15,7 @@ interface DesktopSidebarProps {
  *  - User's conversations
  *  - All the contacts
  *  - Log out button
- *  - User's avatar (opens the settings modal)
+ *  - User's avatar (opens a dropdown menu with profile and logout options)
  * The sidebar is displayed on desktop.
  *
  * @param {User} currentUser: current user
@@ -25,18 +23,10 @@ interface DesktopSidebarProps {
  */
 function DesktopSidebar({ currentUser }: DesktopSidebarProps) {
   const routes = useRoutes();
-  // keeps track of the settings modal state
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   return (
-    <>
-      <SettingsModal
-        currentUser={currentUser}
-        isOpen={isSettingsOpen}
-        onClose={() => setIsSettingsOpen(false)}
-      />
-      <div
-        className="
+    <div
+      className="
         hidden 
         lg:fixed 
         lg:inset-y-0 
@@ -44,7 +34,6 @@ function DesktopSidebar({ currentUser }: DesktopSidebarProps) {
         lg:z-40 
         lg:w-20 
         xl:px-6
-        lg:overflow-y-auto 
         lg:bg-white 
         lg:border-r
         lg:pb-4
@@ -52,32 +41,27 @@ function DesktopSidebar({ currentUser }: DesktopSidebarProps) {
         lg:flex-col
         justify-between
       "
-      >
-        <nav className="mt-4 flex flex-col justify-between">
-          <ul role="list" className="flex flex-col items-center space-y-1">
-            {routes.map((item) => (
-              <DesktopItem
-                key={item.label}
-                href={item.href}
-                label={item.label}
-                icon={item.icon}
-                active={item.active}
-                onClick={item.onClick}
-              />
-            ))}
-          </ul>
-        </nav>
-        <nav className="mt-4 flex flex-col justify-between items-center">
-          <div
-            onClick={() => setIsSettingsOpen(true)}
-            className="cursor-pointer hover:opacity-75 transition"
-          >
-            <Avatar user={currentUser} />
-          </div>
-        </nav>
-      </div>
-    </>
+    >
+      <nav className="mt-4 flex flex-col justify-between">
+        <ul role="list" className="flex flex-col items-center space-y-1">
+          {routes.map((item) => (
+            <DesktopItem
+              key={item.label}
+              href={item.href}
+              label={item.label}
+              icon={item.icon}
+              active={item.active}
+              onClick={item.onClick}
+            />
+          ))}
+        </ul>
+      </nav>
+      <nav className="mt-4 flex flex-col justify-between items-center overflow-visible">
+        <ProfileDropdown currentUser={currentUser} />
+      </nav>
+    </div>
   );
-};
+}
 
 export default DesktopSidebar;
+

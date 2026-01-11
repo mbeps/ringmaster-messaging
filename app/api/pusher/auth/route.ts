@@ -1,19 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/auth";
+import { auth } from "@/lib/auth";
 import { pusherServer } from "@/libs/pusher";
 
 /**
  * Handles the authentication process for Pusher.
  * Ensures only authenticated users can subscribe to specific channels.
- * Uses NextAuth v5's auth() function.
+ * Uses Better Auth authentication.
  * 
  * @param request - The request object containing socket_id and channel_name
  * @returns Authorization response for Pusher
  */
 export async function POST(request: NextRequest) {
   try {
-    // Get the user's session using NextAuth v5
-    const session = await auth();
+    // Get the user's session using Better Auth
+    const session = await auth.api.getSession({
+      headers: request.headers,
+    });
 
     // If the user doesn't have a session, return a 401 error
     if (!session?.user?.email) {

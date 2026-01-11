@@ -6,11 +6,10 @@ import React, { useEffect, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import AuthSocialButton from "./AuthSocialButtont";
 import { BsGithub, BsGoogle } from "react-icons/bs";
-import axios from "axios";
 import { toast } from "react-hot-toast";
-import { signIn, useSession } from "next-auth/react";
+import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
-import { ROUTES, API_ROUTES } from "@/libs/routes";
+import { ROUTES } from "@/libs/routes";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema } from "@/schema/LoginSchema";
 import { RegisterSchema } from "@/schema/RegisterSchema";
@@ -23,7 +22,7 @@ type Variant = "LOGIN" | "REGISTER";
  * @returns (JSX.Element)
  */
 function AuthForm() {
-  const session = useSession();
+  const { data: session } = authClient.useSession();
   const router = useRouter();
   const [variant, setVariant] = useState<Variant>("LOGIN");
   const [isLoading, setIsLoading] = useState(false);
@@ -32,10 +31,10 @@ function AuthForm() {
    * If the user is already authenticated, redirect to the users page.
    */
   useEffect(() => {
-    if (session?.status === "authenticated") {
+    if (session) {
       router.push(ROUTES.USERS);
     }
-  }, [session?.status, router]);
+  }, [session, router]);
 
   // Toggles the variant between LOGIN and REGISTER
   const toggleVariant = () => {
@@ -46,7 +45,6 @@ function AuthForm() {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
   } = useForm<FieldValues>({
     resolver: (values, context, options) => {
       const schema = variant === "LOGIN" ? LoginSchema : RegisterSchema;
@@ -62,71 +60,65 @@ function AuthForm() {
   /**
    * Handles the form submission for authentication.
    */
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     setIsLoading(true);
 
     // Register the user
     if (variant === "REGISTER") {
-      axios
-        .post(API_ROUTES.REGISTER, data)
-        .then(() => signIn("credentials", { ...data, redirect: false }))
-        .then((callback) => {
-          if (callback?.ok) {
+      await authClient.signUp.email({
+        email: data.email,
+        password: data.password,
+        name: data.name,
+        callbackURL: ROUTES.USERS,
+        fetchOptions: {
+          onSuccess: () => {
             toast.success("Account created!");
             router.push(ROUTES.USERS);
-          }
-          if (callback?.error) {
-            toast.error("Registration failed");
-          }
-        })
-        .catch((error) => {
-          if (error.response) {
-            toast.error(error.response.data);
-          } else if (error.request) {
-            toast.error("No response from server. Please try again later.");
-          } else {
-            toast.error("Something went wrong");
-          }
-        })
-        .finally(() => setIsLoading(false));
+          },
+          onError: (ctx) => {
+            toast.error(ctx.error.message || "Registration failed");
+          },
+        },
+      });
+      setIsLoading(false);
     }
 
     // Log the user in
     if (variant === "LOGIN") {
-      signIn("credentials", {
-        ...data,
-        redirect: false,
-      })
-        .then((callback) => {
-          if (callback?.error) {
-            toast.error("Invalid credentials!");
-          }
-
-          if (callback?.ok && !callback?.error) {
+      await authClient.signIn.email({
+        email: data.email,
+        password: data.password,
+        callbackURL: ROUTES.USERS,
+        fetchOptions: {
+          onSuccess: () => {
             toast.success("Logged in!");
             router.push(ROUTES.USERS);
-          }
-        })
-        .finally(() => setIsLoading(false));
+          },
+          onError: (ctx) => {
+            toast.error(ctx.error.message || "Invalid credentials!");
+          },
+        },
+      });
+      setIsLoading(false);
     }
   };
 
   /**
    * Handles authentication with third party providers.
-   * Updated for NextAuth v5 - uses callbackUrl for proper redirects
    */
   const socialAction = (action: string) => {
     setIsLoading(true);
 
-    signIn(action, { 
-      callbackUrl: ROUTES.USERS,
-      redirect: true  // Changed to true for OAuth
+    authClient.signIn.social({
+      provider: action as "github" | "google",
+      callbackURL: ROUTES.USERS,
+      fetchOptions: {
+        onError: (ctx) => {
+            toast.error("OAuth authentication failed: " + ctx.error.message);
+        }
+      }
     })
-      .catch((error) => {
-        toast.error("OAuth authentication failed");
-        console.error("OAuth error:", error);
-      })
-      .finally(() => setIsLoading(false));
+    .finally(() => setIsLoading(false));
   };
 
   return (
@@ -214,6 +206,6 @@ function AuthForm() {
       </div>
     </div>
   );
-};
+}
 
 export default AuthForm;
