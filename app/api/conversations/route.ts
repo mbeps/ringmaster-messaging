@@ -127,7 +127,7 @@ export async function POST(request: Request) {
     return NextResponse.json(newConversation);
   } catch (error) {
     if (error instanceof ZodError) {
-      return new NextResponse(error.errors[0].message, { status: 400 });
+      return new NextResponse(error.issues[0].message, { status: 400 });
     }
     return new NextResponse("Internal Error", { status: 500 });
   }
