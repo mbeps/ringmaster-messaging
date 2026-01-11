@@ -6,24 +6,31 @@ vi.mock("@/libs/prismadb", () => ({
   default: mockPrisma,
 }));
 
-vi.mock("@/auth", () => ({
-  __esModule: true,
-  auth: vi.fn(),
+vi.mock("@/lib/auth", () => ({
+  auth: {
+    api: {
+      getSession: vi.fn(),
+    },
+  },
+}));
+
+vi.mock("next/headers", () => ({
+  headers: vi.fn().mockResolvedValue(new Headers()),
 }));
 
 import getCurrentUser from "@/actions/getCurrentUser";
-import { auth } from "@/auth";
+import { auth } from "@/lib/auth";
 
-const mockedAuth = auth as unknown as ReturnType<typeof vi.fn>;
+const mockedGetSession = auth.api.getSession as any;
 
 describe("getCurrentUser", () => {
   beforeEach(() => {
     resetPrismaMocks();
-    mockedAuth.mockReset();
+    mockedGetSession.mockReset();
   });
 
   it("returns null when there is no active session", async () => {
-    mockedAuth.mockResolvedValue(null);
+    mockedGetSession.mockResolvedValue(null);
 
     const result = await getCurrentUser();
 
@@ -32,7 +39,7 @@ describe("getCurrentUser", () => {
   });
 
   it("returns null when prisma cannot find the user", async () => {
-    mockedAuth.mockResolvedValue({ user: { email: "test@example.com" } });
+    mockedGetSession.mockResolvedValue({ user: { email: "test@example.com" } });
     (mockPrisma.user.findUnique as any).mockResolvedValue(null);
 
     const result = await getCurrentUser();
@@ -42,7 +49,7 @@ describe("getCurrentUser", () => {
 
   it("returns the user info when everything succeeds", async () => {
     const mockUser = { id: "user-1", email: "test@example.com" };
-    mockedAuth.mockResolvedValue({ user: { email: "test@example.com" } });
+    mockedGetSession.mockResolvedValue({ user: { email: "test@example.com" } });
     (mockPrisma.user.findUnique as any).mockResolvedValue(mockUser);
 
     const result = await getCurrentUser();
@@ -54,7 +61,7 @@ describe("getCurrentUser", () => {
   });
 
   it("swallows prisma errors and returns null", async () => {
-    mockedAuth.mockResolvedValue({ user: { email: "test@example.com" } });
+    mockedGetSession.mockResolvedValue({ user: { email: "test@example.com" } });
     (mockPrisma.user.findUnique as any).mockRejectedValue(new Error("db"));
 
     const result = await getCurrentUser();
