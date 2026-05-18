@@ -3,6 +3,12 @@
 import useConversation from "@/hooks/useConversation";
 import useRoutes from "@/hooks/useRoutes";
 import MobileItem from "./MobileItem";
+import ProfileDropdown from "./ProfileDropdown";
+import { User } from "@prisma/client";
+
+interface MobileFooterProps {
+  currentUser: User;
+}
 
 /**
  * A footer component displayed at the button allowing the user to navigate through the app.
@@ -13,7 +19,7 @@ import MobileItem from "./MobileItem";
  * The footer is displayed on mobile.
  * @returns (JSX.Element): mobile footer component
  */
-const MobileFooter = () => {
+const MobileFooter = ({ currentUser }: MobileFooterProps) => {
   const routes = useRoutes();
   const { isOpen } = useConversation();
 
@@ -45,6 +51,9 @@ const MobileFooter = () => {
           onClick={route.onClick}
         />
       ))}
+      <div className="w-full flex justify-center items-center py-2.5 m-1">
+        <ProfileDropdown currentUser={currentUser} align="right" />
+      </div>
     </div>
   );
 };
