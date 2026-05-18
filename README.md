@@ -100,6 +100,8 @@ NODE_ENV=development next start
 # Better Auth
 BETTER_AUTH_SECRET=""
 BETTER_AUTH_URL=""
+BETTER_AUTH_TRUSTED_ORIGINS=""
+NEXT_PUBLIC_APP_URL=""
 AUTH_TRUST_HOST=
 ## GitHub
 CLIENT_ID_GITHUB=''
@@ -116,6 +118,10 @@ NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=
 NEXT_PUBLIC_PUSHER_APP_KEY=""
 PUSHER_APP_ID=""
 PUSHER_SECRET=""
+
+# MongoDB Docker Credentials
+MONGO_INITDB_ROOT_USERNAME=""
+MONGO_INITDB_ROOT_PASSWORD=""
 ```
 
 You'll need to fill in the value for each of these variables. Here's how to get each one:
@@ -125,10 +131,13 @@ You'll need to fill in the value for each of these variables. Here's how to get 
 - `AUTH_TRUST_HOST`: The hostname/domain of the app. This is optional as it can be automatically detected but good to have. 
 - `BETTER_AUTH_SECRET`: This can be any random string. It's used for encryption and session hashing.
 - `BETTER_AUTH_URL`: The URL of the application. For local development, this is typically `http://localhost:3000`.
+- `BETTER_AUTH_TRUSTED_ORIGINS`: Comma-separated list of trusted client origins allowed to make requests (e.g., `http://localhost:3000,https://messaging.maruf-bepary.com`).
+- `NEXT_PUBLIC_APP_URL`: Custom domain for the client-side authentication client (defaults to relative host if left empty).
 - `CLIENT_ID_GITHUB` and `CLIENT_SECRET_GITHUB`: You can obtain these by creating a new OAuth app in your GitHub account.
 - `CLIENT_ID_GOOGLE` and `CLIENT_SECRET_GOOGLE`: You can obtain these by setting up a new project in Google Cloud Platform and enabling the Google+ API.
 - `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` and `NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET`: You can get these from your Cloudinary account settings. Make sure the `node` setting is unsigned. 
 - `NEXT_PUBLIC_PUSHER_APP_KEY`, `PUSHER_APP_ID` and `PUSHER_SECRET`: You can get these from your Pusher account.
+- `MONGO_INITDB_ROOT_USERNAME` and `MONGO_INITDB_ROOT_PASSWORD`: Username and password credentials to initialize the MongoDB Docker container.
 
 ## 4. Running Database (Docker)
 This step is necessary if you with to use the Docker image that has been provided. 
