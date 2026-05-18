@@ -13,6 +13,37 @@ export const auth = betterAuth({
           generateId: false,
       },
   },
+  logger: {
+    disabled: false,
+    level: "debug",
+    log: (level: any, message: any, ...args: any[]) => {
+      if (level === "error") {
+        const isRedirect = args.some(
+          (arg: any) =>
+            arg &&
+            typeof arg === "object" &&
+            (arg.status === "FOUND" || arg.statusCode === 302)
+        );
+        if (isRedirect) {
+          return;
+        }
+      }
+      if (level === "error") {
+        console.error(message, ...args);
+      } else if (level === "warn") {
+        console.warn(message, ...args);
+      } else if (level === "info") {
+        console.info(message, ...args);
+      } else {
+        console.log(message, ...args);
+      }
+    },
+  },
+  session: {
+    cookieCache: {
+      enabled: false,
+    },
+  },
   emailAndPassword: {
     enabled: true,
   },

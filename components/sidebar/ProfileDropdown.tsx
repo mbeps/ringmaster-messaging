@@ -8,9 +8,11 @@ import { HiUser, HiArrowLeftOnRectangle } from "react-icons/hi2";
 import Avatar from "../Avatar";
 import { authClient } from "@/lib/auth-client";
 import { ROUTES } from "@/libs/routes";
+import clsx from "clsx";
 
 interface ProfileDropdownProps {
   currentUser: User;
+  align?: "left" | "right";
 }
 
 /**
@@ -20,7 +22,7 @@ interface ProfileDropdownProps {
  * @param currentUser - The current authenticated user
  * @returns Profile dropdown component
  */
-function ProfileDropdown({ currentUser }: ProfileDropdownProps) {
+function ProfileDropdown({ currentUser, align = "left" }: ProfileDropdownProps) {
   const router = useRouter();
 
   const handleLogout = async () => {
@@ -48,13 +50,11 @@ function ProfileDropdown({ currentUser }: ProfileDropdownProps) {
         leaveTo="transform opacity-0 scale-95"
       >
         <MenuItems
-          className="
+          className={clsx(`
             absolute 
-            left-0 
             bottom-full
             mb-2
             w-48 
-            origin-bottom-left 
             rounded-lg 
             bg-white 
             shadow-lg 
@@ -62,7 +62,9 @@ function ProfileDropdown({ currentUser }: ProfileDropdownProps) {
             ring-black/5 
             focus:outline-none
             z-50
-          "
+          `,
+            align === "right" ? "right-0 origin-bottom-right" : "left-0 origin-bottom-left"
+          )}
         >
           <div className="py-1">
             <MenuItem>

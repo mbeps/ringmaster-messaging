@@ -11,6 +11,7 @@ model User {
   id             String    @id @default(auto()) @map("_id") @db.ObjectId
   name           String?
   email          String    @unique
+  emailVerified  Boolean   @default(false)
 
   image          String?
   hashedPassword String?
@@ -50,9 +51,11 @@ model Account {
   providerId            String
   accessToken           String?
   refreshToken          String?
+  idToken               String?
   accessTokenExpiresAt  DateTime?
   refreshTokenExpiresAt DateTime?
   scope                 String?
+  password              String?
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
 
@@ -89,4 +92,15 @@ model Message {
 
   senderId String @db.ObjectId
   sender   User   @relation(fields: [senderId], references: [id], onDelete: Cascade)
+}
+
+model Verification {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
 }

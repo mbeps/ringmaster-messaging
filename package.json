@@ -13,10 +13,7 @@
     "prisma": "prisma",
     "prisma:studio": "prisma studio",
     "prisma:push": "prisma db push",
-    "prisma:generate": "prisma generate",
-    "docker:compose": "docker-compose -f docker/docker-compose.yml up --build",
-    "docker:build": "docker-compose --env-file .env -f docker/docker-compose.yml up --build",
-    "docker:database": "docker-compose --env-file .env -f docker/docker-compose.yml up db"
+    "prisma:generate": "prisma generate"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.9",
@@ -52,7 +49,7 @@
     "react-spinners": "^0.17.0",
     "tailwindcss": "^4.1.14",
     "typescript": "5.7.2",
-    "zod": "^4.3.5",
+    "zod": "^3.24.1",
     "zustand": "^4.3.8"
   },
   "devDependencies": {

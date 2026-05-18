@@ -1,0 +1,57 @@
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: ringmaster-db
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME:-admin}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD:-password123}
+      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE:-ringmaster}
+    volumes:
+      - mongodb_data:/data/db
+    entrypoint:
+      - bash
+      - -c
+      - |
+        # Generate keyfile dynamically inside the container to avoid rootless Podman permission issues on host mounts.
+        openssl rand -base64 756 > /tmp/keyfile
+        chmod 400 /tmp/keyfile
+        chown 999:999 /tmp/keyfile
+        exec docker-entrypoint.sh mongod --replSet rs0 --bind_ip_all --keyFile /tmp/keyfile
+    healthcheck:
+      test: mongosh --quiet -u "${MONGO_INITDB_ROOT_USERNAME:-admin}" -p "${MONGO_INITDB_ROOT_PASSWORD:-password123}" --authenticationDatabase admin --eval "db.adminCommand('ping')"
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+  mongodb-init:
+    image: mongo:7.0
+    container_name: ringmaster-db-init
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    entrypoint:
+      - bash
+      - -c
+      - |
+        # Wait a moment and then initiate the single-node replica set using localhost to allow easy host machine access
+        mongosh -u "${MONGO_INITDB_ROOT_USERNAME:-admin}" -p "${MONGO_INITDB_ROOT_PASSWORD:-password123}" --authenticationDatabase admin --host mongodb --eval '
+          try {
+            rs.initiate({
+              _id: "rs0",
+              members: [{ _id: 0, host: "localhost:27017" }]
+            });
+            print("Replica set initiated successfully with host localhost:27017");
+          } catch (e) {
+            if (e.message.includes("already initialized")) {
+              print("Replica set already initialized.");
+            } else {
+              throw e;
+            }
+          }
+        '
+
+volumes:
+  mongodb_data:
