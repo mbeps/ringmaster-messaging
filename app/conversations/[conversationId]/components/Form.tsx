@@ -49,7 +49,7 @@ function Form() {
    * @param data (FieldValues): data from the form
    */
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    setValue("message", "", { shouldValidate: true }); // once sent clear message input and re-render
+    setValue("message", ""); // once sent clear message input
     axios.post(API_ROUTES.MESSAGES, {
       ...data,
       conversationId: conversationId,

@@ -15,9 +15,8 @@ describe("libs/prismadb", () => {
     vi.resetModules();
     PrismaClientMock.mockClear();
     prismaInstances.length = 0;
-    // @ts-expect-error - tests manage the prisma global
-    delete globalThis.prisma;
-    process.env.NODE_ENV = "test";
+    delete (globalThis as any).prisma;
+    vi.stubEnv("NODE_ENV", "test");
   });
 
   it("creates and caches a prisma client in non-production environments", async () => {
@@ -40,7 +39,7 @@ describe("libs/prismadb", () => {
   });
 
   it("does not leak the client to the global scope in production", async () => {
-    process.env.NODE_ENV = "production";
+    vi.stubEnv("NODE_ENV", "production");
     const { default: client } = await import("@/libs/prismadb");
 
     expect(client).toBe(prismaInstances[0]);
