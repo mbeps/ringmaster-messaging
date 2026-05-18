@@ -5,6 +5,9 @@ import prisma from "@/libs/prismadb";
 export const auth = betterAuth({
   secret: process.env.BETTER_AUTH_SECRET!,
   baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
+  trustedOrigins: process.env.BETTER_AUTH_TRUSTED_ORIGINS
+    ? process.env.BETTER_AUTH_TRUSTED_ORIGINS.split(",")
+    : [],
   database: prismaAdapter(prisma, {
     provider: "mongodb",
   }),
