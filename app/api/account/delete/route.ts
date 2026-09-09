@@ -1,7 +1,7 @@
-import { auth } from "@/lib/auth";
-import prisma from "@/libs/prismadb";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
+import { auth } from "@/lib/auth";
+import prisma from "@/libs/prismadb";
 
 /**
  * DELETE handler for deleting a user account and all associated data.
@@ -96,7 +96,7 @@ export async function DELETE() {
     console.error("Error deleting account:", error);
     return NextResponse.json(
       { error: "Failed to delete account" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

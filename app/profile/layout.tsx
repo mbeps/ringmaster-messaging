@@ -1,5 +1,5 @@
-import getCurrentUser from "@/actions/getCurrentUser";
 import { redirect } from "next/navigation";
+import getCurrentUser from "@/actions/getCurrentUser";
 import { ROUTES } from "@/libs/routes";
 import ProfileLayoutClient from "./components/ProfileLayoutClient";
 

@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
+import { ZodError } from "zod";
 import getCurrentUser from "@/actions/getCurrentUser";
 import prisma from "@/libs/prismadb";
 import { pusherServer } from "@/libs/pusher";
 import { MessageSchema } from "@/schema/MessageSchema";
-import { ZodError } from "zod";
 
 /**
  * A post request route to create a new message.
@@ -79,7 +79,7 @@ export async function POST(request: Request) {
       updatedConversation.messages[updatedConversation.messages.length - 1];
 
     // updates the status of the last message to seen and notifies the other user in real time
-    updatedConversation.users.map((user) => {
+    updatedConversation.users.forEach((user) => {
       pusherServer.trigger(user.email!, "conversation:update", {
         id: conversationId,
         messages: [lastMessage],

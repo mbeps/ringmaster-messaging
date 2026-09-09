@@ -1,15 +1,15 @@
 "use client";
 
-import useConversation from "@/hooks/useConversation";
-import axios from "axios";
-import React, { useEffect } from "react";
-import { useForm, FieldValues, SubmitHandler } from "react-hook-form";
-import { HiPaperAirplane, HiPhoto } from "react-icons/hi2";
-import MessageInput from "./MessageInput";
-import { CldUploadButton } from "next-cloudinary";
-import { API_ROUTES } from "@/libs/routes";
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import { CldUploadButton } from "next-cloudinary";
+import { useEffect } from "react";
+import { type FieldValues, type SubmitHandler, useForm } from "react-hook-form";
+import { HiPaperAirplane, HiPhoto } from "react-icons/hi2";
+import useConversation from "@/hooks/useConversation";
+import { API_ROUTES } from "@/libs/routes";
 import { MessageSchema } from "@/schema/MessageSchema";
+import MessageInput from "./MessageInput";
 
 /**
  * Form component which contains the message input, send button and image upload button.
@@ -37,7 +37,7 @@ function Form() {
       conversationId: conversationId,
     },
   });
-  
+
   useEffect(() => {
     setValue("conversationId", conversationId);
   }, [conversationId, setValue]);
@@ -71,19 +71,7 @@ function Form() {
   };
 
   return (
-    <div
-      className="
-        py-4 
-        px-4 
-        bg-white 
-        border-t 
-        flex 
-        items-center 
-        gap-2 
-        lg:gap-4 
-        w-full
-      "
-    >
+    <div className="flex w-full items-center gap-2 border-t bg-white px-4 py-4 lg:gap-4">
       <CldUploadButton
         options={{ maxFiles: 1 }}
         onSuccess={handleUpload}
@@ -93,7 +81,7 @@ function Form() {
       </CldUploadButton>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex items-center gap-2 lg:gap-4 w-full"
+        className="flex w-full items-center gap-2 lg:gap-4"
       >
         <MessageInput
           id="message"
@@ -104,19 +92,12 @@ function Form() {
         />
         <button
           type="submit"
-          className="
-            rounded-full 
-            p-2 
-            bg-red-500 
-            cursor-pointer 
-            hover:bg-red-600 
-            transition
-          "
+          className="cursor-pointer rounded-full bg-red-500 p-2 transition hover:bg-red-600"
         >
           <HiPaperAirplane size={18} className="text-white" />
         </button>
       </form>
     </div>
   );
-};
+}
 export default Form;

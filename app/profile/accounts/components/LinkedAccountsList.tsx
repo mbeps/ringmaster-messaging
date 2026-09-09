@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { FaGithub, FaGoogle } from "react-icons/fa";
-import { HiTrash, HiPlus } from "react-icons/hi2";
+import { HiPlus, HiTrash } from "react-icons/hi2";
 import { authClient } from "@/lib/auth-client";
 import { ROUTES } from "@/libs/routes";
 
@@ -36,7 +36,7 @@ function LinkedAccountsList() {
   const [isLoading, setIsLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
 
-  const fetchAccounts = async () => {
+  const fetchAccounts = useCallback(async () => {
     setIsLoading(true);
     try {
       const { data, error } = await authClient.listAccounts();
@@ -45,16 +45,16 @@ function LinkedAccountsList() {
         return;
       }
       setAccounts(data || []);
-    } catch (error) {
+    } catch (_error) {
       toast.error("Failed to load accounts");
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchAccounts();
-  }, []);
+  }, [fetchAccounts]);
 
   const handleLinkAccount = async (providerId: string) => {
     setActionLoading(providerId);
@@ -63,7 +63,7 @@ function LinkedAccountsList() {
         provider: providerId as "github" | "google",
         callbackURL: ROUTES.PROFILE_ACCOUNTS,
       });
-    } catch (error) {
+    } catch (_error) {
       toast.error("Failed to link account");
       setActionLoading(null);
     }
@@ -89,7 +89,7 @@ function LinkedAccountsList() {
 
       toast.success("Account unlinked successfully");
       fetchAccounts();
-    } catch (error) {
+    } catch (_error) {
       toast.error("Something went wrong");
     } finally {
       setActionLoading(null);
@@ -102,9 +102,7 @@ function LinkedAccountsList() {
 
   if (isLoading) {
     return (
-      <div className="text-center py-8 text-gray-500">
-        Loading accounts...
-      </div>
+      <div className="py-8 text-center text-gray-500">Loading accounts...</div>
     );
   }
 
@@ -117,15 +115,15 @@ function LinkedAccountsList() {
         return (
           <div
             key={provider.id}
-            className="flex items-center justify-between p-4 border rounded-lg bg-gray-50"
+            className="flex items-center justify-between rounded-lg border bg-gray-50 p-4"
           >
             <div className="flex items-center gap-4">
-              <div className={`p-2 rounded-lg ${provider.bgColor}`}>
+              <div className={`rounded-lg p-2 ${provider.bgColor}`}>
                 <provider.icon className={`h-6 w-6 ${provider.color}`} />
               </div>
               <div>
                 <p className="font-medium text-gray-900">{provider.name}</p>
-                <p className="text-sm text-gray-500">
+                <p className="text-gray-500 text-sm">
                   {isLinked ? "Connected" : "Not connected"}
                 </p>
               </div>
@@ -135,12 +133,12 @@ function LinkedAccountsList() {
               <button
                 onClick={() => handleUnlinkAccount(provider.id)}
                 disabled={isCurrentLoading || accounts.length <= 1}
-                className="
-                  flex items-center gap-2 px-3 py-2 text-sm font-medium
-                  text-red-600 hover:bg-red-50 rounded-lg transition
-                  disabled:opacity-50 disabled:cursor-not-allowed
-                "
-                title={accounts.length <= 1 ? "Cannot unlink the only account" : "Unlink account"}
+                className="flex items-center gap-2 rounded-lg px-3 py-2 font-medium text-red-600 text-sm transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
+                title={
+                  accounts.length <= 1
+                    ? "Cannot unlink the only account"
+                    : "Unlink account"
+                }
               >
                 <HiTrash className="h-4 w-4" />
                 Unlink
@@ -149,11 +147,7 @@ function LinkedAccountsList() {
               <button
                 onClick={() => handleLinkAccount(provider.id)}
                 disabled={isCurrentLoading}
-                className="
-                  flex items-center gap-2 px-3 py-2 text-sm font-medium
-                  text-gray-700 hover:bg-gray-100 rounded-lg transition
-                  disabled:opacity-50
-                "
+                className="flex items-center gap-2 rounded-lg px-3 py-2 font-medium text-gray-700 text-sm transition hover:bg-gray-100 disabled:opacity-50"
               >
                 <HiPlus className="h-4 w-4" />
                 Link
@@ -163,7 +157,7 @@ function LinkedAccountsList() {
         );
       })}
 
-      <p className="text-xs text-gray-500 mt-4">
+      <p className="mt-4 text-gray-500 text-xs">
         Linked accounts can be used to sign in to your account.
       </p>
     </div>

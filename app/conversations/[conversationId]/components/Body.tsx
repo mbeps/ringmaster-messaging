@@ -1,13 +1,13 @@
 "use client";
 
 import axios from "axios";
+import { find } from "lodash";
 import { useEffect, useRef, useState } from "react";
 import useConversation from "@/hooks/useConversation";
-import { FullMessageType } from "@/types";
-import MessageBox from "./MessageBox";
 import { pusherClient } from "@/libs/pusher";
-import { find } from "lodash";
 import { API_ROUTES } from "@/libs/routes";
+import type { FullMessageType } from "@/types";
+import MessageBox from "./MessageBox";
 
 interface BodyProps {
   initialMessages: FullMessageType[];
@@ -64,7 +64,7 @@ function Body({ initialMessages }: BodyProps) {
           }
 
           return currentMessage;
-        })
+        }),
       );
     };
 
@@ -90,6 +90,6 @@ function Body({ initialMessages }: BodyProps) {
       <div className="pt-24" ref={bottomRef} />
     </div>
   );
-};
+}
 
 export default Body;

@@ -11,9 +11,9 @@ const useConversation = () => {
   const params = useParams();
 
   // Retrieve the conversation ID from the URL parameters
-  const conversationId = !params?.conversationId 
-    ? "" 
-    : params.conversationId as string;
+  const conversationId = !params?.conversationId
+    ? ""
+    : (params.conversationId as string);
 
   // Indicates whether a conversation is open (based on the existence of a conversation ID)
   const isOpen = !!conversationId;

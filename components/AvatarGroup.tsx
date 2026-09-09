@@ -1,6 +1,6 @@
 "use client";
 
-import { User } from "@prisma/client";
+import type { User } from "@prisma/client";
 import Image from "next/image";
 
 interface AvatarGroupProps {
@@ -26,14 +26,7 @@ function AvatarGroup({ users = [] }: AvatarGroupProps) {
       {slicedUsers.map((user, index) => (
         <div
           key={user.id}
-          className={`
-            absolute
-            inline-block 
-            rounded-full 
-            overflow-hidden
-            h-[21px]
-            w-[21px]
-            ${positionMap[index as keyof typeof positionMap]}
+          className={`absolute inline-block h-[21px] w-[21px] overflow-hidden rounded-full ${positionMap[index as keyof typeof positionMap]}
           `}
         >
           <Image
@@ -45,6 +38,6 @@ function AvatarGroup({ users = [] }: AvatarGroupProps) {
       ))}
     </div>
   );
-};
+}
 
 export default AvatarGroup;

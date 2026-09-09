@@ -17,24 +17,10 @@ interface SelectProps {
  * @param param0 : SelectProps
  * @returns (JSX.Element): A select input
  */
-function Select({
-  label,
-  value,
-  onChange,
-  options,
-  disabled,
-}: SelectProps) {
+function Select({ label, value, onChange, options, disabled }: SelectProps) {
   return (
     <div className="z-100">
-      <label
-        className="
-          block 
-          text-sm 
-          font-medium 
-          leading-6 
-          text-gray-900
-        "
-      >
+      <label className="block font-medium text-gray-900 text-sm leading-6">
         {label}
       </label>
       <div className="mt-2">
@@ -55,6 +41,6 @@ function Select({
       </div>
     </div>
   );
-};
+}
 
 export default Select;

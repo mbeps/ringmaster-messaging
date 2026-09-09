@@ -1,8 +1,8 @@
 import { usePathname } from "next/navigation";
 import { HiChat } from "react-icons/hi";
 import { HiUsers } from "react-icons/hi2";
-import useConversation from "./useConversation";
 import { ROUTES } from "@/libs/routes";
+import useConversation from "./useConversation";
 
 export interface SidebarRoute {
   label: string;

@@ -1,19 +1,18 @@
 "use client";
 
-import axios from "axios";
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
-import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import { User } from "@prisma/client";
-
-import Input from "../inputs/Input";
-import Modal from "./Modal";
-import Button from "../Button";
-import { toast } from "react-hot-toast";
-import Select from "../inputs/Select";
-import { API_ROUTES } from "@/libs/routes";
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { User } from "@prisma/client";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { type FieldValues, type SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
+import { API_ROUTES } from "@/libs/routes";
 import { ConversationSchema } from "@/schema/ConversationSchema";
+import Button from "../Button";
+import Input from "../inputs/Input";
+import Select from "../inputs/Select";
+import Modal from "./Modal";
 
 interface GroupChatModalProps {
   isOpen?: boolean;
@@ -29,11 +28,7 @@ interface GroupChatModalProps {
  * @param param0 { isOpen, onClose, users}
  * @returns (JSX.Element)
  */
-function GroupChatModal({
-  isOpen,
-  onClose,
-  users = [],
-}: GroupChatModalProps) {
+function GroupChatModal({ isOpen, onClose, users = [] }: GroupChatModalProps) {
   const router = useRouter();
   // loading creation of group chat
   const [isLoading, setIsLoading] = useState(false);
@@ -80,18 +75,11 @@ function GroupChatModal({
     <Modal isOpen={isOpen} onClose={onClose}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="space-y-12">
-          <div className="border-b border-gray-900/10 pb-12">
-            <h2
-              className="
-                text-base 
-                font-semibold 
-                leading-7 
-                text-gray-900
-              "
-            >
+          <div className="border-gray-900/10 border-b pb-12">
+            <h2 className="font-semibold text-base text-gray-900 leading-7">
               Create a group chat
             </h2>
-            <p className="mt-1 text-sm leading-6 text-gray-600">
+            <p className="mt-1 text-gray-600 text-sm leading-6">
               Create a chat with more than 2 people.
             </p>
             <div className="mt-10 flex flex-col gap-y-8">
@@ -136,6 +124,6 @@ function GroupChatModal({
       </form>
     </Modal>
   );
-};
+}
 
 export default GroupChatModal;

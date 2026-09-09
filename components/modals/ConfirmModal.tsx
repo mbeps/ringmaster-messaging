@@ -1,14 +1,14 @@
 "use client";
 
-import React, { useState } from "react";
-import { Dialog, DialogTitle } from "@headlessui/react";
-import { FiAlertTriangle } from "react-icons/fi";
+import { DialogTitle } from "@headlessui/react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import Modal from "@/components/modals/Modal";
-import Button from "@/components/Button";
-import useConversation from "@/hooks/useConversation";
+import { useState } from "react";
 import { toast } from "react-hot-toast";
+import { FiAlertTriangle } from "react-icons/fi";
+import Button from "@/components/Button";
+import Modal from "@/components/modals/Modal";
+import useConversation from "@/hooks/useConversation";
 import { API_ROUTES, ROUTES } from "@/libs/routes";
 
 interface ConfirmModalProps {
@@ -50,44 +50,21 @@ function ConfirmModal({ isOpen, onClose }: ConfirmModalProps) {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <div className="sm:flex sm:items-start">
-        <div
-          className="
-            mx-auto 
-            flex 
-            h-12 
-            w-12 
-            shrink-0 
-            items-center 
-            justify-center 
-            rounded-full 
-            bg-red-100 
-            sm:mx-0 
-            sm:h-10 
-            sm:w-10
-          "
-        >
+        <div className="mx-auto flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
           <FiAlertTriangle
             className="h-6 w-6 text-red-600"
             aria-hidden="true"
           />
         </div>
-        <div
-          className="
-            mt-3 
-            text-center 
-            sm:ml-4 
-            sm:mt-0 
-            sm:text-left
-          "
-        >
+        <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
           <DialogTitle
             as="h3"
-            className="text-base font-semibold leading-6 text-gray-900"
+            className="font-semibold text-base text-gray-900 leading-6"
           >
             Delete conversation
           </DialogTitle>
           <div className="mt-2">
-            <p className="text-sm text-gray-500">
+            <p className="text-gray-500 text-sm">
               Are you sure you want to delete this conversation? This action
               cannot be undone.
             </p>
@@ -104,6 +81,6 @@ function ConfirmModal({ isOpen, onClose }: ConfirmModalProps) {
       </div>
     </Modal>
   );
-};
+}
 
 export default ConfirmModal;

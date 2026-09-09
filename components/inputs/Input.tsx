@@ -1,7 +1,11 @@
 "use client";
 
 import clsx from "clsx";
-import { FieldErrors, FieldValues, UseFormRegister } from "react-hook-form";
+import type {
+  FieldErrors,
+  FieldValues,
+  UseFormRegister,
+} from "react-hook-form";
 
 interface InputProps {
   label: string; // label for the input
@@ -32,13 +36,7 @@ function Input({
     <div>
       <label
         htmlFor={id}
-        className="
-          block 
-          text-sm 
-          font-medium 
-          leading-6 
-          text-gray-900
-        "
+        className="block font-medium text-gray-900 text-sm leading-6"
       >
         {label}
       </label>
@@ -50,37 +48,19 @@ function Input({
           disabled={disabled}
           {...register(id, { required })}
           className={clsx(
-            `
-            form-input
-            block 
-            w-full 
-            rounded-lg 
-            border-0 
-            py-1.5 
-            px-2
-            text-gray-900 
-            shadow-xs 
-            ring-1 
-            ring-inset 
-            ring-gray-300 
-            placeholder:text-gray-400 
-            focus:ring-2 
-            focus:ring-inset 
-            focus:ring-red-400 
-            sm:text-sm 
-            sm:leading-6`,
+            `form-input block w-full rounded-lg border-0 px-2 py-1.5 text-gray-900 shadow-xs ring-1 ring-gray-300 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-red-400 focus:ring-inset sm:text-sm sm:leading-6`,
             errors[id] && "focus:ring-rose-900",
-            disabled && "opacity-50 cursor-default"
+            disabled && "cursor-default opacity-50",
           )}
         />
       </div>
       {errors[id] && (
-        <span className="text-rose-500 text-sm mt-1">
+        <span className="mt-1 text-rose-500 text-sm">
           {errors[id]?.message as string}
         </span>
       )}
     </div>
   );
-};
+}
 
 export default Input;

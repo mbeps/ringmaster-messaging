@@ -1,7 +1,12 @@
 "use client";
 
-import React, { Fragment } from "react";
-import { Dialog, DialogPanel, Transition, TransitionChild } from "@headlessui/react";
+import {
+  Dialog,
+  DialogPanel,
+  Transition,
+  TransitionChild,
+} from "@headlessui/react";
+import { Fragment } from "react";
 import { ClipLoader } from "react-spinners";
 
 /**
@@ -25,16 +30,7 @@ const LoadingModal = () => {
         </TransitionChild>
 
         <div className="fixed inset-0 z-10 overflow-y-auto">
-          <div
-            className="
-              flex 
-              min-h-full 
-              items-center 
-              justify-center 
-              p-4 
-              text-center 
-            "
-          >
+          <div className="flex min-h-full items-center justify-center p-4 text-center">
             <TransitionChild
               as={Fragment}
               enter="ease-out duration-300"

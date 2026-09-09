@@ -1,5 +1,5 @@
-import getCurrentUser from "@/actions/getCurrentUser";
 import { NextResponse } from "next/server";
+import getCurrentUser from "@/actions/getCurrentUser";
 
 import prisma from "@/libs/prismadb";
 import { pusherServer } from "@/libs/pusher";
@@ -17,8 +17,8 @@ interface IParams {
  * @returns (NextResponse): response indicating the conversation was deleted or an error
  */
 export async function DELETE(
-  request: Request,
-  { params }: { params: Promise<IParams> }
+  _request: Request,
+  { params }: { params: Promise<IParams> },
 ) {
   try {
     // extract the conversation ID from the params
@@ -62,13 +62,13 @@ export async function DELETE(
         pusherServer.trigger(
           user.email,
           "conversation:remove",
-          existingConversation
+          existingConversation,
         );
       }
     });
 
     return NextResponse.json(deletedConversation);
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json(null);
   }
 }

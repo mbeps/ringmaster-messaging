@@ -1,17 +1,17 @@
 "use client";
 
-import useConversation from "@/hooks/useConversation";
-import { FullConversationType } from "@/types";
+import type { User } from "@prisma/client";
 import clsx from "clsx";
+import { find } from "lodash";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { MdOutlineGroupAdd } from "react-icons/md";
-import ConversationBox from "./ConversationBox";
-import { User } from "@prisma/client";
 import GroupChatModal from "@/components/modals/GroupChatModal";
+import useConversation from "@/hooks/useConversation";
 import { authClient } from "@/lib/auth-client";
 import { pusherClient } from "@/libs/pusher";
-import { find } from "lodash";
+import type { FullConversationType } from "@/types";
+import ConversationBox from "./ConversationBox";
 
 // the initial data will be updated using pusher in real time
 interface ConversationListProps {
@@ -29,7 +29,7 @@ function ConversationList({ initialItems, users }: ConversationListProps) {
   // gets the current session
   const session = authClient.useSession();
   const [items, setItems] = useState(initialItems);
-  const router = useRouter();
+  const _router = useRouter();
   const { conversationId, isOpen } = useConversation();
   const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
 
@@ -68,7 +68,7 @@ function ConversationList({ initialItems, users }: ConversationListProps) {
           }
 
           return currentConversation;
-        })
+        }),
       );
     };
 
@@ -103,7 +103,7 @@ function ConversationList({ initialItems, users }: ConversationListProps) {
     pusherClient.bind("conversation:update", updateHandler);
     pusherClient.bind("conversation:new", newHandler);
     pusherClient.bind("conversation:remove", removeHandler);
-  }, [pusherKey, router]);
+  }, [pusherKey]);
 
   return (
     <>
@@ -114,35 +114,16 @@ function ConversationList({ initialItems, users }: ConversationListProps) {
       />
       <aside
         className={clsx(
-          `
-        fixed 
-        inset-y-0 
-        pb-20
-        lg:pb-0
-        lg:left-20 
-        lg:w-80 
-        lg:block
-        overflow-y-auto 
-        border-r 
-        border-gray-200 
-      `,
-          isOpen ? "hidden" : "block w-full left-0"
+          `fixed inset-y-0 overflow-y-auto border-gray-200 border-r pb-20 lg:left-20 lg:block lg:w-80 lg:pb-0`,
+          isOpen ? "hidden" : "left-0 block w-full",
         )}
       >
         <div className="px-5">
-          <div className="flex justify-between mb-4 pt-4">
-            <div className="text-2xl font-bold text-neutral-800">Messages</div>
+          <div className="mb-4 flex justify-between pt-4">
+            <div className="font-bold text-2xl text-neutral-800">Messages</div>
             <div
               onClick={() => setIsGroupModalOpen(true)}
-              className="
-                rounded-md 
-                p-2 
-                bg-gray-100 
-                text-gray-600 
-                cursor-pointer 
-                hover:opacity-75 
-                transition
-              "
+              className="cursor-pointer rounded-md bg-gray-100 p-2 text-gray-600 transition hover:opacity-75"
             >
               <MdOutlineGroupAdd size={20} />
             </div>
@@ -160,6 +141,6 @@ function ConversationList({ initialItems, users }: ConversationListProps) {
       </aside>
     </>
   );
-};
+}
 
 export default ConversationList;

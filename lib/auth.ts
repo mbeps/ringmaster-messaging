@@ -12,9 +12,9 @@ export const auth = betterAuth({
     provider: "mongodb",
   }),
   advanced: {
-      database: {
-          generateId: false,
-      },
+    database: {
+      generateId: false,
+    },
   },
   logger: {
     disabled: false,
@@ -25,7 +25,7 @@ export const auth = betterAuth({
           (arg: any) =>
             arg &&
             typeof arg === "object" &&
-            (arg.status === "FOUND" || arg.statusCode === 302)
+            (arg.status === "FOUND" || arg.statusCode === 302),
         );
         if (isRedirect) {
           return;
@@ -66,4 +66,3 @@ export const auth = betterAuth({
     },
   },
 });
-

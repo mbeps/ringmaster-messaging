@@ -1,11 +1,16 @@
 "use client";
 
-import { Fragment } from "react";
+import {
+  Dialog,
+  DialogPanel,
+  Transition,
+  TransitionChild,
+} from "@headlessui/react";
+import clsx from "clsx";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Dialog, DialogPanel, Transition, TransitionChild } from "@headlessui/react";
+import { Fragment } from "react";
 import { HiXMark } from "react-icons/hi2";
-import clsx from "clsx";
 import { profileNavItems } from "./ProfileSidebar";
 
 interface MobileProfileSidebarProps {
@@ -54,7 +59,7 @@ export default function MobileProfileSidebar({
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
               >
-                <div className="absolute left-full top-0 flex w-16 justify-center pt-5">
+                <div className="absolute top-0 left-full flex w-16 justify-center pt-5">
                   <button
                     type="button"
                     className="-m-2.5 p-2.5 text-gray-200 hover:text-white"
@@ -65,10 +70,12 @@ export default function MobileProfileSidebar({
                   </button>
                 </div>
               </TransitionChild>
-              
+
               <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-4">
                 <div className="flex h-16 shrink-0 items-center">
-                  <h2 className="text-lg font-semibold text-gray-900">Settings</h2>
+                  <h2 className="font-semibold text-gray-900 text-lg">
+                    Settings
+                  </h2>
                 </div>
                 <nav className="flex flex-1 flex-col">
                   <ul role="list" className="flex flex-1 flex-col gap-y-7">
@@ -77,18 +84,26 @@ export default function MobileProfileSidebar({
                         {profileNavItems.map((item) => {
                           const isActive = pathname === item.href;
                           const isDanger = "danger" in item && item.danger;
-                          
+
                           return (
                             <li key={item.href}>
                               <Link
                                 href={item.href}
                                 onClick={onClose}
                                 className={clsx(
-                                  "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold",
-                                  isActive && !isDanger && "bg-gray-50 text-red-600",
-                                  isActive && isDanger && "bg-rose-50 text-rose-600",
-                                  !isActive && isDanger && "text-rose-600 hover:bg-rose-50",
-                                  !isActive && !isDanger && "text-gray-700 hover:text-red-600 hover:bg-gray-50"
+                                  "group flex gap-x-3 rounded-md p-2 font-semibold text-sm leading-6",
+                                  isActive &&
+                                    !isDanger &&
+                                    "bg-gray-50 text-red-600",
+                                  isActive &&
+                                    isDanger &&
+                                    "bg-rose-50 text-rose-600",
+                                  !isActive &&
+                                    isDanger &&
+                                    "text-rose-600 hover:bg-rose-50",
+                                  !isActive &&
+                                    !isDanger &&
+                                    "text-gray-700 hover:bg-gray-50 hover:text-red-600",
                                 )}
                               >
                                 <item.icon
@@ -96,7 +111,9 @@ export default function MobileProfileSidebar({
                                     "h-6 w-6 shrink-0",
                                     isActive && !isDanger && "text-red-600",
                                     isDanger && "text-rose-600",
-                                    !isActive && !isDanger && "text-gray-400 group-hover:text-red-600"
+                                    !isActive &&
+                                      !isDanger &&
+                                      "text-gray-400 group-hover:text-red-600",
                                   )}
                                   aria-hidden="true"
                                 />

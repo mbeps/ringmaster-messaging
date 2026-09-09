@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { pusherServer } from "@/libs/pusher";
 
@@ -6,7 +6,7 @@ import { pusherServer } from "@/libs/pusher";
  * Handles the authentication process for Pusher.
  * Ensures only authenticated users can subscribe to specific channels.
  * Uses Better Auth authentication.
- * 
+ *
  * @param request - The request object containing socket_id and channel_name
  * @returns Authorization response for Pusher
  */
@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
     // Parse the request body
     const body = await request.text();
     const params = new URLSearchParams(body);
-    
+
     // Get the socket ID and channel name from the request body
     const socketId = params.get("socket_id");
     const channelName = params.get("channel_name");
@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
     const authResponse = pusherServer.authorizeChannel(
       socketId,
       channelName,
-      data
+      data,
     );
 
     return NextResponse.json(authResponse);

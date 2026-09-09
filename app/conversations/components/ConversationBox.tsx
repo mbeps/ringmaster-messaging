@@ -1,15 +1,14 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { format } from "date-fns";
-import { authClient } from "@/lib/auth-client";
 import clsx from "clsx";
-
+import { format } from "date-fns";
+import { useRouter } from "next/navigation";
 import Avatar from "@/components/Avatar";
-import useOtherUser from "@/hooks/useOtherUser";
-import { FullConversationType } from "@/types";
 import AvatarGroup from "@/components/AvatarGroup";
+import useOtherUser from "@/hooks/useOtherUser";
+import { authClient } from "@/lib/auth-client";
 import { ROUTES } from "@/libs/routes";
+import type { FullConversationType } from "@/types";
 
 interface ConversationBoxProps {
   data: FullConversationType;
@@ -49,9 +48,10 @@ function ConversationBox({ data, selected }: ConversationBoxProps) {
 
   // Marks the last message as seen if the current user has seen it
   const seenArray = lastMessage?.seen || [];
-  const hasSeen = lastMessage && userEmail
-    ? seenArray.filter((user) => user.email === userEmail).length !== 0
-    : false;
+  const hasSeen =
+    lastMessage && userEmail
+      ? seenArray.filter((user) => user.email === userEmail).length !== 0
+      : false;
 
   // Gets the text of the last message to be displayed in the conversation box
   let lastMessageText = "No Conversation Yet";
@@ -65,19 +65,8 @@ function ConversationBox({ data, selected }: ConversationBoxProps) {
     <div
       onClick={handleClick}
       className={clsx(
-        `
-        w-full 
-        relative 
-        flex 
-        items-center 
-        space-x-3 
-        p-3 
-        hover:bg-neutral-100
-        rounded-lg
-        transition
-        cursor-pointer
-        `,
-        selected ? "bg-neutral-100" : "bg-white"
+        `relative flex w-full cursor-pointer items-center space-x-3 rounded-lg p-3 transition hover:bg-neutral-100`,
+        selected ? "bg-neutral-100" : "bg-white",
       )}
     >
       {data.isGroup ? (
@@ -89,30 +78,21 @@ function ConversationBox({ data, selected }: ConversationBoxProps) {
       <div className="min-w-0 flex-1">
         <div className="focus:outline-hidden">
           <span className="absolute inset-0" aria-hidden="true" />
-          <div className="flex justify-between items-center mb-1">
-            <p className="text-md font-medium text-gray-900">
+          <div className="mb-1 flex items-center justify-between">
+            <p className="font-medium text-gray-900 text-md">
               {/* Use group chat name or name of the user (if single user conversation) */}
               {data.name || otherUser.name}
             </p>
             {lastMessage?.createdAt && (
-              <p
-                className="
-                  text-xs 
-                  text-gray-400 
-                  font-light
-                "
-              >
+              <p className="font-light text-gray-400 text-xs">
                 {format(new Date(lastMessage.createdAt), "p")}
               </p>
             )}
           </div>
           <p
             className={clsx(
-              `
-              truncate 
-              text-sm
-              `,
-              hasSeen ? "text-gray-500" : "text-black font-medium"
+              `truncate text-sm`,
+              hasSeen ? "text-gray-500" : "font-medium text-black",
             )}
           >
             {lastMessageText}
@@ -121,6 +101,6 @@ function ConversationBox({ data, selected }: ConversationBoxProps) {
       </div>
     </div>
   );
-};
+}
 
 export default ConversationBox;

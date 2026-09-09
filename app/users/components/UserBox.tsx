@@ -1,7 +1,7 @@
+import type { User } from "@prisma/client";
 import axios from "axios";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { User } from "@prisma/client";
+import { useState } from "react";
 
 import Avatar from "@/components/Avatar";
 import LoadingModal from "@/components/modals/LoadingModal";
@@ -39,32 +39,20 @@ function UserBox({ data }: UserBoxProps) {
       {isLoading && <LoadingModal />}
       <div
         onClick={handleClick}
-        className="
-          w-full 
-          relative 
-          flex 
-          items-center 
-          space-x-3 
-          bg-white 
-          p-3 
-          hover:bg-neutral-100
-          rounded-lg
-          transition
-          cursor-pointer
-        "
+        className="relative flex w-full cursor-pointer items-center space-x-3 rounded-lg bg-white p-3 transition hover:bg-neutral-100"
       >
         <Avatar user={data} />
         <div className="min-w-0 flex-1">
           <div className="focus:outline-hidden">
             <span className="absolute inset-0" aria-hidden="true" />
-            <div className="flex justify-between items-center mb-1">
-              <p className="text-sm font-medium text-gray-900">{data.name}</p>
+            <div className="mb-1 flex items-center justify-between">
+              <p className="font-medium text-gray-900 text-sm">{data.name}</p>
             </div>
           </div>
         </div>
       </div>
     </>
   );
-};
+}
 
 export default UserBox;

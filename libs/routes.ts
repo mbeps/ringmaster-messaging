@@ -37,4 +37,8 @@ export const API_ROUTES = {
  * Protected routes that require authentication.
  * Used by middleware to enforce access control.
  */
-export const PROTECTED_ROUTES = [ROUTES.USERS, ROUTES.CONVERSATIONS, ROUTES.PROFILE] as const;
+export const PROTECTED_ROUTES = [
+  ROUTES.USERS,
+  ROUTES.CONVERSATIONS,
+  ROUTES.PROFILE,
+] as const;

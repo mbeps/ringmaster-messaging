@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 
 import getCurrentUser from "@/actions/getCurrentUser";
-import { pusherServer } from "@/libs/pusher";
 import prisma from "@/libs/prismadb";
+import { pusherServer } from "@/libs/pusher";
 
 interface IParams {
   conversationId?: string;
@@ -18,8 +18,8 @@ interface IParams {
  * @returns (NextResponse)
  */
 export async function POST(
-  request: Request,
-  { params }: { params: Promise<IParams> }
+  _request: Request,
+  { params }: { params: Promise<IParams> },
 ) {
   try {
     // Get current user who is logged in (sees the message)
@@ -93,11 +93,11 @@ export async function POST(
     await pusherServer.trigger(
       conversationId!,
       "message:update",
-      updatedMessage
+      updatedMessage,
     );
 
     return new NextResponse("Success");
-  } catch (error) {
+  } catch (_error) {
     return new NextResponse("Error", { status: 500 });
   }
 }

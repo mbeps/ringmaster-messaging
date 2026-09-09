@@ -31,7 +31,7 @@ const getUsers = async () => {
     });
 
     return users;
-  } catch (error: any) {
+  } catch (_error: any) {
     return [];
   }
 };

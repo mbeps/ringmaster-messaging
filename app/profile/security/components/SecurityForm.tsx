@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import { type FieldValues, type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
-import Input from "@/components/inputs/Input";
 import Button from "@/components/Button";
+import Input from "@/components/inputs/Input";
 import { authClient } from "@/lib/auth-client";
 import { ChangePasswordSchema } from "@/schema/ChangePasswordSchema";
 
@@ -47,7 +47,7 @@ function SecurityForm() {
 
       toast.success("Password changed successfully!");
       reset();
-    } catch (error) {
+    } catch (_error) {
       toast.error("Something went wrong!");
     } finally {
       setIsLoading(false);

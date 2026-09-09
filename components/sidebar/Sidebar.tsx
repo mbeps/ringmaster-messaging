@@ -1,6 +1,6 @@
+import getCurrentUser from "@/actions/getCurrentUser";
 import DesktopSidebar from "@/components/sidebar/DesktopSidebar";
 import MobileFooter from "./MobileFooter";
-import getCurrentUser from "@/actions/getCurrentUser";
 
 /**
  * A component that allows the user to navigate through the app.
@@ -16,7 +16,7 @@ async function Sidebar({ children }: { children: React.ReactNode }) {
     <div className="h-full">
       <DesktopSidebar currentUser={currentUser!} />
       <MobileFooter currentUser={currentUser!} />
-      <main className="lg:pl-20 h-full">{children}</main>
+      <main className="h-full lg:pl-20">{children}</main>
     </div>
   );
 }

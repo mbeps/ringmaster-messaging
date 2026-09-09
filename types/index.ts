@@ -1,4 +1,4 @@
-import { Conversation, Message, User } from "@prisma/client";
+import type { Conversation, Message, User } from "@prisma/client";
 
 /**
  * Defines a type to model messages with some additional information.

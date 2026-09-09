@@ -27,5 +27,5 @@ export const pusherClient = new PusherClient(
       transport: "ajax",
     },
     cluster: "eu",
-  }
+  },
 );

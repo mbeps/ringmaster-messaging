@@ -1,6 +1,6 @@
+import type { User } from "@prisma/client";
 import { authClient } from "@/lib/auth-client";
-import { FullConversationType } from "../types";
-import { User } from "@prisma/client";
+import type { FullConversationType } from "../types";
 
 /**
  * Returns the other user in a conversation.
@@ -9,7 +9,7 @@ import { User } from "@prisma/client";
  * @returns (User): other user in the conversation
  */
 const useOtherUser = (
-  conversation: FullConversationType | { users: User[] }
+  conversation: FullConversationType | { users: User[] },
 ) => {
   // retrieve the current user's session
   const session = authClient.useSession();
@@ -19,7 +19,7 @@ const useOtherUser = (
 
   // using the current user's email, filter the conversation's users to get the other user
   const otherUsers = conversation.users.filter(
-    (user) => user.email !== currentUserEmail
+    (user) => user.email !== currentUserEmail,
   );
 
   return otherUsers[0];

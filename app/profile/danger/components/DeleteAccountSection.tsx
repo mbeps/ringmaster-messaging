@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import axios from "axios";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { HiExclamationTriangle } from "react-icons/hi2";
-import axios from "axios";
 import Button from "@/components/Button";
 import Modal from "@/components/modals/Modal";
 import { authClient } from "@/lib/auth-client";
@@ -42,7 +42,7 @@ function DeleteAccountSection({ userEmail }: DeleteAccountSectionProps) {
         toast.success("Account deleted successfully");
         router.push(ROUTES.AUTH);
       }
-    } catch (error) {
+    } catch (_error) {
       toast.error("Failed to delete account");
     } finally {
       setIsLoading(false);
@@ -53,15 +53,16 @@ function DeleteAccountSection({ userEmail }: DeleteAccountSectionProps) {
   return (
     <>
       <div className="space-y-4">
-        <div className="p-4 bg-rose-50 border border-rose-200 rounded-lg">
+        <div className="rounded-lg border border-rose-200 bg-rose-50 p-4">
           <div className="flex items-start gap-3">
-            <HiExclamationTriangle className="h-6 w-6 text-rose-500 flex-shrink-0 mt-0.5" />
+            <HiExclamationTriangle className="mt-0.5 h-6 w-6 flex-shrink-0 text-rose-500" />
             <div>
               <h3 className="font-medium text-rose-800">Delete Account</h3>
-              <p className="text-sm text-rose-700 mt-1">
-                Once you delete your account, there is no going back. This will permanently delete:
+              <p className="mt-1 text-rose-700 text-sm">
+                Once you delete your account, there is no going back. This will
+                permanently delete:
               </p>
-              <ul className="text-sm text-rose-700 mt-2 list-disc list-inside space-y-1">
+              <ul className="mt-2 list-inside list-disc space-y-1 text-rose-700 text-sm">
                 <li>Your profile and account information</li>
                 <li>All messages you have sent</li>
                 <li>Your participation in conversations</li>
@@ -79,15 +80,15 @@ function DeleteAccountSection({ userEmail }: DeleteAccountSectionProps) {
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <div className="space-y-4">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-rose-100 rounded-full">
+            <div className="rounded-full bg-rose-100 p-2">
               <HiExclamationTriangle className="h-6 w-6 text-rose-600" />
             </div>
-            <h2 className="text-lg font-semibold text-gray-900">
+            <h2 className="font-semibold text-gray-900 text-lg">
               Delete Account
             </h2>
           </div>
 
-          <p className="text-sm text-gray-600">
+          <p className="text-gray-600 text-sm">
             This action cannot be undone. Please type{" "}
             <span className="font-medium text-gray-900">{userEmail}</span> to
             confirm.
@@ -98,11 +99,7 @@ function DeleteAccountSection({ userEmail }: DeleteAccountSectionProps) {
             value={confirmEmail}
             onChange={(e) => setConfirmEmail(e.target.value)}
             placeholder="Enter your email to confirm"
-            className="
-              w-full px-3 py-2 border border-gray-300 rounded-lg
-              focus:ring-2 focus:ring-rose-500 focus:border-rose-500
-              text-sm
-            "
+            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-rose-500 focus:ring-2 focus:ring-rose-500"
           />
 
           <div className="flex justify-end gap-3">
