@@ -9,6 +9,7 @@ import { CldUploadButton } from "next-cloudinary";
 import { useState } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
+import { CLOUDINARY_CONFIG } from "@/lib/env";
 import { API_ROUTES } from "@/libs/routes";
 import { type SettingsFormData, SettingsSchema } from "@/schema/SettingsSchema";
 import Button from "../Button";
@@ -127,7 +128,7 @@ function SettingsModal({ isOpen, onClose, currentUser }: SettingsModalProps) {
                   <CldUploadButton
                     options={{ maxFiles: 1 }}
                     onSuccess={handleUpload}
-                    uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_PRESET}
+                    uploadPreset={CLOUDINARY_CONFIG.uploadPreset}
                   >
                     <Button disabled={isLoading} secondary type="button">
                       Change

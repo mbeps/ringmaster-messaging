@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { HiPaperAirplane, HiPhoto } from "react-icons/hi2";
 import useConversation from "@/hooks/useConversation";
+import { CLOUDINARY_CONFIG } from "@/lib/env";
 import { API_ROUTES } from "@/libs/routes";
 import { type MessageFormData, MessageSchema } from "@/schema/MessageSchema";
 import MessageInput from "./MessageInput";
@@ -75,7 +76,7 @@ function Form() {
       <CldUploadButton
         options={{ maxFiles: 1 }}
         onSuccess={handleUpload}
-        uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_PRESET}
+        uploadPreset={CLOUDINARY_CONFIG.uploadPreset}
       >
         <HiPhoto size={30} className="text-red-500" />
       </CldUploadButton>

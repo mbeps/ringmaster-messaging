@@ -22,7 +22,7 @@ export default defineConfig({
       reportsDirectory: "coverage",
       // ponytail: thresholds kept on the original server-side scope; UI coverage
       // is additive — raise include + thresholds once component tests stabilise.
-      include: ["actions/**/*.ts", "libs/**/*.ts"],
+      include: ["actions/**/*.ts", "libs/**/*.ts", "lib/env.ts"],
       thresholds: {
         statements: 100,
         branches: 100,
