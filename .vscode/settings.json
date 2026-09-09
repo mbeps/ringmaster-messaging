@@ -1,5 +1,6 @@
 {
   "editor.formatOnSave": true,
   "files.autoSave": "off",
-  "testing.automaticallyOpenPeekView": "never"
+  "testing.automaticallyOpenPeekView": "never",
+  "js/ts.tsserver.experimental.enableProjectDiagnostics": false
 }

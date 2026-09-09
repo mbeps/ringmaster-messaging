@@ -54,4 +54,26 @@ describe("getUsers", () => {
 
     expect(result).toEqual([]);
   });
+
+  it("returns an empty array when the session user has no email", async () => {
+    mockedGetSession.mockResolvedValue({ user: {} });
+
+    const result = await getUsers();
+
+    expect(result).toEqual([]);
+    expect(mockPrisma.user.findMany).not.toHaveBeenCalled();
+  });
+
+  it("excludes the current user's email from the query", async () => {
+    mockedGetSession.mockResolvedValue({ user: { email: "me@example.com" } });
+    (mockPrisma.user.findMany as any).mockResolvedValue([]);
+
+    await getUsers();
+
+    expect(mockPrisma.user.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { NOT: { email: "me@example.com" } },
+      })
+    );
+  });
 });

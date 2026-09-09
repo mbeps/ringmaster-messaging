@@ -18,6 +18,13 @@ const eslintConfig = defineConfig([
     'node_modules/**',
     'coverage/**',
     '.vitest/**',
+    'graphify-out/**',
+    '__tests__/**',
+    'tests/**',
+    '**/*.test.*',
+    '**/*.spec.*',
+    'vitest.config.*',
+    'vitest.setup.*',
   ]),
 ])
 

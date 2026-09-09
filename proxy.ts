@@ -15,7 +15,7 @@ export default function middleware(req: NextRequest) {
   const isLoggedIn = !!sessionToken;
   
   const isProtectedRoute = PROTECTED_ROUTES.some(route => 
-    req.nextUrl.pathname.startsWith(route)
+    req.nextUrl.pathname === route || req.nextUrl.pathname.startsWith(`${route}/`)
   );
 
   if (!isLoggedIn && isProtectedRoute) {
