@@ -1,10 +1,9 @@
-import getCurrentUser from "@/actions/getCurrentUser";
 import { NextResponse } from "next/server";
-
+import { ZodError } from "zod";
+import getCurrentUser from "@/actions/getCurrentUser";
 import prisma from "@/libs/prismadb";
 import { pusherServer } from "@/libs/pusher";
 import { ConversationSchema } from "@/schema/ConversationSchema";
-import { ZodError } from "zod";
 
 /**
  * A post request route to create a new conversation.
@@ -118,7 +117,7 @@ export async function POST(request: Request) {
     });
 
     // Update all connections with new conversation
-    newConversation.users.map((user) => {
+    newConversation.users.forEach((user) => {
       if (user.email) {
         pusherServer.trigger(user.email, "conversation:new", newConversation);
       }

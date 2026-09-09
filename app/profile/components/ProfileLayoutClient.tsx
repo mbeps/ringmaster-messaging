@@ -1,15 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import MobileProfileSidebar from "./MobileProfileSidebar";
 import ProfileHeader from "./ProfileHeader";
 import ProfileSidebar from "./ProfileSidebar";
-import MobileProfileSidebar from "./MobileProfileSidebar";
 
 interface ProfileLayoutClientProps {
   children: React.ReactNode;
 }
 
-export default function ProfileLayoutClient({ children }: ProfileLayoutClientProps) {
+export default function ProfileLayoutClient({
+  children,
+}: ProfileLayoutClientProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (

@@ -1,39 +1,45 @@
 "use client";
 
+import clsx from "clsx";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { HiUser, HiShieldCheck, HiDevicePhoneMobile, HiLink, HiExclamationTriangle } from "react-icons/hi2";
-import clsx from "clsx";
+import {
+  HiDevicePhoneMobile,
+  HiExclamationTriangle,
+  HiLink,
+  HiShieldCheck,
+  HiUser,
+} from "react-icons/hi2";
 import { ROUTES } from "@/libs/routes";
 
 export const profileNavItems = [
   {
     label: "Account",
-    href: ROUTES.PROFILE_ACCOUNT,
+    href: ROUTES.PROFILE.account,
     icon: HiUser,
     description: "Update your profile information",
   },
   {
     label: "Security",
-    href: ROUTES.PROFILE_SECURITY,
+    href: ROUTES.PROFILE.security,
     icon: HiShieldCheck,
     description: "Change your password",
   },
   {
     label: "Sessions",
-    href: ROUTES.PROFILE_SESSIONS,
+    href: ROUTES.PROFILE.sessions,
     icon: HiDevicePhoneMobile,
     description: "Manage active sessions",
   },
   {
     label: "Linked Accounts",
-    href: ROUTES.PROFILE_ACCOUNTS,
+    href: ROUTES.PROFILE.accounts,
     icon: HiLink,
     description: "Manage connected accounts",
   },
   {
     label: "Danger Zone",
-    href: ROUTES.PROFILE_DANGER,
+    href: ROUTES.PROFILE.danger,
     icon: HiExclamationTriangle,
     description: "Delete your account",
     danger: true,
@@ -48,8 +54,8 @@ function ProfileSidebar() {
   const pathname = usePathname();
 
   return (
-    <nav className="hidden md:block w-64 bg-white border-r min-h-full py-6 px-4 flex-col">
-      <h2 className="text-lg font-semibold text-gray-900 mb-6 px-3">
+    <nav className="hidden min-h-full w-64 flex-col border-r bg-white px-4 py-6 md:block">
+      <h2 className="mb-6 px-3 font-semibold text-gray-900 text-lg">
         Settings
       </h2>
       <ul className="space-y-1">
@@ -61,11 +67,11 @@ function ProfileSidebar() {
               <Link
                 href={item.href}
                 className={clsx(
-                  "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition",
+                  "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition",
                   isActive && !isDanger && "bg-red-50 text-red-600",
                   isActive && isDanger && "bg-rose-50 text-rose-600",
                   !isActive && isDanger && "text-rose-600 hover:bg-rose-50",
-                  !isActive && !isDanger && "text-gray-700 hover:bg-gray-100"
+                  !isActive && !isDanger && "text-gray-700 hover:bg-gray-100",
                 )}
               >
                 <item.icon
@@ -73,7 +79,7 @@ function ProfileSidebar() {
                     "h-5 w-5",
                     isActive && !isDanger && "text-red-500",
                     isDanger && "text-rose-500",
-                    !isActive && !isDanger && "text-gray-400"
+                    !isActive && !isDanger && "text-gray-400",
                   )}
                 />
                 <div>
@@ -83,7 +89,7 @@ function ProfileSidebar() {
                       "text-xs",
                       isActive && !isDanger && "text-red-500",
                       isDanger && "text-rose-500",
-                      !isActive && !isDanger && "text-gray-500"
+                      !isActive && !isDanger && "text-gray-500",
                     )}
                   >
                     {item.description}

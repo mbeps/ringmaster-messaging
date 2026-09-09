@@ -1,10 +1,10 @@
 "use client";
 
+import type { User } from "@prisma/client";
 import useConversation from "@/hooks/useConversation";
 import useRoutes from "@/hooks/useRoutes";
 import MobileItem from "./MobileItem";
 import ProfileDropdown from "./ProfileDropdown";
-import { User } from "@prisma/client";
 
 interface MobileFooterProps {
   currentUser: User;
@@ -28,20 +28,7 @@ const MobileFooter = ({ currentUser }: MobileFooterProps) => {
   }
 
   return (
-    <div
-      className="
-        fixed 
-        justify-between 
-        w-full 
-        bottom-0 
-        z-40 
-        flex 
-        items-center 
-        bg-white 
-        border-t 
-        lg:hidden
-      "
-    >
+    <div className="fixed bottom-0 z-40 flex w-full items-center justify-between border-t bg-white lg:hidden">
       {routes.map((route) => (
         <MobileItem
           key={route.href}
@@ -51,7 +38,7 @@ const MobileFooter = ({ currentUser }: MobileFooterProps) => {
           onClick={route.onClick}
         />
       ))}
-      <div className="w-full flex justify-center items-center py-2.5 m-1">
+      <div className="m-1 flex w-full items-center justify-center py-2.5">
         <ProfileDropdown currentUser={currentUser} align="right" />
       </div>
     </div>

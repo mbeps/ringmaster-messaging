@@ -1,5 +1,5 @@
-import Link from "next/link";
 import clsx from "clsx";
+import Link from "next/link";
 
 interface MobileItemProps {
   href: string; // the link to redirect to
@@ -15,12 +15,7 @@ interface MobileItemProps {
  * @param param0 { href, icon, active, onClick}: props for the button item
  * @returns (JSX.Element): mobile item component
  */
-function MobileItem({
-  href,
-  icon: Icon,
-  active,
-  onClick,
-}: MobileItemProps) {
+function MobileItem({ href, icon: Icon, active, onClick }: MobileItemProps) {
   const handleClick = () => {
     // checks if the onClick function is defined as it is optional
     if (onClick) {
@@ -33,28 +28,13 @@ function MobileItem({
       onClick={handleClick}
       href={href}
       className={clsx(
-        `
-        group 
-        flex 
-        gap-x-3 
-        text-sm 
-        leading-6 
-				rounded-md
-        font-semibold 
-        w-full 
-        justify-center 
-        p-4 
-				m-1
-        text-gray-500 
-        hover:text-black 
-        hover:bg-gray-100
-      `,
-        active && "bg-gray-100 text-black"
+        `group m-1 flex w-full justify-center gap-x-3 rounded-md p-4 font-semibold text-gray-500 text-sm leading-6 hover:bg-gray-100 hover:text-black`,
+        active && "bg-gray-100 text-black",
       )}
     >
       <Icon className="h-6 w-6" />
     </Link>
   );
-};
+}
 
 export default MobileItem;

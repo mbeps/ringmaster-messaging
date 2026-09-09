@@ -1,5 +1,5 @@
-import getCurrentUser from "@/actions/getCurrentUser";
 import { redirect } from "next/navigation";
+import getCurrentUser from "@/actions/getCurrentUser";
 import { ROUTES } from "@/libs/routes";
 import ProfileLayoutClient from "./components/ProfileLayoutClient";
 
@@ -15,7 +15,7 @@ export default async function ProfileLayout({
   const currentUser = await getCurrentUser();
 
   if (!currentUser) {
-    redirect(ROUTES.AUTH);
+    redirect(ROUTES.AUTH.path);
   }
 
   return <ProfileLayoutClient>{children}</ProfileLayoutClient>;

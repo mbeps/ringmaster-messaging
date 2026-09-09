@@ -20,6 +20,7 @@ vi.mock("next/headers", () => ({
 
 import getCurrentUser from "@/actions/getCurrentUser";
 import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 const mockedGetSession = auth.api.getSession as any;
 
@@ -67,5 +68,32 @@ describe("getCurrentUser", () => {
     const result = await getCurrentUser();
 
     expect(result).toBeNull();
+  });
+
+  it("returns null when the session user has no email", async () => {
+    mockedGetSession.mockResolvedValue({ user: {} });
+
+    const result = await getCurrentUser();
+
+    expect(result).toBeNull();
+    expect(mockPrisma.user.findUnique).not.toHaveBeenCalled();
+  });
+
+  it("returns null when the session has no user at all", async () => {
+    mockedGetSession.mockResolvedValue({});
+
+    const result = await getCurrentUser();
+
+    expect(result).toBeNull();
+  });
+
+  it("passes request headers to auth.api.getSession", async () => {
+    const fakeHeaders = new Headers({ "x-test": "1" });
+    vi.mocked(headers).mockResolvedValueOnce(fakeHeaders as any);
+    mockedGetSession.mockResolvedValue(null);
+
+    await getCurrentUser();
+
+    expect(mockedGetSession).toHaveBeenCalledWith({ headers: fakeHeaders });
   });
 });

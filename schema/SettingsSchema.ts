@@ -5,3 +5,4 @@ export const SettingsSchema = z.object({
   image: z.string().nullable().optional(),
 });
 
+export type SettingsFormData = z.infer<typeof SettingsSchema>;

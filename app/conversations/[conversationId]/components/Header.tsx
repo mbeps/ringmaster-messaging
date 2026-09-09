@@ -1,17 +1,16 @@
 "use client";
 
-import { Conversation, User } from "@prisma/client";
+import type { Conversation, User } from "@prisma/client";
 import Link from "next/link";
 import { useState } from "react";
 import { HiChevronLeft } from "react-icons/hi";
-
-import useOtherUser from "@/hooks/useOtherUser";
-import Avatar from "@/components/Avatar";
 import { HiEllipsisHorizontal } from "react-icons/hi2";
-import ProfileDrawer from "./ProfileDrawer";
+import Avatar from "@/components/Avatar";
 import AvatarGroup from "@/components/AvatarGroup";
 import useActiveList from "@/hooks/useActiveList";
+import useOtherUser from "@/hooks/useOtherUser";
 import { ROUTES } from "@/libs/routes";
+import ProfileDrawer from "./ProfileDrawer";
 
 interface HeaderProps {
   conversation: Conversation & {
@@ -39,7 +38,9 @@ function Header({ conversation }: HeaderProps) {
   // Status text to display in the header
   const statusText = conversation.isGroup
     ? `${conversation.users.length} members`
-    : isActive ? "Online" : "Offline";
+    : isActive
+      ? "Online"
+      : "Offline";
 
   return (
     <>
@@ -48,32 +49,11 @@ function Header({ conversation }: HeaderProps) {
         isOpen={drawerOpen}
         onClose={() => setDrawerOpen(false)}
       />
-      <div
-        className="
-        bg-white 
-        w-full 
-        flex 
-        border-b 
-        sm:px-4 
-        py-3 
-        px-4 
-        lg:px-6 
-        justify-between 
-        items-center 
-        shadow-xs
-      "
-      >
-        <div className="flex gap-3 items-center">
+      <div className="flex w-full items-center justify-between border-b bg-white px-4 py-3 shadow-xs sm:px-4 lg:px-6">
+        <div className="flex items-center gap-3">
           <Link
-            href={ROUTES.CONVERSATIONS}
-            className="
-            lg:hidden 
-            block 
-            text-red-500 
-            hover:text-red-600 
-            transition 
-            cursor-pointer
-          "
+            href={ROUTES.CONVERSATIONS.path}
+            className="block cursor-pointer text-red-500 transition hover:text-red-600 lg:hidden"
           >
             <HiChevronLeft size={32} />
           </Link>
@@ -87,7 +67,7 @@ function Header({ conversation }: HeaderProps) {
               {conversation.name || otherUser.name}
             </div>
 
-            <div className="text-sm font-light text-neutral-500">
+            <div className="font-light text-neutral-500 text-sm">
               {statusText}
             </div>
           </div>
@@ -95,16 +75,11 @@ function Header({ conversation }: HeaderProps) {
         <HiEllipsisHorizontal
           onClick={() => setDrawerOpen(true)}
           size={32}
-          className="
-          text-red-500
-          cursor-pointer
-          hover:text-red-600
-          transition
-        "
+          className="cursor-pointer text-red-500 transition hover:text-red-600"
         />
       </div>
     </>
   );
-};
+}
 
 export default Header;

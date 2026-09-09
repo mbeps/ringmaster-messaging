@@ -1,6 +1,6 @@
+import type { Members } from "pusher-js";
 import { useEffect } from "react";
 import { pusherClient } from "../libs/pusher";
-import { Members } from "pusher-js";
 import useActiveList from "./useActiveList";
 
 /**
@@ -31,7 +31,7 @@ const useActiveChannel = () => {
 
       // add each member to the list of active members
       members.each((member: Record<string, any>) =>
-        initialMembers.push(member.id)
+        initialMembers.push(member.id),
       );
       // set the list of active members
       set(initialMembers);

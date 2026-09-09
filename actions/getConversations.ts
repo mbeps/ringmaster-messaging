@@ -44,7 +44,7 @@ const getConversations = async () => {
     });
 
     return conversations;
-  } catch (error: any) {
+  } catch (_error: any) {
     return [];
   }
 };

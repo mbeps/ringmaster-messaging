@@ -1,5 +1,5 @@
-import getCurrentUser from "@/actions/getCurrentUser";
 import { redirect } from "next/navigation";
+import getCurrentUser from "@/actions/getCurrentUser";
 import { ROUTES } from "@/libs/routes";
 import LinkedAccountsList from "./components/LinkedAccountsList";
 
@@ -10,14 +10,14 @@ export default async function AccountsPage() {
   const currentUser = await getCurrentUser();
 
   if (!currentUser) {
-    redirect(ROUTES.AUTH);
+    redirect(ROUTES.AUTH.path);
   }
 
   return (
     <div className="max-w-2xl">
-      <div className="bg-white rounded-xl shadow-sm border p-6">
-        <h1 className="text-xl font-semibold text-gray-900">Linked Accounts</h1>
-        <p className="mt-1 text-sm text-gray-600">
+      <div className="rounded-xl border bg-white p-6 shadow-sm">
+        <h1 className="font-semibold text-gray-900 text-xl">Linked Accounts</h1>
+        <p className="mt-1 text-gray-600 text-sm">
           Connect your social accounts for easier sign-in.
         </p>
         <div className="mt-6">

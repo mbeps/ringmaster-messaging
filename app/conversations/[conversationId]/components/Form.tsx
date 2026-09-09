@@ -1,15 +1,16 @@
 "use client";
 
-import useConversation from "@/hooks/useConversation";
-import axios from "axios";
-import React, { useEffect } from "react";
-import { useForm, FieldValues, SubmitHandler } from "react-hook-form";
-import { HiPaperAirplane, HiPhoto } from "react-icons/hi2";
-import MessageInput from "./MessageInput";
-import { CldUploadButton } from "next-cloudinary";
-import { API_ROUTES } from "@/libs/routes";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { MessageSchema } from "@/schema/MessageSchema";
+import axios from "axios";
+import { CldUploadButton } from "next-cloudinary";
+import { useEffect } from "react";
+import { type SubmitHandler, useForm } from "react-hook-form";
+import { HiPaperAirplane, HiPhoto } from "react-icons/hi2";
+import useConversation from "@/hooks/useConversation";
+import { CLOUDINARY_CONFIG } from "@/lib/env";
+import { API_ROUTES } from "@/libs/routes";
+import { type MessageFormData, MessageSchema } from "@/schema/MessageSchema";
+import MessageInput from "./MessageInput";
 
 /**
  * Form component which contains the message input, send button and image upload button.
@@ -30,14 +31,14 @@ function Form() {
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm<FieldValues>({
+  } = useForm<MessageFormData>({
     resolver: zodResolver(MessageSchema),
     defaultValues: {
       message: "",
       conversationId: conversationId,
     },
   });
-  
+
   useEffect(() => {
     setValue("conversationId", conversationId);
   }, [conversationId, setValue]);
@@ -46,11 +47,11 @@ function Form() {
    * Function which handles the submission of the form.
    * Creates a new message for the current conversation with the data from the form.
    *
-   * @param data (FieldValues): data from the form
+   * @param data (MessageFormData): data from the form
    */
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+  const onSubmit: SubmitHandler<MessageFormData> = (data) => {
     setValue("message", ""); // once sent clear message input
-    axios.post(API_ROUTES.MESSAGES, {
+    axios.post(API_ROUTES.MESSAGES.path, {
       ...data,
       conversationId: conversationId,
     }); // create new message for the current conversation
@@ -64,36 +65,24 @@ function Form() {
    * @param result (any): result from the image upload
    */
   const handleUpload = (result: any) => {
-    axios.post(API_ROUTES.MESSAGES, {
+    axios.post(API_ROUTES.MESSAGES.path, {
       image: result?.info?.secure_url, // store image URL from Cloudinary in database
       conversationId: conversationId, // store current conversation ID in database
     }); // create new message for the current conversation
   };
 
   return (
-    <div
-      className="
-        py-4 
-        px-4 
-        bg-white 
-        border-t 
-        flex 
-        items-center 
-        gap-2 
-        lg:gap-4 
-        w-full
-      "
-    >
+    <div className="flex w-full items-center gap-2 border-t bg-white px-4 py-4 lg:gap-4">
       <CldUploadButton
         options={{ maxFiles: 1 }}
         onSuccess={handleUpload}
-        uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_PRESET}
+        uploadPreset={CLOUDINARY_CONFIG.uploadPreset}
       >
         <HiPhoto size={30} className="text-red-500" />
       </CldUploadButton>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex items-center gap-2 lg:gap-4 w-full"
+        className="flex w-full items-center gap-2 lg:gap-4"
       >
         <MessageInput
           id="message"
@@ -104,19 +93,12 @@ function Form() {
         />
         <button
           type="submit"
-          className="
-            rounded-full 
-            p-2 
-            bg-red-500 
-            cursor-pointer 
-            hover:bg-red-600 
-            transition
-          "
+          className="cursor-pointer rounded-full bg-red-500 p-2 transition hover:bg-red-600"
         >
           <HiPaperAirplane size={18} className="text-white" />
         </button>
       </form>
     </div>
   );
-};
+}
 export default Form;

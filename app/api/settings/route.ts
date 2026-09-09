@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
+import { ZodError } from "zod";
 import getCurrentUser from "@/actions/getCurrentUser";
 import prisma from "@/libs/prismadb";
 import { SettingsSchema } from "@/schema/SettingsSchema";
-import { ZodError } from "zod";
 
 /**
  * A post request route for updating the user's settings (name and image).

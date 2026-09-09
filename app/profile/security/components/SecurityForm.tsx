@@ -1,13 +1,16 @@
 "use client";
 
-import { useState } from "react";
-import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import { type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
-import Input from "@/components/inputs/Input";
 import Button from "@/components/Button";
+import Input from "@/components/inputs/Input";
 import { authClient } from "@/lib/auth-client";
-import { ChangePasswordSchema } from "@/schema/ChangePasswordSchema";
+import {
+  type ChangePasswordFormData,
+  ChangePasswordSchema,
+} from "@/schema/ChangePasswordSchema";
 
 /**
  * Form for changing user password.
@@ -21,7 +24,7 @@ function SecurityForm() {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<FieldValues>({
+  } = useForm<ChangePasswordFormData>({
     resolver: zodResolver(ChangePasswordSchema),
     defaultValues: {
       currentPassword: "",
@@ -30,7 +33,7 @@ function SecurityForm() {
     },
   });
 
-  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+  const onSubmit: SubmitHandler<ChangePasswordFormData> = async (data) => {
     setIsLoading(true);
 
     try {
@@ -47,7 +50,7 @@ function SecurityForm() {
 
       toast.success("Password changed successfully!");
       reset();
-    } catch (error) {
+    } catch (_error) {
       toast.error("Something went wrong!");
     } finally {
       setIsLoading(false);

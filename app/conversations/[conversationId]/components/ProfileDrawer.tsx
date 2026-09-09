@@ -1,16 +1,20 @@
 "use client";
 
+import {
+  Dialog,
+  DialogPanel,
+  Transition,
+  TransitionChild,
+} from "@headlessui/react";
+import type { Conversation, User } from "@prisma/client";
+import { format } from "date-fns";
+import { Fragment, useState } from "react";
+import { IoClose, IoTrash } from "react-icons/io5";
 import Avatar from "@/components/Avatar";
 import AvatarGroup from "@/components/AvatarGroup";
 import ConfirmModal from "@/components/modals/ConfirmModal";
-import Modal from "@/components/modals/Modal";
-import useOtherUser from "@/hooks/useOtherUser";
-import { Dialog, DialogPanel, Transition, TransitionChild } from "@headlessui/react";
-import { Conversation, User } from "@prisma/client";
-import { format } from "date-fns";
-import React, { Fragment, useState } from "react";
-import { IoClose, IoTrash } from "react-icons/io5";
 import useActiveList from "@/hooks/useActiveList";
+import useOtherUser from "@/hooks/useOtherUser";
 
 interface ProfileDrawerProps {
   isOpen: boolean; // whether the drawer is open
@@ -52,7 +56,9 @@ function ProfileDrawer({ isOpen, onClose, data }: ProfileDrawerProps) {
   // Gets the status text for the user or the number of members for the group
   const statusText = data.isGroup
     ? `${data.users.length} members`
-    : isActive ? "Online" : "Offline";
+    : isActive
+      ? "Online"
+      : "Offline";
 
   return (
     <>
@@ -74,9 +80,9 @@ function ProfileDrawer({ isOpen, onClose, data }: ProfileDrawerProps) {
             <div className="modal-backdrop transition-opacity" />
           </TransitionChild>
 
-          <div className="fixed inset-0 overflow-hidden flex items-center justify-center">
+          <div className="fixed inset-0 flex items-center justify-center overflow-hidden">
             <div className="absolute inset-0 overflow-hidden">
-              <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 p-4">
+              <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full p-4 pl-10">
                 <TransitionChild
                   as={Fragment}
                   enter="transform transition ease-in-out duration-500"
@@ -87,7 +93,7 @@ function ProfileDrawer({ isOpen, onClose, data }: ProfileDrawerProps) {
                   leaveTo="translate-x-full"
                 >
                   <DialogPanel className="pointer-events-auto w-screen max-w-md rounded-xl bg-white shadow-lg">
-                    <div className="flex h-full flex-col overflow-y-scroll bg-white py-6 shadow-xl rounded-xl">
+                    <div className="flex h-full flex-col overflow-y-scroll rounded-xl bg-white py-6 shadow-xl">
                       <div className="px-4 sm:px-6">
                         <div className="flex items-start justify-end">
                           <div className="ml-3 flex h-7 items-center">
@@ -112,45 +118,30 @@ function ProfileDrawer({ isOpen, onClose, data }: ProfileDrawerProps) {
                             )}
                           </div>
                           <div>{title}</div>
-                          <div className="text-sm text-gray-500">
+                          <div className="text-gray-500 text-sm">
                             {statusText}
                           </div>
-                          <div className="flex gap-10 my-8">
+                          <div className="my-8 flex gap-10">
                             <div
                               onClick={() => setIsConfirmModalOpen(true)}
-                              className="flex flex-col gap-3 items-center cursor-pointer hover:opacity-75"
+                              className="flex cursor-pointer flex-col items-center gap-3 hover:opacity-75"
                             >
-                              <div className="w-10 h-10 bg-neutral-100 rounded-lg flex items-center justify-center">
+                              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-neutral-100">
                                 <IoTrash size={20} />
                               </div>
-                              <div className="text-sm font-light text-neutral-600">
+                              <div className="font-light text-neutral-600 text-sm">
                                 Delete
                               </div>
                             </div>
                           </div>
-                          <div className="w-full pb-5 pt-5 sm:px-0 sm:pt-0">
+                          <div className="w-full pt-5 pb-5 sm:px-0 sm:pt-0">
                             <dl className="space-y-8 px-4 sm:space-y-6 sm:px-6">
                               {data.isGroup && (
                                 <div>
-                                  <dt
-                                    className="
-                                  text-sm 
-                                  font-medium 
-                                  text-gray-500 
-                                  sm:w-40 
-                                  sm:shrink-0
-                                "
-                                  >
+                                  <dt className="font-medium text-gray-500 text-sm sm:w-40 sm:shrink-0">
                                     Emails
                                   </dt>
-                                  <dd
-                                    className="
-                                  mt-1 
-                                  text-sm 
-                                  text-gray-900 
-                                  sm:col-span-2
-                                "
-                                  >
+                                  <dd className="mt-1 text-gray-900 text-sm sm:col-span-2">
                                     {data.users
                                       .map((user) => user.email)
                                       .join(", ")}
@@ -159,25 +150,10 @@ function ProfileDrawer({ isOpen, onClose, data }: ProfileDrawerProps) {
                               )}
                               {!data.isGroup && (
                                 <div>
-                                  <dt
-                                    className="
-                                  text-sm 
-                                  font-medium 
-                                  text-gray-500 
-                                  sm:w-40 
-                                  sm:shrink-0
-                                "
-                                  >
+                                  <dt className="font-medium text-gray-500 text-sm sm:w-40 sm:shrink-0">
                                     Email
                                   </dt>
-                                  <dd
-                                    className="
-                                  mt-1 
-                                  text-sm 
-                                  text-gray-900 
-                                  sm:col-span-2
-                                "
-                                  >
+                                  <dd className="mt-1 text-gray-900 text-sm sm:col-span-2">
                                     {otherUser.email}
                                   </dd>
                                 </div>
@@ -186,25 +162,10 @@ function ProfileDrawer({ isOpen, onClose, data }: ProfileDrawerProps) {
                                 <>
                                   <hr />
                                   <div>
-                                    <dt
-                                      className="
-                                    text-sm 
-                                    font-medium 
-                                    text-gray-500 
-                                    sm:w-40 
-                                    sm:shrink-0
-                                  "
-                                    >
+                                    <dt className="font-medium text-gray-500 text-sm sm:w-40 sm:shrink-0">
                                       Joined
                                     </dt>
-                                    <dd
-                                      className="
-                                    mt-1 
-                                    text-sm 
-                                    text-gray-900 
-                                    sm:col-span-2
-                                  "
-                                    >
+                                    <dd className="mt-1 text-gray-900 text-sm sm:col-span-2">
                                       <time dateTime={joinedDate}>
                                         {joinedDate}
                                       </time>
@@ -226,5 +187,5 @@ function ProfileDrawer({ isOpen, onClose, data }: ProfileDrawerProps) {
       </Transition>
     </>
   );
-};
+}
 export default ProfileDrawer;

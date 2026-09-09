@@ -1,9 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { format } from "date-fns";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-import { HiDevicePhoneMobile, HiComputerDesktop, HiTrash } from "react-icons/hi2";
+import {
+  HiComputerDesktop,
+  HiDevicePhoneMobile,
+  HiTrash,
+} from "react-icons/hi2";
 import Button from "@/components/Button";
 import { authClient } from "@/lib/auth-client";
 
@@ -21,7 +25,7 @@ function SessionsList() {
 
   const currentSession = authClient.useSession();
 
-  const fetchSessions = async () => {
+  const fetchSessions = useCallback(async () => {
     setIsLoading(true);
     try {
       const { data, error } = await authClient.listSessions();
@@ -30,16 +34,16 @@ function SessionsList() {
         return;
       }
       setSessions(data || []);
-    } catch (error) {
+    } catch (_error) {
       toast.error("Failed to load sessions");
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchSessions();
-  }, []);
+  }, [fetchSessions]);
 
   const handleRevokeSession = async (sessionToken: string) => {
     setRevokingId(sessionToken);
@@ -51,7 +55,7 @@ function SessionsList() {
       }
       toast.success("Session revoked successfully");
       fetchSessions();
-    } catch (error) {
+    } catch (_error) {
       toast.error("Something went wrong");
     } finally {
       setRevokingId(null);
@@ -68,7 +72,7 @@ function SessionsList() {
       }
       toast.success("All other sessions revoked");
       fetchSessions();
-    } catch (error) {
+    } catch (_error) {
       toast.error("Something went wrong");
     } finally {
       setIsLoading(false);
@@ -78,7 +82,11 @@ function SessionsList() {
   const getDeviceIcon = (userAgent?: string | null) => {
     if (!userAgent) return HiComputerDesktop;
     const lowerAgent = userAgent.toLowerCase();
-    if (lowerAgent.includes("mobile") || lowerAgent.includes("android") || lowerAgent.includes("iphone")) {
+    if (
+      lowerAgent.includes("mobile") ||
+      lowerAgent.includes("android") ||
+      lowerAgent.includes("iphone")
+    ) {
       return HiDevicePhoneMobile;
     }
     return HiComputerDesktop;
@@ -95,9 +103,7 @@ function SessionsList() {
 
   if (isLoading && sessions.length === 0) {
     return (
-      <div className="text-center py-8 text-gray-500">
-        Loading sessions...
-      </div>
+      <div className="py-8 text-center text-gray-500">Loading sessions...</div>
     );
   }
 
@@ -105,11 +111,7 @@ function SessionsList() {
     <div className="space-y-4">
       {sessions.length > 1 && (
         <div className="flex justify-end">
-          <Button
-            danger
-            onClick={handleRevokeAllOther}
-            disabled={isLoading}
-          >
+          <Button danger onClick={handleRevokeAllOther} disabled={isLoading}>
             Sign out all other sessions
           </Button>
         </div>
@@ -118,27 +120,28 @@ function SessionsList() {
       <div className="space-y-3">
         {sessions.map((session) => {
           const DeviceIcon = getDeviceIcon(session.userAgent);
-          const isCurrentSession = session.token === currentSession.data?.session?.token;
+          const isCurrentSession =
+            session.token === currentSession.data?.session?.token;
 
           return (
             <div
               key={session.id}
-              className="flex items-center justify-between p-4 border rounded-lg bg-gray-50"
+              className="flex items-center justify-between rounded-lg border bg-gray-50 p-4"
             >
               <div className="flex items-center gap-4">
-                <div className="p-2 bg-white rounded-lg">
+                <div className="rounded-lg bg-white p-2">
                   <DeviceIcon className="h-6 w-6 text-gray-600" />
                 </div>
                 <div>
                   <p className="font-medium text-gray-900">
                     {getDeviceName(session.userAgent)}
                     {isCurrentSession && (
-                      <span className="ml-2 text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
+                      <span className="ml-2 rounded-full bg-green-100 px-2 py-0.5 text-green-700 text-xs">
                         Current
                       </span>
                     )}
                   </p>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-gray-500 text-sm">
                     Last active: {format(new Date(session.updatedAt), "PPp")}
                   </p>
                 </div>
@@ -148,10 +151,7 @@ function SessionsList() {
                 <button
                   onClick={() => handleRevokeSession(session.token)}
                   disabled={revokingId === session.token}
-                  className="
-                    p-2 text-red-500 hover:bg-red-50 rounded-lg 
-                    transition disabled:opacity-50
-                  "
+                  className="rounded-lg p-2 text-red-500 transition hover:bg-red-50 disabled:opacity-50"
                   title="Revoke session"
                 >
                   <HiTrash className="h-5 w-5" />
@@ -163,7 +163,7 @@ function SessionsList() {
       </div>
 
       {sessions.length === 0 && (
-        <div className="text-center py-8 text-gray-500">
+        <div className="py-8 text-center text-gray-500">
           No active sessions found.
         </div>
       )}

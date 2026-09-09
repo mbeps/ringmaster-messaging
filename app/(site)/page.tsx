@@ -11,18 +11,7 @@ import AuthForm from "./components/AuthForm";
  */
 const Auth = () => {
   return (
-    <div
-      className="
-        flex 
-        min-h-full 
-        flex-col 
-        justify-center 
-        py-12 
-        sm:px-6 
-        lg:px-8 
-        bg-gray-100
-      "
-    >
+    <div className="flex min-h-full flex-col justify-center bg-gray-100 py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         {/* Logo */}
         <Image
@@ -33,16 +22,7 @@ const Auth = () => {
           alt="Logo"
         />
         {/* Title */}
-        <h2
-          className="
-            mt-6 
-            text-center 
-            text-3xl 
-            font-bold 
-            tracking-tight 
-            text-gray-900
-          "
-        >
+        <h2 className="mt-6 text-center font-bold text-3xl text-gray-900 tracking-tight">
           Sign in to your account
         </h2>
       </div>

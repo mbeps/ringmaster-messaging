@@ -1,5 +1,5 @@
-import getCurrentUser from "@/actions/getCurrentUser";
 import { redirect } from "next/navigation";
+import getCurrentUser from "@/actions/getCurrentUser";
 import { ROUTES } from "@/libs/routes";
 import DeleteAccountSection from "./components/DeleteAccountSection";
 
@@ -10,14 +10,14 @@ export default async function DangerPage() {
   const currentUser = await getCurrentUser();
 
   if (!currentUser) {
-    redirect(ROUTES.AUTH);
+    redirect(ROUTES.AUTH.path);
   }
 
   return (
     <div className="max-w-2xl">
-      <div className="bg-white rounded-xl shadow-sm border border-rose-200 p-6">
-        <h1 className="text-xl font-semibold text-rose-600">Danger Zone</h1>
-        <p className="mt-1 text-sm text-gray-600">
+      <div className="rounded-xl border border-rose-200 bg-white p-6 shadow-sm">
+        <h1 className="font-semibold text-rose-600 text-xl">Danger Zone</h1>
+        <p className="mt-1 text-gray-600 text-sm">
           Irreversible and destructive actions.
         </p>
         <div className="mt-6">

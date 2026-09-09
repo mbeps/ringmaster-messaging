@@ -1,8 +1,8 @@
 "use client";
 
 import clsx from "clsx";
-import useConversation from "../../hooks/useConversation";
 import EmptyState from "@/components/EmptyState";
+import useConversation from "../../hooks/useConversation";
 
 /**
  * Renders the conversations page component.
@@ -15,7 +15,7 @@ const Home = () => {
 
   return (
     <div
-      className={clsx("lg:pl-80 h-full lg:block", isOpen ? "block" : "hidden")}
+      className={clsx("h-full lg:block lg:pl-80", isOpen ? "block" : "hidden")}
     >
       <EmptyState />
     </div>

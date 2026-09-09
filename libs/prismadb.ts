@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { env } from "@/lib/env";
 
 /**
  * This file contains the Prisma client instance that is used to connect to the database.
@@ -19,6 +20,6 @@ const client = globalThis.prisma || new PrismaClient();
  *  the `globalThis.prisma` variable is set to the client instance.
  * This ensures that the prisma variable is globally available for subsequent usage and avoids creating multiple instances of `PrismaClient` during development.
  */
-if (process.env.NODE_ENV !== "production") globalThis.prisma = client;
+if (env.NODE_ENV !== "production") globalThis.prisma = client;
 
 export default client;

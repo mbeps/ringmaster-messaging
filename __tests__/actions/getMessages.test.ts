@@ -34,4 +34,26 @@ describe("getMessages", () => {
 
     expect(result).toEqual([]);
   });
+
+  it("returns an empty array when the conversation has no messages", async () => {
+    (mockPrisma.message.findMany as any).mockResolvedValue([]);
+
+    const result = await getMessages("empty-conversation");
+
+    expect(result).toEqual([]);
+  });
+
+  it("queries messages ordered by createdAt ascending with sender and seen included", async () => {
+    (mockPrisma.message.findMany as any).mockResolvedValue([]);
+
+    await getMessages("conversation-2");
+
+    expect(mockPrisma.message.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { conversationId: "conversation-2" },
+        orderBy: { createdAt: "asc" },
+        include: { sender: true, seen: true },
+      })
+    );
+  });
 });

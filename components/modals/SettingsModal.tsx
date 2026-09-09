@@ -1,20 +1,20 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import type { User } from "@prisma/client";
 import axios from "axios";
-import React, { useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import { User } from "@prisma/client";
 import { CldUploadButton } from "next-cloudinary";
-
+import { useState } from "react";
+import { type SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
+import { CLOUDINARY_CONFIG } from "@/lib/env";
+import { API_ROUTES } from "@/libs/routes";
+import { type SettingsFormData, SettingsSchema } from "@/schema/SettingsSchema";
+import Button from "../Button";
 import Input from "../inputs/Input";
 import Modal from "../modals/Modal";
-import Button from "../Button";
-import Image from "next/image";
-import { toast } from "react-hot-toast";
-import { API_ROUTES } from "@/libs/routes";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { SettingsSchema } from "@/schema/SettingsSchema";
 
 interface SettingsModalProps {
   isOpen?: boolean;
@@ -29,11 +29,7 @@ interface SettingsModalProps {
  * @param param0 { isOpen, onClose, currentUser}: SettingsModalProps
  * @returns (JSX.Element): settings modal for editing the user's profile
  */
-function SettingsModal({
-  isOpen,
-  onClose,
-  currentUser,
-}: SettingsModalProps) {
+function SettingsModal({ isOpen, onClose, currentUser }: SettingsModalProps) {
   const router = useRouter();
   // loading state for updating the user's profile
   const [isLoading, setIsLoading] = useState(false);
@@ -48,10 +44,10 @@ function SettingsModal({
     setValue,
     watch,
     formState: { errors },
-  } = useForm<FieldValues>({
+  } = useForm<SettingsFormData>({
     resolver: zodResolver(SettingsSchema),
     defaultValues: {
-      name: currentUser?.name,
+      name: currentUser?.name ?? "",
       image: currentUser?.image,
     },
   });
@@ -78,11 +74,11 @@ function SettingsModal({
    *
    * @param data { name, image }: new name and image of the user
    */
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+  const onSubmit: SubmitHandler<SettingsFormData> = (data) => {
     setIsLoading(true); // start loading the update of the user's profile
 
     axios
-      .post(API_ROUTES.SETTINGS, data) // update the user's profile
+      .post(API_ROUTES.SETTINGS.path, data) // update the user's profile
       .then(() => {
         router.refresh(); // refresh the page
         onClose(); // close the modal
@@ -95,18 +91,11 @@ function SettingsModal({
     <Modal isOpen={isOpen} onClose={onClose}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="space-y-12">
-          <div className="border-b border-gray-900/10 pb-12">
-            <h2
-              className="
-                text-base 
-                font-semibold 
-                leading-7 
-                text-gray-900
-              "
-            >
+          <div className="border-gray-900/10 border-b pb-12">
+            <h2 className="font-semibold text-base text-gray-900 leading-7">
               Profile
             </h2>
-            <p className="mt-1 text-sm leading-6 text-gray-600">
+            <p className="mt-1 text-gray-600 text-sm leading-6">
               Edit your public information.
             </p>
 
@@ -122,13 +111,7 @@ function SettingsModal({
               <div>
                 <label
                   htmlFor="photo"
-                  className="
-                    block 
-                    text-sm 
-                    font-medium 
-                    leading-6 
-                    text-gray-900
-                  "
+                  className="block font-medium text-gray-900 text-sm leading-6"
                 >
                   Photo
                 </label>
@@ -145,7 +128,7 @@ function SettingsModal({
                   <CldUploadButton
                     options={{ maxFiles: 1 }}
                     onSuccess={handleUpload}
-                    uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_PRESET}
+                    uploadPreset={CLOUDINARY_CONFIG.uploadPreset}
                   >
                     <Button disabled={isLoading} secondary type="button">
                       Change
@@ -157,15 +140,7 @@ function SettingsModal({
           </div>
         </div>
 
-        <div
-          className="
-            mt-6 
-            flex 
-            items-center 
-            justify-end 
-            gap-x-6
-          "
-        >
+        <div className="mt-6 flex items-center justify-end gap-x-6">
           <Button disabled={isLoading} secondary onClick={onClose}>
             Cancel
           </Button>
@@ -176,6 +151,6 @@ function SettingsModal({
       </form>
     </Modal>
   );
-};
+}
 
 export default SettingsModal;

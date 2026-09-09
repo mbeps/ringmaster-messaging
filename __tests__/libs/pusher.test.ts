@@ -3,9 +3,16 @@ import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
 const serverCtor = vi.fn(function ServerMock(this: Record<string, unknown>, options) {
   this.options = options;
 });
-const clientCtor = vi.fn(function ClientMock(this: Record<string, unknown>, key, options) {
+const clientCtor = vi.fn(function ClientMock(
+  this: Record<string, unknown>,
+  key: string,
+  options: unknown,
+) {
   this.key = key;
   this.options = options;
+  this.subscribe = vi.fn(function (this: unknown) {
+    return this;
+  });
 });
 
 vi.mock("pusher", () => ({
@@ -40,7 +47,7 @@ describe("libs/pusher", () => {
     process.env.PUSHER_SECRET = originalEnv.PUSHER_SECRET;
   });
 
-  it("wires up the server instance with secure defaults", async () => {
+  it("wires up the server instance with secure defaults without eagerly instantiating the client", async () => {
     const pusherModule = await import("@/libs/pusher");
 
     expect(serverCtor).toHaveBeenCalledWith({
@@ -59,30 +66,59 @@ describe("libs/pusher", () => {
         useTLS: true,
       },
     });
+    expect(clientCtor).not.toHaveBeenCalled();
   });
 
-  it("configures the client instance for browser usage", async () => {
+  it("configures the client instance for browser usage on property access and reuses singleton", async () => {
     const [{ API_ROUTES }, pusherModule] = await Promise.all([
       import("@/libs/routes"),
       import("@/libs/pusher"),
     ]);
 
+    expect(clientCtor).not.toHaveBeenCalled();
+
+    // Property access on proxy triggers lazy instantiation (testing property read branch)
+    expect(pusherModule.pusherClient.key).toBe("public-key");
+    expect(clientCtor).toHaveBeenCalledTimes(1);
     expect(clientCtor).toHaveBeenCalledWith("public-key", {
       channelAuthorization: {
-        endpoint: API_ROUTES.PUSHER_AUTH,
+        endpoint: API_ROUTES.PUSHER.auth,
         transport: "ajax",
       },
       cluster: "eu",
     });
-    expect(pusherModule.pusherClient).toMatchObject({
+
+    expect(pusherModule.getPusherClient()).toMatchObject({
       key: "public-key",
       options: {
         channelAuthorization: {
-          endpoint: API_ROUTES.PUSHER_AUTH,
+          endpoint: API_ROUTES.PUSHER.auth,
           transport: "ajax",
         },
         cluster: "eu",
       },
     });
+
+    // Method invocation triggers value.bind(instance) branch and reuses singleton
+    pusherModule.pusherClient.subscribe("test-channel");
+    expect(clientCtor).toHaveBeenCalledTimes(1);
+  });
+
+  it("throws when instantiated or accessed on the server when window is undefined", async () => {
+    const pusherModule = await import("@/libs/pusher");
+    const originalWindow = globalThis.window;
+    try {
+      // @ts-expect-error simulating server environment where window is undefined
+      delete (globalThis as { window?: unknown }).window;
+
+      expect(() => pusherModule.getPusherClient()).toThrow(
+        "PusherClient cannot be instantiated on the server.",
+      );
+      expect(() => pusherModule.pusherClient.key).toThrow(
+        "PusherClient cannot be instantiated on the server.",
+      );
+    } finally {
+      globalThis.window = originalWindow;
+    }
   });
 });

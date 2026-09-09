@@ -45,4 +45,19 @@ describe("libs/prismadb", () => {
     expect(client).toBe(prismaInstances[0]);
     expect(globalThis.prisma).toBeUndefined();
   });
+
+  it("creates a fresh instance after the global cache is cleared", async () => {
+    const first = await import("@/libs/prismadb");
+    delete (globalThis as any).prisma;
+    vi.resetModules();
+
+    const second = await import("@/libs/prismadb");
+    expect(second.default).not.toBe(first.default);
+    expect(PrismaClientMock).toHaveBeenCalledTimes(2);
+  });
+
+  it("exports a single default client object", async () => {
+    const mod = await import("@/libs/prismadb");
+    expect(Object.keys(mod)).toEqual(["default"]);
+  });
 });

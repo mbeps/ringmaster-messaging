@@ -1,20 +1,21 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
+import { env } from "@/lib/env";
 import prisma from "@/libs/prismadb";
 
 export const auth = betterAuth({
-  secret: process.env.BETTER_AUTH_SECRET!,
-  baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
-  trustedOrigins: process.env.BETTER_AUTH_TRUSTED_ORIGINS
-    ? process.env.BETTER_AUTH_TRUSTED_ORIGINS.split(",")
+  secret: env.BETTER_AUTH_SECRET,
+  baseURL: env.BETTER_AUTH_URL,
+  trustedOrigins: env.BETTER_AUTH_TRUSTED_ORIGINS
+    ? env.BETTER_AUTH_TRUSTED_ORIGINS.split(",")
     : [],
   database: prismaAdapter(prisma, {
     provider: "mongodb",
   }),
   advanced: {
-      database: {
-          generateId: false,
-      },
+    database: {
+      generateId: false,
+    },
   },
   logger: {
     disabled: false,
@@ -25,7 +26,7 @@ export const auth = betterAuth({
           (arg: any) =>
             arg &&
             typeof arg === "object" &&
-            (arg.status === "FOUND" || arg.statusCode === 302)
+            (arg.status === "FOUND" || arg.statusCode === 302),
         );
         if (isRedirect) {
           return;
@@ -57,13 +58,12 @@ export const auth = betterAuth({
   },
   socialProviders: {
     github: {
-      clientId: process.env.CLIENT_ID_GITHUB as string,
-      clientSecret: process.env.CLIENT_SECRET_GITHUB as string,
+      clientId: env.CLIENT_ID_GITHUB,
+      clientSecret: env.CLIENT_SECRET_GITHUB,
     },
     google: {
-      clientId: process.env.CLIENT_ID_GOOGLE as string,
-      clientSecret: process.env.CLIENT_SECRET_GOOGLE as string,
+      clientId: env.CLIENT_ID_GOOGLE,
+      clientSecret: env.CLIENT_SECRET_GOOGLE,
     },
   },
 });
-

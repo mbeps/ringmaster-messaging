@@ -1,18 +1,19 @@
 "use client";
 
-import axios from "axios";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import { User } from "@prisma/client";
-import { CldUploadButton } from "next-cloudinary";
-import Image from "next/image";
-import { toast } from "react-hot-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Input from "@/components/inputs/Input";
+import type { User } from "@prisma/client";
+import axios from "axios";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { CldUploadButton } from "next-cloudinary";
+import { useState } from "react";
+import { type SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
 import Button from "@/components/Button";
+import Input from "@/components/inputs/Input";
+import { CLOUDINARY_CONFIG } from "@/lib/env";
 import { API_ROUTES } from "@/libs/routes";
-import { SettingsSchema } from "@/schema/SettingsSchema";
+import { type SettingsFormData, SettingsSchema } from "@/schema/SettingsSchema";
 
 interface AccountFormProps {
   currentUser: User;
@@ -32,10 +33,10 @@ function AccountForm({ currentUser }: AccountFormProps) {
     setValue,
     watch,
     formState: { errors },
-  } = useForm<FieldValues>({
+  } = useForm<SettingsFormData>({
     resolver: zodResolver(SettingsSchema),
     defaultValues: {
-      name: currentUser?.name,
+      name: currentUser?.name ?? "",
       image: currentUser?.image,
     },
   });
@@ -48,11 +49,11 @@ function AccountForm({ currentUser }: AccountFormProps) {
     });
   };
 
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+  const onSubmit: SubmitHandler<SettingsFormData> = (data) => {
     setIsLoading(true);
 
     axios
-      .post(API_ROUTES.SETTINGS, data)
+      .post(API_ROUTES.SETTINGS.path, data)
       .then(() => {
         router.refresh();
         toast.success("Profile updated successfully!");
@@ -71,11 +72,11 @@ function AccountForm({ currentUser }: AccountFormProps) {
         required
         register={register}
       />
-      
+
       <div>
         <label
           htmlFor="photo"
-          className="block text-sm font-medium leading-6 text-gray-900"
+          className="block font-medium text-gray-900 text-sm leading-6"
         >
           Photo
         </label>
@@ -90,7 +91,7 @@ function AccountForm({ currentUser }: AccountFormProps) {
           <CldUploadButton
             options={{ maxFiles: 1 }}
             onSuccess={handleUpload}
-            uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_PRESET}
+            uploadPreset={CLOUDINARY_CONFIG.uploadPreset}
           >
             <Button disabled={isLoading} secondary type="button">
               Change

@@ -1,14 +1,20 @@
 "use client";
 
-import { Menu, MenuButton, MenuItem, MenuItems, Transition } from "@headlessui/react";
-import { Fragment } from "react";
+import {
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems,
+  Transition,
+} from "@headlessui/react";
+import type { User } from "@prisma/client";
+import clsx from "clsx";
 import { useRouter } from "next/navigation";
-import { User } from "@prisma/client";
-import { HiUser, HiArrowLeftOnRectangle } from "react-icons/hi2";
-import Avatar from "../Avatar";
+import { Fragment } from "react";
+import { HiArrowLeftOnRectangle, HiUser } from "react-icons/hi2";
 import { authClient } from "@/lib/auth-client";
 import { ROUTES } from "@/libs/routes";
-import clsx from "clsx";
+import Avatar from "../Avatar";
 
 interface ProfileDropdownProps {
   currentUser: User;
@@ -22,21 +28,24 @@ interface ProfileDropdownProps {
  * @param currentUser - The current authenticated user
  * @returns Profile dropdown component
  */
-function ProfileDropdown({ currentUser, align = "left" }: ProfileDropdownProps) {
+function ProfileDropdown({
+  currentUser,
+  align = "left",
+}: ProfileDropdownProps) {
   const router = useRouter();
 
   const handleLogout = async () => {
     await authClient.signOut();
-    router.push(ROUTES.AUTH);
+    router.push(ROUTES.AUTH.path);
   };
 
   const handleProfileClick = () => {
-    router.push(ROUTES.PROFILE);
+    router.push(ROUTES.PROFILE.path);
   };
 
   return (
     <Menu as="div" className="relative">
-      <MenuButton className="cursor-pointer hover:opacity-75 transition focus:outline-none">
+      <MenuButton className="cursor-pointer transition hover:opacity-75 focus:outline-none">
         <Avatar user={currentUser} />
       </MenuButton>
 
@@ -50,20 +59,11 @@ function ProfileDropdown({ currentUser, align = "left" }: ProfileDropdownProps) 
         leaveTo="transform opacity-0 scale-95"
       >
         <MenuItems
-          className={clsx(`
-            absolute 
-            bottom-full
-            mb-2
-            w-48 
-            rounded-lg 
-            bg-white 
-            shadow-lg 
-            ring-1 
-            ring-black/5 
-            focus:outline-none
-            z-50
-          `,
-            align === "right" ? "right-0 origin-bottom-right" : "left-0 origin-bottom-left"
+          className={clsx(
+            `absolute bottom-full z-50 mb-2 w-48 rounded-lg bg-white shadow-lg ring-1 ring-black/5 focus:outline-none`,
+            align === "right"
+              ? "right-0 origin-bottom-right"
+              : "left-0 origin-bottom-left",
           )}
         >
           <div className="py-1">
@@ -71,10 +71,10 @@ function ProfileDropdown({ currentUser, align = "left" }: ProfileDropdownProps) 
               {({ focus }) => (
                 <button
                   onClick={handleProfileClick}
-                  className={`
-                    ${focus ? "bg-gray-100" : ""}
-                    flex w-full items-center gap-3 px-4 py-2 text-sm text-gray-700
-                  `}
+                  className={clsx(
+                    focus && "bg-gray-100",
+                    "flex w-full items-center gap-3 px-4 py-2 text-gray-700 text-sm",
+                  )}
                 >
                   <HiUser className="h-5 w-5 text-gray-500" />
                   Profile
@@ -85,10 +85,10 @@ function ProfileDropdown({ currentUser, align = "left" }: ProfileDropdownProps) 
               {({ focus }) => (
                 <button
                   onClick={handleLogout}
-                  className={`
-                    ${focus ? "bg-gray-100" : ""}
-                    flex w-full items-center gap-3 px-4 py-2 text-sm text-red-600
-                  `}
+                  className={clsx(
+                    focus && "bg-gray-100",
+                    "flex w-full items-center gap-3 px-4 py-2 text-red-600 text-sm",
+                  )}
                 >
                   <HiArrowLeftOnRectangle className="h-5 w-5 text-red-500" />
                   Logout
