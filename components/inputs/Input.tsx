@@ -1,18 +1,14 @@
 "use client";
 
 import clsx from "clsx";
-import type {
-  FieldErrors,
-  FieldValues,
-  UseFormRegister,
-} from "react-hook-form";
+import type { FieldErrors, UseFormRegister } from "react-hook-form";
 
 interface InputProps {
   label: string; // label for the input
   id: string; // id for the input
   type?: string; // type for the input
   required?: boolean; // whether the input is required
-  register: UseFormRegister<FieldValues>; // register function from react-hook-form
+  register: UseFormRegister<any>; // register function from react-hook-form
   errors: FieldErrors; // errors from react-hook-form
   disabled?: boolean; // whether the input is disabled
 }

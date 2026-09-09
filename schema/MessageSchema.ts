@@ -10,3 +10,5 @@ export const MessageSchema = z
     message: "Message or image is required",
     path: ["message"],
   });
+
+export type MessageFormData = z.infer<typeof MessageSchema>;

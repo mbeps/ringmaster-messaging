@@ -7,10 +7,10 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { CldUploadButton } from "next-cloudinary";
 import { useState } from "react";
-import { type FieldValues, type SubmitHandler, useForm } from "react-hook-form";
+import { type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { API_ROUTES } from "@/libs/routes";
-import { SettingsSchema } from "@/schema/SettingsSchema";
+import { type SettingsFormData, SettingsSchema } from "@/schema/SettingsSchema";
 import Button from "../Button";
 import Input from "../inputs/Input";
 import Modal from "../modals/Modal";
@@ -43,10 +43,10 @@ function SettingsModal({ isOpen, onClose, currentUser }: SettingsModalProps) {
     setValue,
     watch,
     formState: { errors },
-  } = useForm<FieldValues>({
+  } = useForm<SettingsFormData>({
     resolver: zodResolver(SettingsSchema),
     defaultValues: {
-      name: currentUser?.name,
+      name: currentUser?.name ?? "",
       image: currentUser?.image,
     },
   });
@@ -73,7 +73,7 @@ function SettingsModal({ isOpen, onClose, currentUser }: SettingsModalProps) {
    *
    * @param data { name, image }: new name and image of the user
    */
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+  const onSubmit: SubmitHandler<SettingsFormData> = (data) => {
     setIsLoading(true); // start loading the update of the user's profile
 
     axios

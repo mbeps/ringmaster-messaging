@@ -76,10 +76,18 @@ function LinkedAccountsList() {
       return;
     }
 
+    const accountToUnlink = accounts.find(
+      (acc) => acc.providerId === providerId,
+    );
+    if (!accountToUnlink) {
+      toast.error("Account not found");
+      return;
+    }
+
     setActionLoading(providerId);
     try {
       const { error } = await authClient.unlinkAccount({
-        providerId,
+        accountId: accountToUnlink.accountId,
       });
 
       if (error) {

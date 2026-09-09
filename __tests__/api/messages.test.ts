@@ -132,7 +132,7 @@ describe("POST /api/messages", () => {
     mockGetCurrentUser.mockResolvedValue(currentUser);
     const res = await post({ message: "hi" });
     expect(res.status).toBe(400);
-    expect(await res.text()).toBe("Required");
+    expect(await res.text()).toBe("Invalid input: expected string, received undefined");
     expect(mockPrisma.message.create).not.toHaveBeenCalled();
   });
 

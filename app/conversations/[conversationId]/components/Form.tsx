@@ -4,11 +4,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { CldUploadButton } from "next-cloudinary";
 import { useEffect } from "react";
-import { type FieldValues, type SubmitHandler, useForm } from "react-hook-form";
+import { type SubmitHandler, useForm } from "react-hook-form";
 import { HiPaperAirplane, HiPhoto } from "react-icons/hi2";
 import useConversation from "@/hooks/useConversation";
 import { API_ROUTES } from "@/libs/routes";
-import { MessageSchema } from "@/schema/MessageSchema";
+import { type MessageFormData, MessageSchema } from "@/schema/MessageSchema";
 import MessageInput from "./MessageInput";
 
 /**
@@ -30,7 +30,7 @@ function Form() {
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm<FieldValues>({
+  } = useForm<MessageFormData>({
     resolver: zodResolver(MessageSchema),
     defaultValues: {
       message: "",
@@ -46,9 +46,9 @@ function Form() {
    * Function which handles the submission of the form.
    * Creates a new message for the current conversation with the data from the form.
    *
-   * @param data (FieldValues): data from the form
+   * @param data (MessageFormData): data from the form
    */
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+  const onSubmit: SubmitHandler<MessageFormData> = (data) => {
     setValue("message", ""); // once sent clear message input
     axios.post(API_ROUTES.MESSAGES, {
       ...data,

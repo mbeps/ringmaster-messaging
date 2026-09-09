@@ -7,12 +7,12 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { CldUploadButton } from "next-cloudinary";
 import { useState } from "react";
-import { type FieldValues, type SubmitHandler, useForm } from "react-hook-form";
+import { type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import Button from "@/components/Button";
 import Input from "@/components/inputs/Input";
 import { API_ROUTES } from "@/libs/routes";
-import { SettingsSchema } from "@/schema/SettingsSchema";
+import { type SettingsFormData, SettingsSchema } from "@/schema/SettingsSchema";
 
 interface AccountFormProps {
   currentUser: User;
@@ -32,10 +32,10 @@ function AccountForm({ currentUser }: AccountFormProps) {
     setValue,
     watch,
     formState: { errors },
-  } = useForm<FieldValues>({
+  } = useForm<SettingsFormData>({
     resolver: zodResolver(SettingsSchema),
     defaultValues: {
-      name: currentUser?.name,
+      name: currentUser?.name ?? "",
       image: currentUser?.image,
     },
   });
@@ -48,7 +48,7 @@ function AccountForm({ currentUser }: AccountFormProps) {
     });
   };
 
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+  const onSubmit: SubmitHandler<SettingsFormData> = (data) => {
     setIsLoading(true);
 
     axios
