@@ -75,7 +75,7 @@ describe("AuthForm", () => {
 
     render(<AuthForm />);
 
-    expect(pushMock).toHaveBeenCalledWith(ROUTES.USERS);
+    expect(pushMock).toHaveBeenCalledWith(ROUTES.USERS.path);
   });
 
   it("renders LOGIN variant by default with Email and Password inputs, but not Name", () => {
@@ -137,14 +137,14 @@ describe("AuthForm", () => {
       expect(signInEmailMock).toHaveBeenCalledWith({
         email: "user@example.com",
         password: "secret123",
-        callbackURL: ROUTES.USERS,
+        callbackURL: ROUTES.USERS.path,
         fetchOptions: expect.objectContaining({
           onSuccess: expect.any(Function),
           onError: expect.any(Function),
         }),
       });
       expect(toastSuccessMock).toHaveBeenCalledWith("Logged in!");
-      expect(pushMock).toHaveBeenCalledWith(ROUTES.USERS);
+      expect(pushMock).toHaveBeenCalledWith(ROUTES.USERS.path);
     });
   });
 
@@ -200,14 +200,14 @@ describe("AuthForm", () => {
         name: "Jane Doe",
         email: "jane@example.com",
         password: "P@ssword123",
-        callbackURL: ROUTES.USERS,
+        callbackURL: ROUTES.USERS.path,
         fetchOptions: expect.objectContaining({
           onSuccess: expect.any(Function),
           onError: expect.any(Function),
         }),
       });
       expect(toastSuccessMock).toHaveBeenCalledWith("Account created!");
-      expect(pushMock).toHaveBeenCalledWith(ROUTES.USERS);
+      expect(pushMock).toHaveBeenCalledWith(ROUTES.USERS.path);
     });
   });
 
@@ -259,7 +259,7 @@ describe("AuthForm", () => {
 
     expect(signInSocialMock).toHaveBeenCalledWith({
       provider: "github",
-      callbackURL: ROUTES.USERS,
+      callbackURL: ROUTES.USERS.path,
       fetchOptions: expect.objectContaining({
         onError: expect.any(Function),
       }),
@@ -275,7 +275,7 @@ describe("AuthForm", () => {
 
     expect(signInSocialMock).toHaveBeenCalledWith({
       provider: "google",
-      callbackURL: ROUTES.USERS,
+      callbackURL: ROUTES.USERS.path,
       fetchOptions: expect.objectContaining({
         onError: expect.any(Function),
       }),

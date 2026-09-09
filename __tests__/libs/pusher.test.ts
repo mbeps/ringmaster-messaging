@@ -69,7 +69,7 @@ describe("libs/pusher", () => {
 
     expect(clientCtor).toHaveBeenCalledWith("public-key", {
       channelAuthorization: {
-        endpoint: API_ROUTES.PUSHER_AUTH,
+        endpoint: API_ROUTES.PUSHER.auth,
         transport: "ajax",
       },
       cluster: "eu",
@@ -78,7 +78,7 @@ describe("libs/pusher", () => {
       key: "public-key",
       options: {
         channelAuthorization: {
-          endpoint: API_ROUTES.PUSHER_AUTH,
+          endpoint: API_ROUTES.PUSHER.auth,
           transport: "ajax",
         },
         cluster: "eu",

@@ -117,7 +117,7 @@ describe("DeleteAccountSection", () => {
       expect(modalConfirmBtn).toBeEnabled();
     });
 
-    it("executes account deletion, signs out, shows success toast, and redirects to ROUTES.AUTH on success", async () => {
+    it("executes account deletion, signs out, shows success toast, and redirects to ROUTES.AUTH.path on success", async () => {
       vi.mocked(axios.delete).mockResolvedValueOnce({
         data: { success: true },
       });
@@ -136,10 +136,10 @@ describe("DeleteAccountSection", () => {
       fireEvent.click(modalConfirmBtn);
 
       await waitFor(() => {
-        expect(axios.delete).toHaveBeenCalledWith(API_ROUTES.ACCOUNT_DELETE);
+        expect(axios.delete).toHaveBeenCalledWith(API_ROUTES.ACCOUNT.delete);
         expect(signOutMock).toHaveBeenCalledTimes(1);
         expect(toast.success).toHaveBeenCalledWith("Account deleted successfully");
-        expect(push).toHaveBeenCalledWith(ROUTES.AUTH);
+        expect(push).toHaveBeenCalledWith(ROUTES.AUTH.path);
       });
 
       // Modal is closed after deletion
@@ -164,7 +164,7 @@ describe("DeleteAccountSection", () => {
       fireEvent.click(modalConfirmBtn);
 
       await waitFor(() => {
-        expect(axios.delete).toHaveBeenCalledWith(API_ROUTES.ACCOUNT_DELETE);
+        expect(axios.delete).toHaveBeenCalledWith(API_ROUTES.ACCOUNT.delete);
         expect(toast.error).toHaveBeenCalledWith("Failed to delete account");
       });
 
@@ -195,7 +195,7 @@ describe("DeleteAccountSection", () => {
       fireEvent.click(modalConfirmBtn);
 
       await waitFor(() => {
-        expect(axios.delete).toHaveBeenCalledWith(API_ROUTES.ACCOUNT_DELETE);
+        expect(axios.delete).toHaveBeenCalledWith(API_ROUTES.ACCOUNT.delete);
       });
 
       expect(signOutMock).not.toHaveBeenCalled();

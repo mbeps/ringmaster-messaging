@@ -29,7 +29,7 @@ function Body({ initialMessages }: BodyProps) {
    * Marks the message as seen when the conversation is opened.
    */
   useEffect(() => {
-    axios.post(API_ROUTES.CONVERSATION_SEEN(conversationId)); // mark as seen
+    axios.post(API_ROUTES.CONVERSATIONS.seen(conversationId)); // mark as seen
   }, [conversationId]);
 
   /**
@@ -41,7 +41,7 @@ function Body({ initialMessages }: BodyProps) {
     bottomRef?.current?.scrollIntoView(); // scroll to bottom when conversation is opened
 
     const messageHandler = (message: FullMessageType) => {
-      axios.post(API_ROUTES.CONVERSATION_SEEN(conversationId)); // mark as seen when new message is received while conversation is open
+      axios.post(API_ROUTES.CONVERSATIONS.seen(conversationId)); // mark as seen when new message is received while conversation is open
 
       setMessages((current) => {
         // if message already exists, update it

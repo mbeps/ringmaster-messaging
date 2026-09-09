@@ -68,7 +68,7 @@ describe("ProfileDropdown", () => {
     await userEvent.click(screen.getByText("Profile"));
 
     expect(push).toHaveBeenCalledTimes(1);
-    expect(push).toHaveBeenCalledWith(ROUTES.PROFILE);
+    expect(push).toHaveBeenCalledWith(ROUTES.PROFILE.path);
   });
 
   it("clicking Logout calls authClient.signOut() and redirects to ROUTES.AUTH", async () => {
@@ -79,7 +79,7 @@ describe("ProfileDropdown", () => {
 
     expect(signOut).toHaveBeenCalledTimes(1);
     await waitFor(() => {
-      expect(push).toHaveBeenCalledWith(ROUTES.AUTH);
+      expect(push).toHaveBeenCalledWith(ROUTES.AUTH.path);
     });
   });
 

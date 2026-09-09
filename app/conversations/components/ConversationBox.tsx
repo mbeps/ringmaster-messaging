@@ -36,7 +36,7 @@ function ConversationBox({ data, selected }: ConversationBoxProps) {
 
   // Redirects to the conversation page when the conversation box is clicked
   const handleClick = () => {
-    router.push(ROUTES.CONVERSATION_ID(data.id));
+    router.push(ROUTES.CONVERSATIONS.detail(data.id));
   };
 
   // Gets the last message in the conversation

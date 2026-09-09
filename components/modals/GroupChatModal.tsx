@@ -59,7 +59,7 @@ function GroupChatModal({ isOpen, onClose, users = [] }: GroupChatModalProps) {
     setIsLoading(true); // start loading the creation of the group chat
 
     axios
-      .post(API_ROUTES.CONVERSATIONS, {
+      .post(API_ROUTES.CONVERSATIONS.path, {
         ...data,
         isGroup: true,
       }) // create the group chat

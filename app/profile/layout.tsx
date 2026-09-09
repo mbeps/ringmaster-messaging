@@ -15,7 +15,7 @@ export default async function ProfileLayout({
   const currentUser = await getCurrentUser();
 
   if (!currentUser) {
-    redirect(ROUTES.AUTH);
+    redirect(ROUTES.AUTH.path);
   }
 
   return <ProfileLayoutClient>{children}</ProfileLayoutClient>;

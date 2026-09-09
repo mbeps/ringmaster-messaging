@@ -73,7 +73,7 @@ describe("UserBox", () => {
     // Displays loading modal while the request is in flight
     expect(screen.getByTestId("loading-modal")).toBeInTheDocument();
     expect(axios.post).toHaveBeenCalledTimes(1);
-    expect(axios.post).toHaveBeenCalledWith(API_ROUTES.CONVERSATIONS, {
+    expect(axios.post).toHaveBeenCalledWith(API_ROUTES.CONVERSATIONS.path, {
       userId: "user-123",
     });
     expect(push).not.toHaveBeenCalled();
@@ -83,7 +83,7 @@ describe("UserBox", () => {
 
     await waitFor(() => {
       expect(push).toHaveBeenCalledWith(
-        ROUTES.CONVERSATION_ID("conv-created-456")
+        ROUTES.CONVERSATIONS.detail("conv-created-456")
       );
     });
 

@@ -77,7 +77,7 @@ function SettingsModal({ isOpen, onClose, currentUser }: SettingsModalProps) {
     setIsLoading(true); // start loading the update of the user's profile
 
     axios
-      .post(API_ROUTES.SETTINGS, data) // update the user's profile
+      .post(API_ROUTES.SETTINGS.path, data) // update the user's profile
       .then(() => {
         router.refresh(); // refresh the page
         onClose(); // close the modal

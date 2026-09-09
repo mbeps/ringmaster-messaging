@@ -25,15 +25,15 @@ const useRoutes = (): SidebarRoute[] => {
   const routes: SidebarRoute[] = [
     {
       label: "Chat",
-      href: ROUTES.CONVERSATIONS,
+      href: ROUTES.CONVERSATIONS.path,
       icon: HiChat,
-      active: pathname === ROUTES.CONVERSATIONS || !!conversationId,
+      active: pathname === ROUTES.CONVERSATIONS.path || !!conversationId,
     },
     {
       label: "Users",
-      href: ROUTES.USERS,
+      href: ROUTES.USERS.path,
       icon: HiUsers,
-      active: pathname === ROUTES.USERS,
+      active: pathname === ROUTES.USERS.path,
     },
   ];
 

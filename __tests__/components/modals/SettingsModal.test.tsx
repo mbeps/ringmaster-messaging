@@ -87,7 +87,7 @@ describe("SettingsModal", () => {
 
     await waitFor(() => {
       expect(axios.post).toHaveBeenCalledWith(
-        API_ROUTES.SETTINGS,
+        API_ROUTES.SETTINGS.path,
         expect.objectContaining({ name: "New Name" }),
       );
     });
@@ -103,7 +103,7 @@ describe("SettingsModal", () => {
 
     await waitFor(() => {
       expect(axios.post).toHaveBeenCalledWith(
-        API_ROUTES.SETTINGS,
+        API_ROUTES.SETTINGS.path,
         expect.objectContaining({ image: "https://res.cloud/new.png" }),
       );
     });

@@ -34,13 +34,13 @@ function DeleteAccountSection({ userEmail }: DeleteAccountSectionProps) {
 
     try {
       // Call our custom API to delete user data
-      const response = await axios.delete(API_ROUTES.ACCOUNT_DELETE);
+      const response = await axios.delete(API_ROUTES.ACCOUNT.delete);
 
       if (response.data.success) {
         // Sign out the user
         await authClient.signOut();
         toast.success("Account deleted successfully");
-        router.push(ROUTES.AUTH);
+        router.push(ROUTES.AUTH.path);
       }
     } catch (_error) {
       toast.error("Failed to delete account");

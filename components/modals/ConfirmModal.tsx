@@ -37,10 +37,10 @@ function ConfirmModal({ isOpen, onClose }: ConfirmModalProps) {
     setIsLoading(true); // start loading
 
     axios
-      .delete(API_ROUTES.CONVERSATION_ID(conversationId)) // delete the conversation
+      .delete(API_ROUTES.CONVERSATIONS.detail(conversationId)) // delete the conversation
       .then(() => {
         onClose(); // close the modal
-        router.push(ROUTES.CONVERSATIONS); // redirect to the conversations page
+        router.push(ROUTES.CONVERSATIONS.path); // redirect to the conversations page
         router.refresh(); // refresh the page
       })
       .catch(() => toast.error("Something went wrong!")) // if there is an error, display an error message

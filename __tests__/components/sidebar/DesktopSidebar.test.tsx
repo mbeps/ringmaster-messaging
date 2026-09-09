@@ -46,7 +46,7 @@ describe("DesktopSidebar", () => {
     const usersLink = screen.getByRole("link", { name: "Users" });
 
     expect(chatLink).toBeInTheDocument();
-    expect(chatLink).toHaveAttribute("href", ROUTES.CONVERSATIONS);
+    expect(chatLink).toHaveAttribute("href", ROUTES.CONVERSATIONS.path);
 
     // Since pathname is /conversations, Chat link should have active styling
     const chatClasses = chatLink.className.split(/\s+/);
@@ -57,7 +57,7 @@ describe("DesktopSidebar", () => {
     expect(usersClasses).not.toContain("text-black");
 
     expect(usersLink).toBeInTheDocument();
-    expect(usersLink).toHaveAttribute("href", ROUTES.USERS);
+    expect(usersLink).toHaveAttribute("href", ROUTES.USERS.path);
   });
 
   it("renders ProfileDropdown with currentUser", async () => {

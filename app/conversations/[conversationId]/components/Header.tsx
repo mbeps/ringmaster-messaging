@@ -52,7 +52,7 @@ function Header({ conversation }: HeaderProps) {
       <div className="flex w-full items-center justify-between border-b bg-white px-4 py-3 shadow-xs sm:px-4 lg:px-6">
         <div className="flex items-center gap-3">
           <Link
-            href={ROUTES.CONVERSATIONS}
+            href={ROUTES.CONVERSATIONS.path}
             className="block cursor-pointer text-red-500 transition hover:text-red-600 lg:hidden"
           >
             <HiChevronLeft size={32} />

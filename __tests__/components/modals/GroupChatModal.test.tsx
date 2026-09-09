@@ -97,7 +97,7 @@ describe("GroupChatModal", () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
-  it("submits form and calls axios.post(API_ROUTES.CONVERSATIONS, data) on valid input", async () => {
+  it("submits form and calls axios.post(API_ROUTES.CONVERSATIONS.path, data) on valid input", async () => {
     const axios = (await import("axios")).default;
     vi.mocked(axios.post).mockResolvedValueOnce({ data: {} });
     const onClose = vi.fn();
@@ -111,7 +111,7 @@ describe("GroupChatModal", () => {
 
     await waitFor(() => {
       expect(axios.post).toHaveBeenCalledWith(
-        API_ROUTES.CONVERSATIONS,
+        API_ROUTES.CONVERSATIONS.path,
         expect.objectContaining({
           name: "Engineering Team",
           members: [{ value: "user-1" }, { value: "user-2" }],

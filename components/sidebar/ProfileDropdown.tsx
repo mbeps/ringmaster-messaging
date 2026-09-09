@@ -36,11 +36,11 @@ function ProfileDropdown({
 
   const handleLogout = async () => {
     await authClient.signOut();
-    router.push(ROUTES.AUTH);
+    router.push(ROUTES.AUTH.path);
   };
 
   const handleProfileClick = () => {
-    router.push(ROUTES.PROFILE);
+    router.push(ROUTES.PROFILE.path);
   };
 
   return (

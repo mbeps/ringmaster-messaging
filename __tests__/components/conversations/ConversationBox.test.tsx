@@ -217,7 +217,7 @@ describe("ConversationBox", () => {
       fireEvent.click(box!);
 
       expect(push).toHaveBeenCalledTimes(1);
-      expect(push).toHaveBeenCalledWith(ROUTES.CONVERSATION_ID("conversation-42"));
+      expect(push).toHaveBeenCalledWith(ROUTES.CONVERSATIONS.detail("conversation-42"));
     });
   });
 

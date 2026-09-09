@@ -135,7 +135,7 @@ describe("Header", () => {
     render(<Header conversation={directConversation} />);
 
     const link = screen.getByRole("link");
-    expect(link).toHaveAttribute("href", ROUTES.CONVERSATIONS);
+    expect(link).toHaveAttribute("href", ROUTES.CONVERSATIONS.path);
     expect(link.querySelector("svg")).toBeInTheDocument();
   });
 

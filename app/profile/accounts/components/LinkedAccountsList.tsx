@@ -61,7 +61,7 @@ function LinkedAccountsList() {
     try {
       await authClient.linkSocial({
         provider: providerId as "github" | "google",
-        callbackURL: ROUTES.PROFILE_ACCOUNTS,
+        callbackURL: ROUTES.PROFILE.accounts,
       });
     } catch (_error) {
       toast.error("Failed to link account");

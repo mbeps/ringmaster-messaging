@@ -20,7 +20,7 @@ const useConversationMock = vi.mocked(useConversation);
 
 describe("useRoutes", () => {
   it("returns two routes with correct labels and hrefs", () => {
-    usePathnameMock.mockReturnValue(ROUTES.CONVERSATIONS);
+    usePathnameMock.mockReturnValue(ROUTES.CONVERSATIONS.path);
     useConversationMock.mockReturnValue({
       isOpen: false,
       conversationId: "",
@@ -29,13 +29,13 @@ describe("useRoutes", () => {
     expect(
       result.current.map((r) => ({ label: r.label, href: r.href }))
     ).toEqual([
-      { label: "Chat", href: ROUTES.CONVERSATIONS },
-      { label: "Users", href: ROUTES.USERS },
+      { label: "Chat", href: ROUTES.CONVERSATIONS.path },
+      { label: "Users", href: ROUTES.USERS.path },
     ]);
   });
 
   it("marks Chat active on the conversations pathname", () => {
-    usePathnameMock.mockReturnValue(ROUTES.CONVERSATIONS);
+    usePathnameMock.mockReturnValue(ROUTES.CONVERSATIONS.path);
     useConversationMock.mockReturnValue({
       isOpen: false,
       conversationId: "",
@@ -57,7 +57,7 @@ describe("useRoutes", () => {
   });
 
   it("marks Users active only on the users pathname", () => {
-    usePathnameMock.mockReturnValue(ROUTES.USERS);
+    usePathnameMock.mockReturnValue(ROUTES.USERS.path);
     useConversationMock.mockReturnValue({
       isOpen: false,
       conversationId: "",
@@ -68,7 +68,7 @@ describe("useRoutes", () => {
   });
 
   it("has no route active on unrelated pathnames", () => {
-    usePathnameMock.mockReturnValue("/profile");
+    usePathnameMock.mockReturnValue(ROUTES.PROFILE.path);
     useConversationMock.mockReturnValue({
       isOpen: false,
       conversationId: "",

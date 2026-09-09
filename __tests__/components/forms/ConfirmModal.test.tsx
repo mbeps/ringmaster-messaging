@@ -43,9 +43,9 @@ describe("ConfirmModal", () => {
     fireEvent.click(screen.getByRole("button", { name: "Delete" }));
 
     await waitFor(() => {
-      expect(axios.delete).toHaveBeenCalledWith(API_ROUTES.CONVERSATION_ID("conv-1"));
+      expect(axios.delete).toHaveBeenCalledWith(API_ROUTES.CONVERSATIONS.detail("conv-1"));
       expect(onClose).toHaveBeenCalled();
-      expect(push).toHaveBeenCalledWith(ROUTES.CONVERSATIONS);
+      expect(push).toHaveBeenCalledWith(ROUTES.CONVERSATIONS.path);
       expect(refresh).toHaveBeenCalled();
     });
   });

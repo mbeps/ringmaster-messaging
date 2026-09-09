@@ -50,7 +50,7 @@ function Form() {
    */
   const onSubmit: SubmitHandler<MessageFormData> = (data) => {
     setValue("message", ""); // once sent clear message input
-    axios.post(API_ROUTES.MESSAGES, {
+    axios.post(API_ROUTES.MESSAGES.path, {
       ...data,
       conversationId: conversationId,
     }); // create new message for the current conversation
@@ -64,7 +64,7 @@ function Form() {
    * @param result (any): result from the image upload
    */
   const handleUpload = (result: any) => {
-    axios.post(API_ROUTES.MESSAGES, {
+    axios.post(API_ROUTES.MESSAGES.path, {
       image: result?.info?.secure_url, // store image URL from Cloudinary in database
       conversationId: conversationId, // store current conversation ID in database
     }); // create new message for the current conversation

@@ -27,9 +27,9 @@ function UserBox({ data }: UserBoxProps) {
     setIsLoading(true);
 
     axios
-      .post(API_ROUTES.CONVERSATIONS, { userId: data.id }) // create conversation
+      .post(API_ROUTES.CONVERSATIONS.path, { userId: data.id }) // create conversation
       .then((data) => {
-        router.push(ROUTES.CONVERSATION_ID(data.data.id));
+        router.push(ROUTES.CONVERSATIONS.detail(data.data.id));
       }) // redirect to conversation
       .finally(() => setIsLoading(false));
   };

@@ -52,7 +52,7 @@ function AccountForm({ currentUser }: AccountFormProps) {
     setIsLoading(true);
 
     axios
-      .post(API_ROUTES.SETTINGS, data)
+      .post(API_ROUTES.SETTINGS.path, data)
       .then(() => {
         router.refresh();
         toast.success("Profile updated successfully!");

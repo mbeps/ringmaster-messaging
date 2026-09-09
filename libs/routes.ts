@@ -1,44 +1,67 @@
 /**
- * Centralized route definitions for the application.
- * This ensures consistency across the codebase and makes refactoring easier.
+ * Centralised route definitions for the application.
+ * Follows the centralised-routes pattern:
+ * - Base path constants
+ * - Grouped by domain
+ * - Static strings for static routes (`path`)
+ * - Typed helper functions for dynamic routes
+ * - Access control and auth concerns kept separate
  */
 
+const USERS_BASE = "/users";
+const CONVERSATIONS_BASE = "/conversations";
+const PROFILE_BASE = "/profile";
+
+const API_BASE = "/api";
+const API_CONVERSATIONS_BASE = `${API_BASE}/conversations`;
+
 /**
- * UI Routes - Client-side navigation paths
+ * UI Routes - Client-side navigation paths grouped by domain.
  */
 export const ROUTES = {
-  AUTH: "/",
-  USERS: "/users",
-  CONVERSATIONS: "/conversations",
-  CONVERSATION_ID: (id: string) => `/conversations/${id}`,
-  PROFILE: "/profile",
-  PROFILE_ACCOUNT: "/profile/account",
-  PROFILE_SECURITY: "/profile/security",
-  PROFILE_SESSIONS: "/profile/sessions",
-  PROFILE_ACCOUNTS: "/profile/accounts",
-  PROFILE_DANGER: "/profile/danger",
+  AUTH: {
+    path: "/",
+  },
+  USERS: {
+    path: USERS_BASE,
+  },
+  CONVERSATIONS: {
+    path: CONVERSATIONS_BASE,
+    detail: (id: string) => `${CONVERSATIONS_BASE}/${id}`,
+  },
+  PROFILE: {
+    path: PROFILE_BASE,
+    account: `${PROFILE_BASE}/account`,
+    security: `${PROFILE_BASE}/security`,
+    sessions: `${PROFILE_BASE}/sessions`,
+    accounts: `${PROFILE_BASE}/accounts`,
+    danger: `${PROFILE_BASE}/danger`,
+  },
 } as const;
 
+export type Routes = typeof ROUTES;
+
 /**
- * API Routes - Backend endpoints
+ * API Routes - Backend endpoints grouped by domain.
  */
 export const API_ROUTES = {
-  REGISTER: "/api/register",
-  CONVERSATIONS: "/api/conversations",
-  CONVERSATION_ID: (id: string) => `/api/conversations/${id}`,
-  CONVERSATION_SEEN: (id: string) => `/api/conversations/${id}/seen`,
-  MESSAGES: "/api/messages",
-  SETTINGS: "/api/settings",
-  PUSHER_AUTH: "/api/pusher/auth",
-  ACCOUNT_DELETE: "/api/account/delete",
+  CONVERSATIONS: {
+    path: API_CONVERSATIONS_BASE,
+    detail: (id: string) => `${API_CONVERSATIONS_BASE}/${id}`,
+    seen: (id: string) => `${API_CONVERSATIONS_BASE}/${id}/seen`,
+  },
+  MESSAGES: {
+    path: `${API_BASE}/messages`,
+  },
+  SETTINGS: {
+    path: `${API_BASE}/settings`,
+  },
+  PUSHER: {
+    auth: `${API_BASE}/pusher/auth`,
+  },
+  ACCOUNT: {
+    delete: `${API_BASE}/account/delete`,
+  },
 } as const;
 
-/**
- * Protected routes that require authentication.
- * Used by middleware to enforce access control.
- */
-export const PROTECTED_ROUTES = [
-  ROUTES.USERS,
-  ROUTES.CONVERSATIONS,
-  ROUTES.PROFILE,
-] as const;
+export type ApiRoutes = typeof API_ROUTES;

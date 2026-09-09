@@ -15,31 +15,31 @@ import { ROUTES } from "@/libs/routes";
 export const profileNavItems = [
   {
     label: "Account",
-    href: ROUTES.PROFILE_ACCOUNT,
+    href: ROUTES.PROFILE.account,
     icon: HiUser,
     description: "Update your profile information",
   },
   {
     label: "Security",
-    href: ROUTES.PROFILE_SECURITY,
+    href: ROUTES.PROFILE.security,
     icon: HiShieldCheck,
     description: "Change your password",
   },
   {
     label: "Sessions",
-    href: ROUTES.PROFILE_SESSIONS,
+    href: ROUTES.PROFILE.sessions,
     icon: HiDevicePhoneMobile,
     description: "Manage active sessions",
   },
   {
     label: "Linked Accounts",
-    href: ROUTES.PROFILE_ACCOUNTS,
+    href: ROUTES.PROFILE.accounts,
     icon: HiLink,
     description: "Manage connected accounts",
   },
   {
     label: "Danger Zone",
-    href: ROUTES.PROFILE_DANGER,
+    href: ROUTES.PROFILE.danger,
     icon: HiExclamationTriangle,
     description: "Delete your account",
     danger: true,

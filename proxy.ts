@@ -1,6 +1,16 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { PROTECTED_ROUTES, ROUTES } from "@/libs/routes";
+import { ROUTES } from "@/libs/routes";
+
+/**
+ * Protected routes that require authentication.
+ * Kept in middleware proxy to separate route definitions from access control.
+ */
+export const PROTECTED_ROUTES = [
+  ROUTES.USERS.path,
+  ROUTES.CONVERSATIONS.path,
+  ROUTES.PROFILE.path,
+] as const;
 
 /**
  * Middleware (formerly proxy.ts) to handle protected routes.
@@ -23,7 +33,7 @@ export default function middleware(req: NextRequest) {
   );
 
   if (!isLoggedIn && isProtectedRoute) {
-    return NextResponse.redirect(new URL(ROUTES.AUTH, req.url));
+    return NextResponse.redirect(new URL(ROUTES.AUTH.path, req.url));
   }
 
   return NextResponse.next();

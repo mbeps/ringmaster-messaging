@@ -10,7 +10,7 @@ export default async function SecurityPage() {
   const currentUser = await getCurrentUser();
 
   if (!currentUser) {
-    redirect(ROUTES.AUTH);
+    redirect(ROUTES.AUTH.path);
   }
 
   return (

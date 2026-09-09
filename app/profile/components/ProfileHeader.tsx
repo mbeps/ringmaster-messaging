@@ -26,7 +26,7 @@ function ProfileHeader({ onMenuClick }: ProfileHeaderProps) {
           <HiBars3 className="h-6 w-6" />
         </button>
         <button
-          onClick={() => router.push(ROUTES.CONVERSATIONS)}
+          onClick={() => router.push(ROUTES.CONVERSATIONS.path)}
           className="flex items-center gap-2 rounded-lg px-3 py-2 text-gray-600 transition hover:bg-gray-100 hover:text-gray-900"
         >
           <HiArrowLeft className="h-5 w-5" />

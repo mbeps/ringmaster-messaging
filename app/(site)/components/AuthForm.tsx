@@ -32,7 +32,7 @@ function AuthForm() {
    */
   useEffect(() => {
     if (session) {
-      router.push(ROUTES.USERS);
+      router.push(ROUTES.USERS.path);
     }
   }, [session, router]);
 
@@ -69,11 +69,11 @@ function AuthForm() {
         email: data.email,
         password: data.password,
         name: data.name,
-        callbackURL: ROUTES.USERS,
+        callbackURL: ROUTES.USERS.path,
         fetchOptions: {
           onSuccess: () => {
             toast.success("Account created!");
-            router.push(ROUTES.USERS);
+            router.push(ROUTES.USERS.path);
           },
           onError: (ctx) => {
             toast.error(ctx.error.message || "Registration failed");
@@ -88,11 +88,11 @@ function AuthForm() {
       await authClient.signIn.email({
         email: data.email,
         password: data.password,
-        callbackURL: ROUTES.USERS,
+        callbackURL: ROUTES.USERS.path,
         fetchOptions: {
           onSuccess: () => {
             toast.success("Logged in!");
-            router.push(ROUTES.USERS);
+            router.push(ROUTES.USERS.path);
           },
           onError: (ctx) => {
             toast.error(ctx.error.message || "Invalid credentials!");
@@ -112,7 +112,7 @@ function AuthForm() {
     authClient.signIn
       .social({
         provider: action as "github" | "google",
-        callbackURL: ROUTES.USERS,
+        callbackURL: ROUTES.USERS.path,
         fetchOptions: {
           onError: (ctx) => {
             toast.error(`OAuth authentication failed: ${ctx.error.message}`);
