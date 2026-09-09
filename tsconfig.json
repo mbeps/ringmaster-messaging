@@ -40,5 +40,8 @@
     "**/*.spec.tsx",
     "vitest.config.ts",
     "vitest.setup.ts"
-  ]
+  ],
+  "watchOptions": {
+    "excludeDirectories": ["**/node_modules", "**/__tests__", "**/tests"]
+  }
 }

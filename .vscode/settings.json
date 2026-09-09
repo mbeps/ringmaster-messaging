@@ -29,5 +29,9 @@
   },
   "files.autoSave": "off",
   "testing.automaticallyOpenPeekView": "never",
-  "js/ts.tsserver.experimental.enableProjectDiagnostics": false
+  "js/ts.tsserver.experimental.enableProjectDiagnostics": false,
+  "files.watcherExclude": {
+    "**/__tests__/**": true,
+    "**/tests/**": true
+  }
 }

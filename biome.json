@@ -18,6 +18,10 @@
       "!public",
       "!__tests__",
       "!tests",
+      "!**/*.test.*",
+      "!**/*.spec.*",
+      "!vitest.config.ts",
+      "!vitest.setup.ts",
       "!.vscode",
       "!graphify-out"
     ],
