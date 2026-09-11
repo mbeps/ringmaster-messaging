@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 import getCurrentUser from "@/actions/getCurrentUser";
+import { getLogger } from "@/lib/logger";
 import prisma from "@/libs/prismadb";
 import { pusherServer } from "@/libs/pusher";
 import { ConversationSchema } from "@/schema/ConversationSchema";
+
+const log = getLogger(["app", "api", "conversations"]);
 
 /**
  * A post request route to create a new conversation.
@@ -29,6 +32,7 @@ export async function POST(request: Request) {
 
     // if the current user is not logged in, return an error
     if (!currentUser?.id || !currentUser?.email) {
+      log.warn("Unauthorized attempt to create conversation");
       return new NextResponse("Unauthorized", { status: 400 });
     }
 
@@ -65,11 +69,17 @@ export async function POST(request: Request) {
         }
       });
 
+      log.info(
+        "Group conversation created successfully (id: {conversationId})",
+        { conversationId: newConversation.id },
+      );
+
       return NextResponse.json(newConversation);
     }
 
     //^ SINGLE CONVERSATIONS
     if (!userId) {
+      log.warn("Conversation creation failed: missing userId");
       return new NextResponse("UserId required", { status: 400 });
     }
 
@@ -94,6 +104,12 @@ export async function POST(request: Request) {
     const singleConversation = existingConversations[0];
 
     if (singleConversation) {
+      log.debug(
+        "Returning existing single conversation (id: {conversationId})",
+        {
+          conversationId: singleConversation.id,
+        },
+      );
       return NextResponse.json(singleConversation);
     }
 
@@ -123,11 +139,22 @@ export async function POST(request: Request) {
       }
     });
 
+    log.info(
+      "Single conversation created successfully (id: {conversationId})",
+      { conversationId: newConversation.id },
+    );
+
     return NextResponse.json(newConversation);
   } catch (error) {
     if (error instanceof ZodError) {
+      log.warn("Conversation validation error: {message}", {
+        message: error.issues[0]?.message,
+      });
       return new NextResponse(error.issues[0].message, { status: 400 });
     }
+    log.error("Failed to create conversation: {error}", {
+      error: error instanceof Error ? error.message : String(error),
+    });
     return new NextResponse("Internal Error", { status: 500 });
   }
 }

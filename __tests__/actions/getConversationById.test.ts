@@ -11,6 +11,19 @@ vi.mock("@/actions/getCurrentUser", () => ({
   default: vi.fn(),
 }));
 
+const { mockLog } = vi.hoisted(() => ({
+  mockLog: {
+    debug: vi.fn(),
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+  },
+}));
+
+vi.mock("@/lib/logger", () => ({
+  getLogger: () => mockLog,
+}));
+
 import getConversationById from "@/actions/getConversationById";
 import getCurrentUser from "@/actions/getCurrentUser";
 
@@ -21,6 +34,7 @@ describe("getConversationById", () => {
   beforeEach(() => {
     resetPrismaMocks();
     mockedGetCurrentUser.mockReset();
+    vi.clearAllMocks();
   });
 
   afterEach(() => {
@@ -53,7 +67,6 @@ describe("getConversationById", () => {
   });
 
   it("returns null and logs when prisma throws", async () => {
-    const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
     mockedGetCurrentUser.mockResolvedValue({ email: "user@test.com" });
     (mockPrisma.conversation.findUnique as any).mockRejectedValue(
       new Error("db error")
@@ -62,9 +75,12 @@ describe("getConversationById", () => {
     const result = await getConversationById("abc");
 
     expect(result).toBeNull();
-    expect(consoleSpy).toHaveBeenCalledWith(
-      "SERVER_ERROR: ",
-      new Error("db error")
+    expect(mockLog.error).toHaveBeenCalledWith(
+      "Failed to fetch conversation by ID (id: {conversationId}): {error}",
+      {
+        conversationId: "abc",
+        error: new Error("db error"),
+      },
     );
   });
 });

@@ -1,6 +1,9 @@
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
+import { getLogger } from "@/lib/logger";
 import prisma from "@/libs/prismadb";
+
+const log = getLogger(["app", "actions", "user"]);
 
 /**
  * Gets the current authenticated user with full details from database.
@@ -8,6 +11,7 @@ import prisma from "@/libs/prismadb";
  * @returns User object or null if not authenticated
  */
 export default async function getCurrentUser() {
+  log.debug("Fetching current user");
   try {
     const session = await auth.api.getSession({
       headers: await headers(),
@@ -27,8 +31,12 @@ export default async function getCurrentUser() {
       return null;
     }
 
+    log.debug("Current user fetched (userId: {userId})", {
+      userId: currentUser.id,
+    });
     return currentUser;
-  } catch (_error: any) {
+  } catch (error) {
+    log.error("Failed to fetch current user: {error}", { error });
     return null;
   }
 }

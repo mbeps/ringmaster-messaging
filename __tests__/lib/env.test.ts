@@ -60,6 +60,7 @@ describe("lib/env", () => {
 
       expect(parsed.BETTER_AUTH_URL).toBe("http://localhost:3000");
       expect(parsed.NODE_ENV).toBe("development");
+      expect(parsed.LOG_LEVEL).toBe("info");
       expect(parsed.CLIENT_ID_GITHUB).toBe("");
       expect(parsed.CLIENT_SECRET_GITHUB).toBe("");
       expect(parsed.CLIENT_ID_GOOGLE).toBe("");
@@ -67,6 +68,35 @@ describe("lib/env", () => {
       expect(parsed.BETTER_AUTH_TRUSTED_ORIGINS).toBeUndefined();
       expect(parsed.AUTH_TRUST_HOST).toBeUndefined();
       expect(parsed.NEXT_PUBLIC_APP_URL).toBeUndefined();
+    });
+
+    it("transforms warn to warning for LOG_LEVEL", () => {
+      const parsed = validateEnv(
+        { ...validServerEnv, LOG_LEVEL: "warn" },
+        true,
+      );
+      expect(parsed.LOG_LEVEL).toBe("warning");
+    });
+
+    it("accepts valid LOG_LEVEL values", () => {
+      for (const level of ["debug", "info", "warning", "error", "fatal"]) {
+        const parsed = validateEnv(
+          { ...validServerEnv, LOG_LEVEL: level },
+          true,
+        );
+        expect(parsed.LOG_LEVEL).toBe(level);
+      }
+    });
+
+    it("throws when LOG_LEVEL is invalid", () => {
+      const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+      const invalidEnv = { ...validServerEnv, LOG_LEVEL: "verbose" };
+
+      expect(() => validateEnv(invalidEnv, true)).toThrow(
+        "Invalid environment variables",
+      );
+
+      errorSpy.mockRestore();
     });
 
     it("throws and logs formatted error when a required server secret is missing", () => {

@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
 import getCurrentUser from "@/actions/getCurrentUser";
-
+import { getLogger } from "@/lib/logger";
 import prisma from "@/libs/prismadb";
 import { pusherServer } from "@/libs/pusher";
+
+const log = getLogger(["app", "api", "conversations"]);
 
 interface IParams {
   conversationId?: string;
@@ -20,14 +22,22 @@ export async function DELETE(
   _request: Request,
   { params }: { params: Promise<IParams> },
 ) {
+  let currentConvId: string | undefined;
   try {
     // extract the conversation ID from the params
     const { conversationId } = await params;
+    currentConvId = conversationId;
     // get the current user who is logged in (trying to delete the conversation)
     const currentUser = await getCurrentUser();
 
     // if the current user is not logged in, return an error
     if (!currentUser?.id) {
+      log.warn(
+        "Unauthorized attempt to delete conversation (id: {conversationId})",
+        {
+          conversationId,
+        },
+      );
       return NextResponse.json(null);
     }
 
@@ -43,6 +53,9 @@ export async function DELETE(
 
     // if the conversation does not exist, return an error
     if (!existingConversation) {
+      log.warn("Conversation not found for deletion (id: {conversationId})", {
+        conversationId,
+      });
       return new NextResponse("Invalid ID", { status: 400 });
     }
 
@@ -67,8 +80,16 @@ export async function DELETE(
       }
     });
 
+    log.info("Conversation deleted successfully (id: {conversationId})", {
+      conversationId,
+    });
+
     return NextResponse.json(deletedConversation);
   } catch (_error) {
+    log.error("Failed to delete conversation (id: {conversationId}): {error}", {
+      conversationId: currentConvId,
+      error: _error instanceof Error ? _error.message : String(_error),
+    });
     return NextResponse.json(null);
   }
 }

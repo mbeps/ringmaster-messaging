@@ -1,8 +1,11 @@
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 import getCurrentUser from "@/actions/getCurrentUser";
+import { getLogger } from "@/lib/logger";
 import prisma from "@/libs/prismadb";
 import { SettingsSchema } from "@/schema/SettingsSchema";
+
+const log = getLogger(["app", "api", "settings"]);
 
 /**
  * A post request route for updating the user's settings (name and image).
@@ -21,6 +24,7 @@ export async function POST(request: Request) {
 
     // if the current user is not logged in, return an error
     if (!currentUser?.id) {
+      log.warn("Unauthorized attempt to update settings");
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
@@ -35,11 +39,21 @@ export async function POST(request: Request) {
       },
     });
 
+    log.info("Settings updated successfully (userId: {userId})", {
+      userId: currentUser.id,
+    });
+
     return NextResponse.json(updatedUser);
   } catch (error) {
     if (error instanceof ZodError) {
+      log.warn("Settings validation failed: {message}", {
+        message: error.issues[0]?.message,
+      });
       return new NextResponse(error.issues[0].message, { status: 400 });
     }
+    log.error("Failed to update settings: {error}", {
+      error: error instanceof Error ? error.message : String(error),
+    });
     return new NextResponse("Error", { status: 500 });
   }
 }
