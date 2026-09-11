@@ -1,6 +1,9 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import { getLogger } from "@/lib/logger";
 import { ROUTES } from "@/libs/routes";
+
+const log = getLogger(["app", "middleware"]);
 
 /**
  * Protected routes that require authentication.
@@ -32,10 +35,24 @@ export default function middleware(req: NextRequest) {
       req.nextUrl.pathname.startsWith(`${route}/`),
   );
 
+  log.debug("Checking route access for '{path}'", {
+    path: req.nextUrl.pathname,
+  });
+
   if (!isLoggedIn && isProtectedRoute) {
+    log.info(
+      "Redirecting unauthenticated request for '{path}' to '{redirect}'",
+      {
+        path: req.nextUrl.pathname,
+        redirect: ROUTES.AUTH.path,
+      },
+    );
     return NextResponse.redirect(new URL(ROUTES.AUTH.path, req.url));
   }
 
+  log.debug("Access granted for '{path}'", {
+    path: req.nextUrl.pathname,
+  });
   return NextResponse.next();
 }
 

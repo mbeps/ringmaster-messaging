@@ -1,7 +1,10 @@
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
+import { getLogger } from "@/lib/logger";
 import prisma from "@/libs/prismadb";
+
+const log = getLogger(["app", "api", "account"]);
 
 /**
  * DELETE handler for deleting a user account and all associated data.
@@ -18,6 +21,7 @@ export async function DELETE() {
     });
 
     if (!session?.user?.email) {
+      log.warn("Unauthorized attempt to delete account");
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -30,6 +34,7 @@ export async function DELETE() {
     });
 
     if (!user) {
+      log.warn("Account not found for deletion");
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
@@ -91,9 +96,16 @@ export async function DELETE() {
       where: { id: user.id },
     });
 
+    log.info(
+      "User account and associated data deleted successfully (userId: {userId})",
+      { userId: user.id },
+    );
+
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Error deleting account:", error);
+    log.error("Error deleting account: {error}", {
+      error: error instanceof Error ? error.message : String(error),
+    });
     return NextResponse.json(
       { error: "Failed to delete account" },
       { status: 500 },

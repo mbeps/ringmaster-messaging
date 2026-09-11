@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
-
 import getCurrentUser from "@/actions/getCurrentUser";
+import { getLogger } from "@/lib/logger";
 import prisma from "@/libs/prismadb";
 import { pusherServer } from "@/libs/pusher";
+
+const log = getLogger(["app", "api", "conversations"]);
 
 interface IParams {
   conversationId?: string;
@@ -21,14 +23,20 @@ export async function POST(
   _request: Request,
   { params }: { params: Promise<IParams> },
 ) {
+  let currentConvId: string | undefined;
   try {
     // Get current user who is logged in (sees the message)
     const currentUser = await getCurrentUser();
     // conversation where the message is
     const { conversationId } = await params;
+    currentConvId = conversationId;
 
     // If the current user is not logged in, return an error
     if (!currentUser?.id || !currentUser?.email) {
+      log.warn(
+        "Unauthorized attempt to mark message as seen (conversationId: {conversationId})",
+        { conversationId },
+      );
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
@@ -49,6 +57,10 @@ export async function POST(
 
     // If the conversation does not exist, return an error
     if (!conversation) {
+      log.warn(
+        "Conversation not found when marking seen (conversationId: {conversationId})",
+        { conversationId },
+      );
       return new NextResponse("Invalid ID", { status: 400 });
     }
 
@@ -57,6 +69,10 @@ export async function POST(
 
     // If there is no last message, return the conversation
     if (!lastMessage) {
+      log.debug(
+        "No messages to mark seen in conversation (conversationId: {conversationId})",
+        { conversationId },
+      );
       return NextResponse.json(conversation);
     }
 
@@ -96,8 +112,23 @@ export async function POST(
       updatedMessage,
     );
 
+    log.debug(
+      "Message marked as seen (conversationId: {conversationId}, messageId: {messageId})",
+      {
+        conversationId,
+        messageId: updatedMessage.id,
+      },
+    );
+
     return new NextResponse("Success");
   } catch (_error) {
+    log.error(
+      "Failed to mark message as seen (conversationId: {conversationId}): {error}",
+      {
+        conversationId: currentConvId,
+        error: _error instanceof Error ? _error.message : String(_error),
+      },
+    );
     return new NextResponse("Error", { status: 500 });
   }
 }

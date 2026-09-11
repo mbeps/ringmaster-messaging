@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 import getCurrentUser from "@/actions/getCurrentUser";
+import { getLogger } from "@/lib/logger";
 import prisma from "@/libs/prismadb";
 import { pusherServer } from "@/libs/pusher";
 import { MessageSchema } from "@/schema/MessageSchema";
+
+const log = getLogger(["app", "api", "messages"]);
 
 /**
  * A post request route to create a new message.
@@ -22,6 +25,7 @@ export async function POST(request: Request) {
     const { message, image, conversationId } = MessageSchema.parse(body);
 
     if (!currentUser?.id || !currentUser?.email) {
+      log.warn("Unauthorized attempt to send message");
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
@@ -86,11 +90,25 @@ export async function POST(request: Request) {
       });
     });
 
+    log.info(
+      "Message sent successfully (id: {messageId}, conversationId: {conversationId})",
+      {
+        messageId: newMessage.id,
+        conversationId,
+      },
+    );
+
     return NextResponse.json(newMessage);
   } catch (error) {
     if (error instanceof ZodError) {
+      log.warn("Message validation failed: {message}", {
+        message: error.issues[0]?.message,
+      });
       return new NextResponse(error.issues[0].message, { status: 400 });
     }
+    log.error("Failed to send message: {error}", {
+      error: error instanceof Error ? error.message : String(error),
+    });
     return new NextResponse("Error", { status: 500 });
   }
 }

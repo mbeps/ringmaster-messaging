@@ -1,5 +1,8 @@
+import { getLogger } from "@/lib/logger";
 import prisma from "@/libs/prismadb";
 import getCurrentUser from "./getCurrentUser";
+
+const log = getLogger(["app", "actions", "conversations"]);
 
 /**
  * Gets a list of conversations for the current user.
@@ -13,11 +16,13 @@ import getCurrentUser from "./getCurrentUser";
  * @returns {Promise<Conversation[]>} - Returns a list of conversations
  */
 const getConversations = async () => {
+  log.debug("Fetching conversations for current user");
   // gets the current user who is logged in for which the conversations are being retrieved
   const currentUser = await getCurrentUser();
 
   // if the current user is not logged in, return an empty array
   if (!currentUser?.id) {
+    log.debug("No authenticated user, returning empty conversations list");
     return [];
   }
 
@@ -43,8 +48,13 @@ const getConversations = async () => {
       },
     });
 
+    log.debug("Fetched {count} conversations", {
+      count: conversations.length,
+    });
+
     return conversations;
-  } catch (_error: any) {
+  } catch (error) {
+    log.error("Failed to fetch conversations: {error}", { error });
     return [];
   }
 };

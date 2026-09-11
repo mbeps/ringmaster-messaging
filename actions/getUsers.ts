@@ -1,5 +1,8 @@
+import { getLogger } from "@/lib/logger";
 import prisma from "@/libs/prismadb";
 import getSession from "./getSession";
+
+const log = getLogger(["app", "actions", "users"]);
 
 /**
  * Gets a list of all the users that exist in the platform.
@@ -9,11 +12,13 @@ import getSession from "./getSession";
  * @returns (User[]) - Returns a list of users that exist in the platform
  */
 const getUsers = async () => {
+  log.debug("Fetching users");
   // gets the user session for the current user who is logged in
   const session = await getSession();
 
   // if the user is not logged in, return an empty array
   if (!session?.user?.email) {
+    log.debug("No authenticated session, returning empty users list");
     return [];
   }
 
@@ -30,8 +35,13 @@ const getUsers = async () => {
       },
     });
 
+    log.debug("Fetched {count} users", {
+      count: users.length,
+    });
+
     return users;
-  } catch (_error: any) {
+  } catch (error) {
+    log.error("Failed to fetch users: {error}", { error });
     return [];
   }
 };

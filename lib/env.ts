@@ -26,6 +26,10 @@ export const clientEnvSchema = z.object({
  * Extends clientEnvSchema with server-only secrets and runtime configs.
  */
 export const serverEnvSchema = clientEnvSchema.extend({
+  LOG_LEVEL: z
+    .enum(["debug", "info", "warn", "warning", "error", "fatal"])
+    .default("info")
+    .transform((val) => (val === "warn" ? "warning" : val)),
   DATABASE_URL: z
     .string()
     .url("DATABASE_URL must be a valid connection string"),
@@ -51,6 +55,7 @@ export type Env = ServerEnv;
  */
 export function validateEnv(
   runtimeEnv: Record<string, unknown> = {
+    LOG_LEVEL: process.env.LOG_LEVEL,
     NEXT_PUBLIC_PUSHER_APP_KEY: process.env.NEXT_PUBLIC_PUSHER_APP_KEY,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
     NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME:
