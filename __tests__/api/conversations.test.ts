@@ -1,18 +1,17 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { mockPrisma } from "../mocks/prisma";
+import { mockPrisma } from "@/__tests__/helpers/prisma";
 
 Object.assign(mockPrisma.conversation, { create: vi.fn() });
 
-vi.mock("@/libs/prismadb", () => ({ __esModule: true, default: mockPrisma }));
+vi.mock("@/utils/prisma/client", () => ({ __esModule: true, default: mockPrisma }));
 
 const { mockPusherTrigger } = vi.hoisted(() => ({ mockPusherTrigger: vi.fn() }));
-export { mockPusherTrigger };
-vi.mock("@/libs/pusher", () => ({
+vi.mock("@/utils/pusher/server", () => ({
   pusherServer: { trigger: mockPusherTrigger },
 }));
 
 const mockGetCurrentUser = vi.fn();
-vi.mock("@/actions/getCurrentUser", () => ({
+vi.mock("@/actions/user/get-current-user", () => ({
   default: (...args: unknown[]) => mockGetCurrentUser(...args),
 }));
 

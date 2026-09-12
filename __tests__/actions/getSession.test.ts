@@ -12,11 +12,12 @@ vi.mock("next/headers", () => ({
   headers: vi.fn().mockResolvedValue(new Headers()),
 }));
 
-import getSession from "@/actions/getSession";
+import getSession from "@/actions/auth/get-session";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 
-const mockedGetSession = auth.api.getSession as any;
+type MockedFn = ReturnType<typeof vi.fn>;
+const mockedGetSession = auth.api.getSession as unknown as MockedFn;
 
 describe("getSession", () => {
   beforeEach(() => {

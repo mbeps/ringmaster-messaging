@@ -1,13 +1,18 @@
 "use client";
 
-import type { FieldErrors, FieldValues, UseFormRegister } from "react-hook-form";
+import type {
+  FieldErrors,
+  FieldValues,
+  Path,
+  UseFormRegister,
+} from "react-hook-form";
 
-interface MessageInputProps {
+interface MessageInputProps<TFieldValues extends FieldValues = FieldValues> {
   placeholder?: string;
-  id: string;
+  id: Path<TFieldValues>;
   type?: string;
   required?: boolean;
-  register: UseFormRegister<FieldValues>;
+  register: UseFormRegister<TFieldValues>;
   errors: FieldErrors;
 }
 
@@ -17,13 +22,15 @@ interface MessageInputProps {
  * @param param0: MessageInputProps
  * @returns message input component
  */
-export default function MessageInput({
+export default function MessageInput<
+  TFieldValues extends FieldValues = FieldValues,
+>({
   placeholder,
   id,
   type,
   required,
   register,
-}: MessageInputProps) {
+}: MessageInputProps<TFieldValues>) {
   return (
     <div className="relative w-full">
       <input

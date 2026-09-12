@@ -11,7 +11,7 @@ vi.mock("next/navigation", () => ({
   useParams: useParamsMock,
 }));
 
-import useConversation from "@/hooks/useConversation";
+import useConversation from "@/hooks/use-conversation";
 
 describe("useConversation", () => {
   it("returns empty state when there is no conversationId param", () => {

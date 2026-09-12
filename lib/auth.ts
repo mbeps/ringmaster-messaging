@@ -20,13 +20,16 @@ export const auth = betterAuth({
   logger: {
     disabled: false,
     level: "debug",
-    log: (level: any, message: any, ...args: any[]) => {
+    log: (level: unknown, message: unknown, ...args: unknown[]) => {
       if (level === "error") {
         const isRedirect = args.some(
-          (arg: any) =>
+          (arg: unknown) =>
             arg &&
             typeof arg === "object" &&
-            (arg.status === "FOUND" || arg.statusCode === 302),
+            (("status" in arg &&
+              (arg as { status?: unknown }).status === "FOUND") ||
+              ("statusCode" in arg &&
+                (arg as { statusCode?: unknown }).statusCode === 302)),
         );
         if (isRedirect) {
           return;

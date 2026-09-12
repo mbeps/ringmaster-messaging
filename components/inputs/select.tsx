@@ -36,7 +36,9 @@ export default function Select({
           onChange={onChange}
           isMulti
           options={options}
-          menuPortalTarget={typeof document !== "undefined" ? document.body : null}
+          menuPortalTarget={
+            typeof document !== "undefined" ? document.body : null
+          }
           styles={{
             menuPortal: (base) => ({ ...base, zIndex: 9999 }),
           }}

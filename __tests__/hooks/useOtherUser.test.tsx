@@ -8,7 +8,7 @@ vi.mock("@/lib/auth-client", () => ({
   authClient: { useSession: useSessionMock },
 }));
 
-import useOtherUser from "@/hooks/useOtherUser";
+import useOtherUser from "@/hooks/use-other-user";
 
 const makeUser = (email: string | null): User =>
   ({

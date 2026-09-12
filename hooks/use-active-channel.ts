@@ -35,9 +35,7 @@ const useActiveChannel = () => {
       const initialMembers: string[] = [];
 
       // add each member to the list of active members
-      members.each((member: PusherMember) =>
-        initialMembers.push(member.id),
-      );
+      members.each((member: PusherMember) => initialMembers.push(member.id));
       // set the list of active members
       set(initialMembers);
     });

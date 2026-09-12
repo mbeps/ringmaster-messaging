@@ -46,9 +46,9 @@ export default function AuthForm() {
     handleSubmit,
     formState: { errors },
   } = useForm<FieldValues>({
-    resolver: (values, context, options) => {
+    resolver: async (values, context, options) => {
       const schema = variant === "LOGIN" ? loginSchema : registerSchema;
-      return zodResolver(schema)(values, context, options);
+      return zodResolver(schema as any)(values, context, options);
     },
     defaultValues: {
       name: "",

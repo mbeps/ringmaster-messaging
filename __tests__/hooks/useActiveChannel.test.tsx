@@ -12,10 +12,10 @@ const pusherClientMock = vi.hoisted(() => ({
   unsubscribe: vi.fn(),
 }));
 
-vi.mock("@/libs/pusher", () => ({ pusherClient: pusherClientMock }));
+vi.mock("@/utils/pusher/client", () => ({ pusherClient: pusherClientMock }));
 
-import useActiveChannel from "@/hooks/useActiveChannel";
-import useActiveList from "@/hooks/useActiveList";
+import useActiveChannel from "@/hooks/use-active-channel";
+import useActiveList from "@/hooks/use-active-list";
 
 type BindHandler = (payload: unknown) => void;
 

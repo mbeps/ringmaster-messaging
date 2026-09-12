@@ -1,4 +1,4 @@
-import LoadingModal from "@/components/modals/LoadingModal";
+import LoadingModal from "@/components/modals/loading-modal";
 
 /**
  * Loading animation while page is loading.

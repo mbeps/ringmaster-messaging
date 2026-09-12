@@ -7,12 +7,12 @@ vi.mock("next/navigation", () => ({
   usePathname: vi.fn(),
 }));
 
-vi.mock("@/hooks/useConversation", () => ({
+vi.mock("@/hooks/use-conversation", () => ({
   default: vi.fn(),
 }));
 
-import useRoutes from "@/hooks/useRoutes";
-import useConversation from "@/hooks/useConversation";
+import useRoutes from "@/hooks/use-routes";
+import useConversation from "@/hooks/use-conversation";
 import { ROUTES } from "@/config/routes";
 
 const usePathnameMock = vi.mocked(usePathname);

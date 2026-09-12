@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { mockPrisma } from "../../mocks/prisma";
+import { mockPrisma } from "@/__tests__/helpers/prisma";
 
 // account delete route needs more model methods than the shared mock provides
 Object.assign(mockPrisma.user, { delete: vi.fn() });
@@ -12,7 +12,7 @@ Object.assign(mockPrisma.conversation, {
   update: vi.fn(),
 });
 
-vi.mock("@/libs/prismadb", () => ({ __esModule: true, default: mockPrisma }));
+vi.mock("@/utils/prisma/client", () => ({ __esModule: true, default: mockPrisma }));
 
 vi.mock("@/lib/auth", () => ({
   auth: { api: { getSession: vi.fn() } },

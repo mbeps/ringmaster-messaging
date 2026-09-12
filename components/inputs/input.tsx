@@ -1,14 +1,19 @@
 "use client";
 
 import clsx from "clsx";
-import type { FieldErrors, FieldValues, UseFormRegister } from "react-hook-form";
+import type {
+  FieldErrors,
+  FieldValues,
+  Path,
+  UseFormRegister,
+} from "react-hook-form";
 
-interface InputProps {
+interface InputProps<TFieldValues extends FieldValues = FieldValues> {
   label: string; // label for the input
-  id: string; // id for the input
+  id: Path<TFieldValues>; // id for the input
   type?: string; // type for the input
   required?: boolean; // whether the input is required
-  register: UseFormRegister<FieldValues>; // register function from react-hook-form
+  register: UseFormRegister<TFieldValues>; // register function from react-hook-form
   errors: FieldErrors; // errors from react-hook-form
   disabled?: boolean; // whether the input is disabled
 }
@@ -19,7 +24,7 @@ interface InputProps {
  * @param param0: InputProps
  * @returns text input component
  */
-export default function Input({
+export default function Input<TFieldValues extends FieldValues = FieldValues>({
   label,
   id,
   register,
@@ -27,7 +32,7 @@ export default function Input({
   errors,
   type = "text",
   disabled,
-}: InputProps) {
+}: InputProps<TFieldValues>) {
   return (
     <div>
       <label

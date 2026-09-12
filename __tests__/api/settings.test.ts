@@ -1,13 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { mockPrisma } from "../mocks/prisma";
+import { mockPrisma } from "@/__tests__/helpers/prisma";
 
 // settings route needs user.update which the shared mock lacks
 (mockPrisma.user as Record<string, unknown>).update = vi.fn();
 
-vi.mock("@/libs/prismadb", () => ({ __esModule: true, default: mockPrisma }));
+vi.mock("@/utils/prisma/client", () => ({ __esModule: true, default: mockPrisma }));
 
 const mockGetCurrentUser = vi.fn();
-vi.mock("@/actions/getCurrentUser", () => ({
+vi.mock("@/actions/user/get-current-user", () => ({
   default: (...args: unknown[]) => mockGetCurrentUser(...args),
 }));
 

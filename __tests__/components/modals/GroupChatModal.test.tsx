@@ -2,7 +2,7 @@ import { describe, expect, it, vi, beforeEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import toast from "react-hot-toast";
-import GroupChatModal from "@/components/modals/GroupChatModal";
+import GroupChatModal from "@/components/modals/group-chat-modal";
 import { API_ROUTES } from "@/config/routes";
 import type { User } from "@prisma/client";
 
@@ -33,7 +33,7 @@ vi.mock("@/lib/auth-client", () => ({
   },
 }));
 
-vi.mock("@/components/inputs/Select", () => ({
+vi.mock("@/components/inputs/select", () => ({
   default: ({
     label,
     options,
