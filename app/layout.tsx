@@ -1,8 +1,8 @@
-import ActiveStatus from "@/components/ActiveStatus";
-import AuthContext from "../context/AuthContext";
-import ToasterContext from "../context/ToasterContext";
-import "./globals.css";
 import { Inter } from "next/font/google";
+import ActiveStatus from "@/components/active-status";
+import AuthProvider from "@/providers/auth-provider";
+import ToasterProvider from "@/providers/toaster-provider";
+import "@/app/globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,11 +19,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <AuthContext>
-          <ToasterContext />
+        <AuthProvider>
+          <ToasterProvider />
           <ActiveStatus />
           {children}
-        </AuthContext>
+        </AuthProvider>
       </body>
     </html>
   );

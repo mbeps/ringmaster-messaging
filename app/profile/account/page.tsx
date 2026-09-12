@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
-import getCurrentUser from "@/actions/getCurrentUser";
-import { ROUTES } from "@/libs/routes";
-import AccountForm from "./components/AccountForm";
+import getCurrentUser from "@/actions/user/get-current-user";
+import AccountForm from "@/app/profile/account/_components/account-form";
+import { ROUTES } from "@/config/routes";
 
 /**
  * Account settings page for updating profile information.

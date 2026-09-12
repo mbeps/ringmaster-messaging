@@ -1,7 +1,7 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import { ROUTES } from "@/config/routes";
 import { getLogger } from "@/lib/logger";
-import { ROUTES } from "@/libs/routes";
 
 const log = getLogger(["app", "middleware"]);
 
@@ -9,7 +9,7 @@ const log = getLogger(["app", "middleware"]);
  * Protected routes that require authentication.
  * Kept in middleware proxy to separate route definitions from access control.
  */
-export const PROTECTED_ROUTES = [
+const PROTECTED_ROUTES = [
   ROUTES.USERS.path,
   ROUTES.CONVERSATIONS.path,
   ROUTES.PROFILE.path,

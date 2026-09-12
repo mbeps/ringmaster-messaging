@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
-import LoadingModal from "@/components/modals/LoadingModal";
+import LoadingModal from "@/components/modals/loading-modal";
 
 describe("LoadingModal", () => {
   it("renders a spinner overlay", () => {

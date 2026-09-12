@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
-import useActiveList from "@/hooks/useActiveList";
+import useActiveList from "@/hooks/use-active-list";
 
 describe("useActiveList", () => {
   beforeEach(() => {

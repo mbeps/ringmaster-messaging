@@ -2,8 +2,8 @@ import { describe, expect, it, vi, beforeEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import toast from "react-hot-toast";
-import SettingsModal from "@/components/modals/SettingsModal";
-import { API_ROUTES } from "@/libs/routes";
+import SettingsModal from "@/components/modals/settings-modal";
+import { API_ROUTES } from "@/config/routes";
 
 const push = vi.fn();
 const refresh = vi.fn();

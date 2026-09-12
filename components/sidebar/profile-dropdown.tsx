@@ -1,0 +1,103 @@
+"use client";
+
+import {
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems,
+  Transition,
+} from "@headlessui/react";
+import type { User } from "@prisma/client";
+import clsx from "clsx";
+import { useRouter } from "next/navigation";
+import { Fragment } from "react";
+import { HiArrowLeftOnRectangle, HiUser } from "react-icons/hi2";
+import Avatar from "@/components/avatar";
+import { ROUTES } from "@/config/routes";
+import { authClient } from "@/lib/auth-client";
+
+interface ProfileDropdownProps {
+  currentUser: User;
+  align?: "left" | "right";
+}
+
+/**
+ * Profile dropdown menu displayed when clicking the user's avatar.
+ * Provides options to navigate to profile settings and logout.
+ *
+ * @param currentUser - The current authenticated user
+ * @returns Profile dropdown component
+ */
+export default function ProfileDropdown({
+  currentUser,
+  align = "left",
+}: ProfileDropdownProps) {
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await authClient.signOut();
+    router.push(ROUTES.AUTH.path);
+  };
+
+  const handleProfileClick = () => {
+    router.push(ROUTES.PROFILE.path);
+  };
+
+  return (
+    <Menu as="div" className="relative">
+      <MenuButton className="cursor-pointer transition hover:opacity-75 focus:outline-none">
+        <Avatar user={currentUser} />
+      </MenuButton>
+
+      <Transition
+        as={Fragment}
+        enter="transition ease-out duration-100"
+        enterFrom="transform opacity-0 scale-95"
+        enterTo="transform opacity-100 scale-100"
+        leave="transition ease-in duration-75"
+        leaveFrom="transform opacity-100 scale-100"
+        leaveTo="transform opacity-0 scale-95"
+      >
+        <MenuItems
+          className={clsx(
+            `absolute bottom-full z-50 mb-2 w-48 rounded-lg bg-white shadow-lg ring-1 ring-black/5 focus:outline-none`,
+            align === "right"
+              ? "right-0 origin-bottom-right"
+              : "left-0 origin-bottom-left",
+          )}
+        >
+          <div className="py-1">
+            <MenuItem>
+              {({ focus }) => (
+                <button
+                  onClick={handleProfileClick}
+                  className={clsx(
+                    focus && "bg-gray-100",
+                    "flex w-full items-center gap-3 px-4 py-2 text-gray-700 text-sm",
+                  )}
+                >
+                  <HiUser className="h-5 w-5 text-gray-500" />
+                  Profile
+                </button>
+              )}
+            </MenuItem>
+            <MenuItem>
+              {({ focus }) => (
+                <button
+                  onClick={handleLogout}
+                  className={clsx(
+                    focus && "bg-gray-100",
+                    "flex w-full items-center gap-3 px-4 py-2 text-red-600 text-sm",
+                  )}
+                >
+                  <HiArrowLeftOnRectangle className="h-5 w-5 text-red-500" />
+                  Logout
+                </button>
+              )}
+            </MenuItem>
+          </div>
+        </MenuItems>
+      </Transition>
+    </Menu>
+  );
+}

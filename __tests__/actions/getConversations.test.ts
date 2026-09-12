@@ -1,18 +1,18 @@
 import { describe, expect, it, beforeEach, vi } from "vitest";
-import { mockPrisma, resetPrismaMocks } from "../mocks/prisma";
+import { mockPrisma, resetPrismaMocks } from "@/__tests__/helpers/prisma";
 
-vi.mock("@/libs/prismadb", () => ({
+vi.mock("@/utils/prisma/client", () => ({
   __esModule: true,
   default: mockPrisma,
 }));
 
-vi.mock("@/actions/getCurrentUser", () => ({
+vi.mock("@/actions/user/get-current-user", () => ({
   __esModule: true,
   default: vi.fn(),
 }));
 
-import getConversations from "@/actions/getConversations";
-import getCurrentUser from "@/actions/getCurrentUser";
+import getConversations from "@/actions/conversation/get-conversations";
+import getCurrentUser from "@/actions/user/get-current-user";
 
 type MockedFn = ReturnType<typeof vi.fn>;
 const mockedGetCurrentUser = getCurrentUser as unknown as MockedFn;

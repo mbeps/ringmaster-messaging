@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
-import getCurrentUser from "@/actions/getCurrentUser";
-import { ROUTES } from "@/libs/routes";
-import SessionsList from "./components/SessionsList";
+import getCurrentUser from "@/actions/user/get-current-user";
+import SessionsList from "@/app/profile/sessions/_components/sessions-list";
+import { ROUTES } from "@/config/routes";
 
 /**
  * Sessions management page for viewing and revoking active sessions.

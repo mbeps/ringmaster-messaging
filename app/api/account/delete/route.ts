@@ -2,7 +2,7 @@ import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { getLogger } from "@/lib/logger";
-import prisma from "@/libs/prismadb";
+import prisma from "@/utils/prisma/client";
 
 const log = getLogger(["app", "api", "account"]);
 

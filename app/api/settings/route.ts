@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
-import getCurrentUser from "@/actions/getCurrentUser";
+import getCurrentUser from "@/actions/user/get-current-user";
 import { getLogger } from "@/lib/logger";
-import prisma from "@/libs/prismadb";
-import { SettingsSchema } from "@/schema/SettingsSchema";
+import { settingsSchema } from "@/schemas/settings/settings.schema";
+import prisma from "@/utils/prisma/client";
 
 const log = getLogger(["app", "api", "settings"]);
 
@@ -20,7 +20,7 @@ export async function POST(request: Request) {
     const currentUser = await getCurrentUser();
     const body = await request.json();
     // extract the name and image from the body of the request
-    const { name, image } = SettingsSchema.parse(body);
+    const { name, image } = settingsSchema.parse(body);
 
     // if the current user is not logged in, return an error
     if (!currentUser?.id) {

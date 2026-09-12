@@ -1,23 +1,23 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
-import Sidebar from "@/components/sidebar/Sidebar";
+import Sidebar from "@/components/sidebar/sidebar";
 import type { User } from "@prisma/client";
 
 const { getCurrentUser } = vi.hoisted(() => ({
   getCurrentUser: vi.fn(),
 }));
 
-vi.mock("@/actions/getCurrentUser", () => ({
+vi.mock("@/actions/user/get-current-user", () => ({
   default: getCurrentUser,
 }));
 
-vi.mock("@/components/sidebar/DesktopSidebar", () => ({
+vi.mock("@/components/sidebar/desktop-sidebar", () => ({
   default: ({ currentUser }: { currentUser: User }) => (
     <div data-testid="desktop-sidebar">Desktop: {currentUser?.name}</div>
   ),
 }));
 
-vi.mock("@/components/sidebar/MobileFooter", () => ({
+vi.mock("@/components/sidebar/mobile-footer", () => ({
   default: ({ currentUser }: { currentUser: User }) => (
     <div data-testid="mobile-footer">Mobile: {currentUser?.name}</div>
   ),

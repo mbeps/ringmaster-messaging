@@ -1,0 +1,8 @@
+/__tests__/
+/.fallow/
+/.github/
+/.vscode/
+/docker/
+node_modules/
+.next/
+coverage/

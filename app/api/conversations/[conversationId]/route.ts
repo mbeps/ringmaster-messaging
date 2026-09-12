@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import getCurrentUser from "@/actions/getCurrentUser";
+import getCurrentUser from "@/actions/user/get-current-user";
 import { getLogger } from "@/lib/logger";
-import prisma from "@/libs/prismadb";
-import { pusherServer } from "@/libs/pusher";
+import prisma from "@/utils/prisma/client";
+import { pusherServer } from "@/utils/pusher/server";
 
 const log = getLogger(["app", "api", "conversations"]);
 

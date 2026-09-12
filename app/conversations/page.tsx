@@ -1,16 +1,16 @@
 "use client";
 
 import clsx from "clsx";
-import EmptyState from "@/components/EmptyState";
-import useConversation from "../../hooks/useConversation";
+import EmptyState from "@/components/empty-state";
+import useConversation from "@/hooks/use-conversation";
 
 /**
  * Renders the conversations page component.
  * Displays all the conversations the current user is having.
  *
- * @returns (JSX.Element): conversions page
+ * @returns conversations page
  */
-const Home = () => {
+export default function ConversationsPage() {
   const { isOpen } = useConversation();
 
   return (
@@ -20,6 +20,4 @@ const Home = () => {
       <EmptyState />
     </div>
   );
-};
-
-export default Home;
+}

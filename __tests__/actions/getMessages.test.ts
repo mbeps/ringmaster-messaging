@@ -1,12 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { mockPrisma, resetPrismaMocks } from "../mocks/prisma";
+import { mockPrisma, resetPrismaMocks } from "@/__tests__/helpers/prisma";
 
-vi.mock("@/libs/prismadb", () => ({
+vi.mock("@/utils/prisma/client", () => ({
   __esModule: true,
   default: mockPrisma,
 }));
 
-import getMessages from "@/actions/getMessages";
+import getMessages from "@/actions/message/get-messages";
 
 describe("getMessages", () => {
   beforeEach(() => {

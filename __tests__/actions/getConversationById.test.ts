@@ -1,12 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { mockPrisma, resetPrismaMocks } from "../mocks/prisma";
+import { mockPrisma, resetPrismaMocks } from "@/__tests__/helpers/prisma";
 
-vi.mock("@/libs/prismadb", () => ({
+vi.mock("@/utils/prisma/client", () => ({
   __esModule: true,
   default: mockPrisma,
 }));
 
-vi.mock("@/actions/getCurrentUser", () => ({
+vi.mock("@/actions/user/get-current-user", () => ({
   __esModule: true,
   default: vi.fn(),
 }));
@@ -24,8 +24,8 @@ vi.mock("@/lib/logger", () => ({
   getLogger: () => mockLog,
 }));
 
-import getConversationById from "@/actions/getConversationById";
-import getCurrentUser from "@/actions/getCurrentUser";
+import getConversationById from "@/actions/conversation/get-conversation-by-id";
+import getCurrentUser from "@/actions/user/get-current-user";
 
 type MockedFn = ReturnType<typeof vi.fn>;
 const mockedGetCurrentUser = getCurrentUser as unknown as MockedFn;
@@ -82,5 +82,14 @@ describe("getConversationById", () => {
         error: new Error("db error"),
       },
     );
+  });
+
+  it("rethrows dynamic server errors via unstable_rethrow", async () => {
+    mockedGetCurrentUser.mockResolvedValue({ email: "user@test.com" });
+    const dynamicError = new Error("Dynamic server usage");
+    (dynamicError as any).digest = "DYNAMIC_SERVER_USAGE";
+    (mockPrisma.conversation.findUnique as any).mockRejectedValue(dynamicError);
+
+    await expect(getConversationById("abc")).rejects.toThrow("Dynamic server usage");
   });
 });

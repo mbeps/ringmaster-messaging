@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
-import getCurrentUser from "@/actions/getCurrentUser";
-import { ROUTES } from "@/libs/routes";
-import SecurityForm from "./components/SecurityForm";
+import getCurrentUser from "@/actions/user/get-current-user";
+import SecurityForm from "@/app/profile/security/_components/security-form";
+import { ROUTES } from "@/config/routes";
 
 /**
  * Security settings page for changing password.

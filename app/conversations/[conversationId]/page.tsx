@@ -1,9 +1,9 @@
-import getConversationById from "@/actions/getConversationById";
-import getMessages from "@/actions/getMessages";
-import EmptyState from "@/components/EmptyState";
-import Body from "./components/Body";
-import Form from "./components/Form";
-import Header from "./components/Header";
+import getConversationById from "@/actions/conversation/get-conversation-by-id";
+import getMessages from "@/actions/message/get-messages";
+import Body from "@/app/conversations/[conversationId]/_components/body";
+import Form from "@/app/conversations/[conversationId]/_components/form";
+import Header from "@/app/conversations/[conversationId]/_components/header";
+import EmptyState from "@/components/empty-state";
 
 interface IParams {
   conversationId: string;
@@ -11,10 +11,14 @@ interface IParams {
 
 /**
  * Displays the conversation page with the header, body and form.
- * @param {conversationId}: ID of the current conversation
- * @returns (JSX.Element) Conversation page
+ * @param param0: params with conversationId
+ * @returns Conversation page component
  */
-const ConversationId = async ({ params }: { params: Promise<IParams> }) => {
+export default async function ConversationDetailPage({
+  params,
+}: {
+  params: Promise<IParams>;
+}) {
   const { conversationId } = await params;
 
   const conversation = await getConversationById(conversationId);
@@ -39,6 +43,4 @@ const ConversationId = async ({ params }: { params: Promise<IParams> }) => {
       </div>
     </div>
   );
-};
-
-export default ConversationId;
+}
