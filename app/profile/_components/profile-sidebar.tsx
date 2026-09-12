@@ -1,0 +1,64 @@
+"use client";
+
+import clsx from "clsx";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { PROFILE_NAV_ITEMS } from "@/config/navigation";
+
+/**
+ * Sidebar navigation for profile pages.
+ * Displays links to different profile sections: Account, Security, Sessions, Linked Accounts, and Danger Zone.
+ */
+export default function ProfileSidebar() {
+  const pathname = usePathname();
+
+  return (
+    <nav className="hidden min-h-full w-64 flex-col border-r bg-white px-4 py-6 md:block">
+      <h2 className="mb-6 px-3 font-semibold text-gray-900 text-lg">
+        Settings
+      </h2>
+      <ul className="space-y-1">
+        {PROFILE_NAV_ITEMS.map((item) => {
+          const isActive = pathname === item.href;
+          const isDanger = "danger" in item && item.danger;
+          return (
+            <li key={item.href}>
+              <Link
+                href={item.href}
+                className={clsx(
+                  "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition",
+                  isActive && !isDanger && "bg-red-50 text-red-600",
+                  isActive && isDanger && "bg-rose-50 text-rose-600",
+                  !isActive && isDanger && "text-rose-600 hover:bg-rose-50",
+                  !isActive && !isDanger && "text-gray-700 hover:bg-gray-100",
+                )}
+              >
+                <item.icon
+                  className={clsx(
+                    "h-5 w-5",
+                    isActive && !isDanger && "text-red-500",
+                    isDanger && "text-rose-500",
+                    !isActive && !isDanger && "text-gray-400",
+                  )}
+                />
+                <div>
+                  <span className="font-medium">{item.label}</span>
+                  <p
+                    className={clsx(
+                      "text-xs",
+                      isActive && !isDanger && "text-red-500",
+                      isDanger && "text-rose-500",
+                      !isActive && !isDanger && "text-gray-500",
+                    )}
+                  >
+                    {item.description}
+                  </p>
+                </div>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
+  );
+}

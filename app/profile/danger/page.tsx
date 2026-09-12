@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
-import getCurrentUser from "@/actions/getCurrentUser";
-import { ROUTES } from "@/libs/routes";
-import DeleteAccountSection from "./components/DeleteAccountSection";
+import getCurrentUser from "@/actions/user/get-current-user";
+import DeleteAccountSection from "@/app/profile/danger/_components/delete-account-section";
+import { ROUTES } from "@/config/routes";
 
 /**
  * Danger zone page for account deletion.

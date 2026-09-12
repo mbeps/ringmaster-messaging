@@ -83,4 +83,13 @@ describe("getConversationById", () => {
       },
     );
   });
+
+  it("rethrows dynamic server errors via unstable_rethrow", async () => {
+    mockedGetCurrentUser.mockResolvedValue({ email: "user@test.com" });
+    const dynamicError = new Error("Dynamic server usage");
+    (dynamicError as any).digest = "DYNAMIC_SERVER_USAGE";
+    (mockPrisma.conversation.findUnique as any).mockRejectedValue(dynamicError);
+
+    await expect(getConversationById("abc")).rejects.toThrow("Dynamic server usage");
+  });
 });

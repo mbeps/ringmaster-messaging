@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
-import getCurrentUser from "@/actions/getCurrentUser";
+import getCurrentUser from "@/actions/user/get-current-user";
 import { getLogger } from "@/lib/logger";
-import prisma from "@/libs/prismadb";
-import { pusherServer } from "@/libs/pusher";
-import { MessageSchema } from "@/schema/MessageSchema";
+import { messageSchema } from "@/schemas/message/message.schema";
+import prisma from "@/utils/prisma/client";
+import { pusherServer } from "@/utils/pusher/server";
 
 const log = getLogger(["app", "api", "messages"]);
 
@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     const currentUser = await getCurrentUser();
     const body = await request.json();
     // extract the message, image, and conversation ID from the body of the request
-    const { message, image, conversationId } = MessageSchema.parse(body);
+    const { message, image, conversationId } = messageSchema.parse(body);
 
     if (!currentUser?.id || !currentUser?.email) {
       log.warn("Unauthorized attempt to send message");

@@ -1,7 +1,7 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import { ROUTES } from "@/config/routes";
 import { getLogger } from "@/lib/logger";
-import { ROUTES } from "@/libs/routes";
 
 const log = getLogger(["app", "middleware"]);
 

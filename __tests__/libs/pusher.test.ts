@@ -71,7 +71,7 @@ describe("libs/pusher", () => {
 
   it("configures the client instance for browser usage on property access and reuses singleton", async () => {
     const [{ API_ROUTES }, pusherModule] = await Promise.all([
-      import("@/libs/routes"),
+      import("@/config/routes"),
       import("@/libs/pusher"),
     ]);
 

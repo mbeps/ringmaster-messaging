@@ -4,7 +4,7 @@ import { format } from "date-fns";
 import ConversationBox from "@/app/conversations/components/ConversationBox";
 import { FullConversationType } from "@/types";
 import { User } from "@prisma/client";
-import { ROUTES } from "@/libs/routes";
+import { ROUTES } from "@/config/routes";
 
 const push = vi.fn();
 const refresh = vi.fn();

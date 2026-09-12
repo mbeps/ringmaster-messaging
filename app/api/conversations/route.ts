@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
-import getCurrentUser from "@/actions/getCurrentUser";
+import getCurrentUser from "@/actions/user/get-current-user";
 import { getLogger } from "@/lib/logger";
-import prisma from "@/libs/prismadb";
-import { pusherServer } from "@/libs/pusher";
-import { ConversationSchema } from "@/schema/ConversationSchema";
+import { conversationSchema } from "@/schemas/conversation/conversation.schema";
+import prisma from "@/utils/prisma/client";
+import { pusherServer } from "@/utils/pusher/server";
 
 const log = getLogger(["app", "api", "conversations"]);
 
@@ -28,7 +28,7 @@ export async function POST(request: Request) {
     const currentUser = await getCurrentUser();
     const body = await request.json();
     // destructuring the body to get the userId, isGroup, members, and name
-    const { userId, isGroup, members, name } = ConversationSchema.parse(body);
+    const { userId, isGroup, members, name } = conversationSchema.parse(body);
 
     // if the current user is not logged in, return an error
     if (!currentUser?.id || !currentUser?.email) {

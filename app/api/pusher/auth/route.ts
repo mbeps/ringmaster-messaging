@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { getLogger } from "@/lib/logger";
-import { pusherServer } from "@/libs/pusher";
+import { pusherServer } from "@/utils/pusher/server";
 
 const log = getLogger(["app", "api", "pusher"]);
 

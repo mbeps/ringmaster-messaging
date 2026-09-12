@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import Header from "@/app/conversations/[conversationId]/components/Header";
 import useActiveList from "@/hooks/useActiveList";
-import { ROUTES } from "@/libs/routes";
+import { ROUTES } from "@/config/routes";
 import { Conversation, User } from "@prisma/client";
 
 vi.mock("next/navigation", () => ({

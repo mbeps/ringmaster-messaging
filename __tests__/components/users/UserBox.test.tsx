@@ -3,7 +3,7 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import axios from "axios";
 import UserBox from "@/app/users/components/UserBox";
 import { User } from "@prisma/client";
-import { API_ROUTES, ROUTES } from "@/libs/routes";
+import { API_ROUTES, ROUTES } from "@/config/routes";
 
 const push = vi.fn();
 const refresh = vi.fn();

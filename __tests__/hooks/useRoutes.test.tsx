@@ -13,7 +13,7 @@ vi.mock("@/hooks/useConversation", () => ({
 
 import useRoutes from "@/hooks/useRoutes";
 import useConversation from "@/hooks/useConversation";
-import { ROUTES } from "@/libs/routes";
+import { ROUTES } from "@/config/routes";
 
 const usePathnameMock = vi.mocked(usePathname);
 const useConversationMock = vi.mocked(useConversation);

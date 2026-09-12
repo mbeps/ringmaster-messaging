@@ -2,7 +2,7 @@ import { describe, expect, it, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import DesktopSidebar from "@/components/sidebar/DesktopSidebar";
-import { ROUTES } from "@/libs/routes";
+import { ROUTES } from "@/config/routes";
 import type { User } from "@prisma/client";
 
 const { push, refresh, signOut } = vi.hoisted(() => ({

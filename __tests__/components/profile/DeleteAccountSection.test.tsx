@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import toast from "react-hot-toast";
 import axios from "axios";
 import DeleteAccountSection from "@/app/profile/danger/components/DeleteAccountSection";
-import { API_ROUTES, ROUTES } from "@/libs/routes";
+import { API_ROUTES, ROUTES } from "@/config/routes";
 
 const push = vi.fn();
 const refresh = vi.fn();

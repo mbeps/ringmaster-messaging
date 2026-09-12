@@ -3,7 +3,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import toast from "react-hot-toast";
 import GroupChatModal from "@/components/modals/GroupChatModal";
-import { API_ROUTES } from "@/libs/routes";
+import { API_ROUTES } from "@/config/routes";
 import type { User } from "@prisma/client";
 
 const { push, refresh, signOut } = vi.hoisted(() => ({

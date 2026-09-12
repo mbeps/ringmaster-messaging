@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import toast from "react-hot-toast";
 import ConfirmModal from "@/components/modals/ConfirmModal";
-import { API_ROUTES, ROUTES } from "@/libs/routes";
+import { API_ROUTES, ROUTES } from "@/config/routes";
 
 const push = vi.fn();
 const refresh = vi.fn();

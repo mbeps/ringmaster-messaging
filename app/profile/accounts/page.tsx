@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
-import getCurrentUser from "@/actions/getCurrentUser";
-import { ROUTES } from "@/libs/routes";
-import LinkedAccountsList from "./components/LinkedAccountsList";
+import getCurrentUser from "@/actions/user/get-current-user";
+import LinkedAccountsList from "@/app/profile/accounts/_components/linked-accounts-list";
+import { ROUTES } from "@/config/routes";
 
 /**
  * Linked accounts page for managing connected social accounts.

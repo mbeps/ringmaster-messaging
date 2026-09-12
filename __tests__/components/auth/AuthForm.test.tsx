@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import AuthForm from "@/app/(site)/components/AuthForm";
-import { ROUTES } from "@/libs/routes";
+import { ROUTES } from "@/config/routes";
 
 const {
   pushMock,

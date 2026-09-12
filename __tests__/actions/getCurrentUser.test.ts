@@ -96,4 +96,12 @@ describe("getCurrentUser", () => {
 
     expect(mockedGetSession).toHaveBeenCalledWith({ headers: fakeHeaders });
   });
+
+  it("rethrows dynamic server errors via unstable_rethrow", async () => {
+    const dynamicError = new Error("Dynamic server usage");
+    (dynamicError as any).digest = "DYNAMIC_SERVER_USAGE";
+    mockedGetSession.mockRejectedValue(dynamicError);
+
+    await expect(getCurrentUser()).rejects.toThrow("Dynamic server usage");
+  });
 });
