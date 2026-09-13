@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import MessageBox from "@/app/conversations/[conversationId]/_components/message-box";
 import type { FullMessageType } from "@/types/message/full-message";
-import type { User } from "@prisma/client";
+import type { User } from "@/types/db";
 
 const { mockUseSession } = vi.hoisted(() => ({
   mockUseSession: vi.fn(() => ({

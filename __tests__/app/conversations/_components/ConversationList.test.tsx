@@ -2,7 +2,7 @@ import { describe, expect, it, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import ConversationList from "@/app/conversations/_components/conversation-list";
 import type { FullConversationType } from "@/types/conversation/full-conversation";
-import type { User } from "@prisma/client";
+import type { User } from "@/types/db";
 
 const push = vi.fn();
 const refresh = vi.fn();

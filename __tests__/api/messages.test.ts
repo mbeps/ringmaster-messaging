@@ -1,17 +1,33 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { mockPrisma } from "@/__tests__/helpers/prisma";
 
-Object.assign(mockPrisma.message, { create: vi.fn() });
-Object.assign(mockPrisma.conversation, { update: vi.fn() });
+const {
+  mockMessageRepository,
+  mockConversationRepository,
+  mockPusherTrigger,
+  mockGetCurrentUser,
+} = vi.hoisted(() => ({
+  mockMessageRepository: {
+    create: vi.fn(),
+  },
+  mockConversationRepository: {
+    updateLastMessage: vi.fn(),
+  },
+  mockPusherTrigger: vi.fn(),
+  mockGetCurrentUser: vi.fn(),
+}));
 
-vi.mock("@/utils/prisma/client", () => ({ __esModule: true, default: mockPrisma }));
+vi.mock("@/db/repositories/message-repository", () => ({
+  messageRepository: mockMessageRepository,
+}));
 
-const { mockPusherTrigger } = vi.hoisted(() => ({ mockPusherTrigger: vi.fn() }));
+vi.mock("@/db/repositories/conversation-repository", () => ({
+  conversationRepository: mockConversationRepository,
+}));
+
 vi.mock("@/utils/pusher/server", () => ({
   pusherServer: { trigger: mockPusherTrigger },
 }));
 
-const mockGetCurrentUser = vi.fn();
 vi.mock("@/actions/user/get-current-user", () => ({
   default: (...args: unknown[]) => mockGetCurrentUser(...args),
 }));
@@ -37,7 +53,7 @@ describe("POST /api/messages", () => {
     mockGetCurrentUser.mockResolvedValue(null);
     const res = await post({ message: "hi", conversationId: "c1" });
     expect(res.status).toBe(401);
-    expect(mockPrisma.message.create).not.toHaveBeenCalled();
+    expect(mockMessageRepository.create).not.toHaveBeenCalled();
   });
 
   it("returns 400 when body has neither message nor image", async () => {
@@ -50,7 +66,7 @@ describe("POST /api/messages", () => {
   it("creates a message, updates the conversation and triggers pusher", async () => {
     mockGetCurrentUser.mockResolvedValue(currentUser);
     const newMessage = { id: "m-new", body: "hi" };
-    mockPrisma.message.create.mockResolvedValue(newMessage);
+    mockMessageRepository.create.mockResolvedValue(newMessage);
     const updatedConversation = {
       id: "c1",
       users: [
@@ -59,29 +75,21 @@ describe("POST /api/messages", () => {
       ],
       messages: [{ id: "m-old" }, newMessage],
     };
-    mockPrisma.conversation.update.mockResolvedValue(updatedConversation);
+    mockConversationRepository.updateLastMessage.mockResolvedValue(updatedConversation);
 
     const res = await post({ message: "hi", conversationId: "c1" });
 
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual(newMessage);
-    expect(mockPrisma.message.create).toHaveBeenCalledWith({
-      include: { seen: true, sender: true },
-      data: {
-        body: "hi",
-        image: undefined,
-        conversation: { connect: { id: "c1" } },
-        sender: { connect: { id: "me" } },
-        seen: { connect: { id: "me" } },
-      },
+    expect(mockMessageRepository.create).toHaveBeenCalledWith({
+      body: "hi",
+      image: undefined,
+      conversationId: "c1",
+      senderId: "me",
     });
-    expect(mockPrisma.conversation.update).toHaveBeenCalledWith(
-      expect.objectContaining({
-        where: { id: "c1" },
-        data: expect.objectContaining({
-          messages: { connect: { id: "m-new" } },
-        }),
-      })
+    expect(mockConversationRepository.updateLastMessage).toHaveBeenCalledWith(
+      "c1",
+      "m-new"
     );
     expect(mockPusherTrigger).toHaveBeenCalledWith(
       "c1",
@@ -103,8 +111,8 @@ describe("POST /api/messages", () => {
   it("sends an image-only message", async () => {
     mockGetCurrentUser.mockResolvedValue(currentUser);
     const newMessage = { id: "m-img", image: "https://img/x.png" };
-    mockPrisma.message.create.mockResolvedValue(newMessage);
-    mockPrisma.conversation.update.mockResolvedValue({
+    mockMessageRepository.create.mockResolvedValue(newMessage);
+    mockConversationRepository.updateLastMessage.mockResolvedValue({
       id: "c1",
       users: [],
       messages: [newMessage],
@@ -113,14 +121,12 @@ describe("POST /api/messages", () => {
     const res = await post({ image: "https://img/x.png", conversationId: "c1" });
 
     expect(res.status).toBe(200);
-    expect(mockPrisma.message.create).toHaveBeenCalledWith(
-      expect.objectContaining({
-        data: expect.objectContaining({
-          body: undefined,
-          image: "https://img/x.png",
-        }),
-      })
-    );
+    expect(mockMessageRepository.create).toHaveBeenCalledWith({
+      body: undefined,
+      image: "https://img/x.png",
+      conversationId: "c1",
+      senderId: "me",
+    });
     expect(mockPusherTrigger).toHaveBeenCalledWith(
       "c1",
       "messages:new",
@@ -133,19 +139,19 @@ describe("POST /api/messages", () => {
     const res = await post({ message: "hi" });
     expect(res.status).toBe(400);
     expect(await res.text()).toBe("Invalid input: expected string, received undefined");
-    expect(mockPrisma.message.create).not.toHaveBeenCalled();
+    expect(mockMessageRepository.create).not.toHaveBeenCalled();
   });
 
   it("returns 400 when body is null", async () => {
     mockGetCurrentUser.mockResolvedValue(currentUser);
     const res = await post(null);
-    expect(res.status).toBe(400); // zod rejects null before any db call
-    expect(mockPrisma.message.create).not.toHaveBeenCalled();
+    expect(res.status).toBe(400);
+    expect(mockMessageRepository.create).not.toHaveBeenCalled();
   });
 
-  it("returns 500 when prisma throws", async () => {
+  it("returns 500 when repository throws", async () => {
     mockGetCurrentUser.mockResolvedValue(currentUser);
-    mockPrisma.message.create.mockRejectedValue(new Error("db down"));
+    mockMessageRepository.create.mockRejectedValue(new Error("db down"));
     const res = await post({ message: "hi", conversationId: "c1" });
     expect(res.status).toBe(500);
   });

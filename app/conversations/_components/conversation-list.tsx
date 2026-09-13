@@ -1,6 +1,5 @@
 "use client";
 
-import type { User } from "@prisma/client";
 import clsx from "clsx";
 import { find } from "lodash";
 import { useRouter } from "next/navigation";
@@ -11,6 +10,7 @@ import GroupChatModal from "@/components/modals/group-chat-modal";
 import useConversation from "@/hooks/use-conversation";
 import { authClient } from "@/lib/auth-client";
 import type { FullConversationType } from "@/types/conversation/full-conversation";
+import type { User } from "@/types/db";
 import { pusherClient } from "@/utils/pusher/client";
 
 // the initial data will be updated using pusher in real time

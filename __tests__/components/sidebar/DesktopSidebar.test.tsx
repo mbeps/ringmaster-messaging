@@ -3,7 +3,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import DesktopSidebar from "@/components/sidebar/desktop-sidebar";
 import { ROUTES } from "@/config/routes";
-import type { User } from "@prisma/client";
+import type { User } from "@/types/db";
 
 const { push, refresh, signOut } = vi.hoisted(() => ({
   push: vi.fn(),

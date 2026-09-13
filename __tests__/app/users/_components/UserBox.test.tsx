@@ -2,7 +2,7 @@ import { describe, expect, it, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import axios from "axios";
 import UserBox from "@/app/users/_components/user-box";
-import type { User } from "@prisma/client";
+import type { User } from "@/types/db";
 import { API_ROUTES, ROUTES } from "@/config/routes";
 
 const push = vi.fn();

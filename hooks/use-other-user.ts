@@ -1,6 +1,6 @@
-import type { User } from "@prisma/client";
 import { authClient } from "@/lib/auth-client";
 import type { FullConversationType } from "@/types/conversation/full-conversation";
+import type { User } from "@/types/db";
 
 /**
  * Returns the other user in a conversation.

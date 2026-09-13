@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 import getCurrentUser from "@/actions/user/get-current-user";
+import { userRepository } from "@/db/repositories/user-repository";
 import { getLogger } from "@/lib/logger";
 import { settingsSchema } from "@/schemas/settings/settings.schema";
-import prisma from "@/utils/prisma/client";
 
 const log = getLogger(["app", "api", "settings"]);
 
@@ -29,14 +29,9 @@ export async function POST(request: Request) {
     }
 
     // find the user using the current user's ID and updates the name and image fields
-    const updatedUser = await prisma.user.update({
-      where: {
-        id: currentUser.id,
-      },
-      data: {
-        image: image,
-        name: name,
-      },
+    const updatedUser = await userRepository.update(currentUser.id, {
+      image: image,
+      name: name,
     });
 
     log.info("Settings updated successfully (userId: {userId})", {

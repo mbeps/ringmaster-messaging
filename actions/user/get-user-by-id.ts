@@ -1,4 +1,4 @@
-import prisma from "@/utils/prisma/client";
+import { userRepository } from "@/db/repositories/user-repository";
 
 /**
  * Retrieves a user by their ID.
@@ -8,9 +8,7 @@ import prisma from "@/utils/prisma/client";
  */
 export default async function getUserById(id: string) {
   try {
-    const user = await prisma.user.findUnique({
-      where: { id },
-    });
+    const user = await userRepository.findById(id);
     return user;
   } catch {
     return null;

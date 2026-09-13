@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import toast from "react-hot-toast";
 import GroupChatModal from "@/components/modals/group-chat-modal";
 import { API_ROUTES } from "@/config/routes";
-import type { User } from "@prisma/client";
+import type { User } from "@/types/db";
 
 const { push, refresh, signOut } = vi.hoisted(() => ({
   push: vi.fn(),

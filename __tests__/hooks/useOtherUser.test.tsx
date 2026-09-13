@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { renderHook } from "@testing-library/react";
-import type { User } from "@prisma/client";
+import type { User } from "@/types/db";
 
 const useSessionMock = vi.hoisted(() => vi.fn());
 

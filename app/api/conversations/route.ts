@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 import getCurrentUser from "@/actions/user/get-current-user";
+import { conversationRepository } from "@/db/repositories/conversation-repository";
 import { getLogger } from "@/lib/logger";
 import { conversationSchema } from "@/schemas/conversation/conversation.schema";
-import prisma from "@/utils/prisma/client";
 import { pusherServer } from "@/utils/pusher/server";
 
 const log = getLogger(["app", "api", "conversations"]);
@@ -39,28 +39,16 @@ export async function POST(request: Request) {
     //^ GROUP CONVERSATIONS
     // if trying to create a group conversation
     if (isGroup) {
-      // create a new conversation in the database with the provided name and isGroup
-      const newConversation = await prisma.conversation.create({
-        data: {
-          name,
-          isGroup,
-          users: {
-            // automatically adds members to the group
-            connect: [
-              ...(members || []).map((member: { value: string }) => ({
-                id: member.value,
-              })),
-              {
-                id: currentUser.id,
-              },
-            ],
-          },
-        },
-        // for the user IDs, it gets the user data (not just ID)
-        include: {
-          users: true,
-        },
-      });
+      const memberIds = [
+        ...(members || []).map((member: { value: string }) => member.value),
+        currentUser.id,
+      ];
+
+      const newConversation = await conversationRepository.createGroup(
+        name || "",
+        isGroup,
+        memberIds,
+      );
 
       // Update all connections with new conversation
       newConversation.users.forEach((user) => {
@@ -84,24 +72,11 @@ export async function POST(request: Request) {
     }
 
     // if conversation already exists, return the existing conversation
-    const existingConversations = await prisma.conversation.findMany({
-      where: {
-        OR: [
-          {
-            userIds: {
-              equals: [currentUser.id, userId],
-            },
-          },
-          {
-            userIds: {
-              equals: [userId, currentUser.id],
-            },
-          },
-        ],
-      },
-    });
-
-    const singleConversation = existingConversations[0];
+    const singleConversation =
+      await conversationRepository.findSingleBetweenUsers(
+        currentUser.id,
+        userId,
+      );
 
     if (singleConversation) {
       log.debug(
@@ -114,23 +89,10 @@ export async function POST(request: Request) {
     }
 
     // if conversation does not exist, create a new conversation in the database with the provided userId
-    const newConversation = await prisma.conversation.create({
-      data: {
-        users: {
-          connect: [
-            {
-              id: currentUser.id,
-            },
-            {
-              id: userId,
-            },
-          ],
-        },
-      },
-      include: {
-        users: true,
-      },
-    });
+    const newConversation = await conversationRepository.createSingle(
+      currentUser.id,
+      userId,
+    );
 
     // Update all connections with new conversation
     newConversation.users.forEach((user) => {

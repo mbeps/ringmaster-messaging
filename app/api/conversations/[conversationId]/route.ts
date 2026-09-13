@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import getCurrentUser from "@/actions/user/get-current-user";
+import { conversationRepository } from "@/db/repositories/conversation-repository";
 import { getLogger } from "@/lib/logger";
-import prisma from "@/utils/prisma/client";
 import { pusherServer } from "@/utils/pusher/server";
 
 const log = getLogger(["app", "api", "conversations"]);
@@ -41,15 +41,13 @@ export async function DELETE(
       return NextResponse.json(null);
     }
 
+    if (!conversationId) {
+      return new NextResponse("Invalid ID", { status: 400 });
+    }
+
     // find the conversation in the database with the provided conversation ID
-    const existingConversation = await prisma.conversation.findUnique({
-      where: {
-        id: conversationId,
-      },
-      include: {
-        users: true,
-      },
-    });
+    const existingConversation =
+      await conversationRepository.findById(conversationId);
 
     // if the conversation does not exist, return an error
     if (!existingConversation) {
@@ -60,14 +58,12 @@ export async function DELETE(
     }
 
     // if the conversation exists, delete the conversation from the database
-    const deletedConversation = await prisma.conversation.deleteMany({
-      where: {
-        id: conversationId,
-        userIds: {
-          hasSome: [currentUser.id],
-        },
-      },
-    });
+    const deleted = await conversationRepository.deleteForUser(
+      conversationId,
+      currentUser.id,
+    );
+
+    const deletedResult = { count: deleted ? 1 : 0 };
 
     // Update all connections with deleted conversation in real time
     existingConversation.users.forEach((user) => {
@@ -84,7 +80,7 @@ export async function DELETE(
       conversationId,
     });
 
-    return NextResponse.json(deletedConversation);
+    return NextResponse.json(deletedResult);
   } catch (_error) {
     log.error("Failed to delete conversation (id: {conversationId}): {error}", {
       conversationId: currentConvId,

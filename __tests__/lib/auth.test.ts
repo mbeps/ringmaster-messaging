@@ -69,13 +69,17 @@ describe("lib/auth config", () => {
     expect(auth.options.session?.cookieCache?.enabled).toBe(false);
   });
 
-  it("disables built-in id generation", async () => {
+  it("disables built-in id generation and schema validation", async () => {
     const { auth } = await import("@/lib/auth");
 
-    expect(
-      (auth.options.advanced as { database: { generateId: boolean } }).database
-        .generateId
-    ).toBe(false);
+    const dbConfig = (
+      auth.options.advanced as {
+        database: { generateId: boolean; validateSchema: boolean };
+      }
+    ).database;
+
+    expect(dbConfig.generateId).toBe(false);
+    expect(dbConfig.validateSchema).toBe(false);
   });
 
   it("logs errors to console.error", async () => {

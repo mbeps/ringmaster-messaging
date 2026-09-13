@@ -1,34 +1,34 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { mockPrisma, resetPrismaMocks } from "@/__tests__/helpers/prisma";
 
-vi.mock("@/utils/prisma/client", () => ({
-  __esModule: true,
-  default: mockPrisma,
+const { mockMessageRepository } = vi.hoisted(() => ({
+  mockMessageRepository: {
+    findForConversation: vi.fn(),
+  },
+}));
+
+vi.mock("@/db/repositories/message-repository", () => ({
+  messageRepository: mockMessageRepository,
 }));
 
 import getMessages from "@/actions/message/get-messages";
 
 describe("getMessages", () => {
   beforeEach(() => {
-    resetPrismaMocks();
+    mockMessageRepository.findForConversation.mockReset();
   });
 
   it("returns the messages for a conversation", async () => {
     const mockMessages = [{ id: "message-1" }];
-    (mockPrisma.message.findMany as any).mockResolvedValue(mockMessages);
+    mockMessageRepository.findForConversation.mockResolvedValue(mockMessages);
 
     const result = await getMessages("conversation-1");
 
     expect(result).toEqual(mockMessages);
-    expect(mockPrisma.message.findMany).toHaveBeenCalledWith({
-      where: { conversationId: "conversation-1" },
-      include: { sender: true, seen: true },
-      orderBy: { createdAt: "asc" },
-    });
+    expect(mockMessageRepository.findForConversation).toHaveBeenCalledWith("conversation-1");
   });
 
-  it("returns an empty array when prisma throws", async () => {
-    (mockPrisma.message.findMany as any).mockRejectedValue(new Error("db"));
+  it("returns an empty array when repository throws", async () => {
+    mockMessageRepository.findForConversation.mockRejectedValue(new Error("db"));
 
     const result = await getMessages("conversation-1");
 
@@ -36,24 +36,18 @@ describe("getMessages", () => {
   });
 
   it("returns an empty array when the conversation has no messages", async () => {
-    (mockPrisma.message.findMany as any).mockResolvedValue([]);
+    mockMessageRepository.findForConversation.mockResolvedValue([]);
 
     const result = await getMessages("empty-conversation");
 
     expect(result).toEqual([]);
   });
 
-  it("queries messages ordered by createdAt ascending with sender and seen included", async () => {
-    (mockPrisma.message.findMany as any).mockResolvedValue([]);
+  it("queries messages for the conversation", async () => {
+    mockMessageRepository.findForConversation.mockResolvedValue([]);
 
     await getMessages("conversation-2");
 
-    expect(mockPrisma.message.findMany).toHaveBeenCalledWith(
-      expect.objectContaining({
-        where: { conversationId: "conversation-2" },
-        orderBy: { createdAt: "asc" },
-        include: { sender: true, seen: true },
-      })
-    );
+    expect(mockMessageRepository.findForConversation).toHaveBeenCalledWith("conversation-2");
   });
 });

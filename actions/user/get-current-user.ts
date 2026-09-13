@@ -1,8 +1,8 @@
 import { headers } from "next/headers";
 import { unstable_rethrow } from "next/navigation";
+import { userRepository } from "@/db/repositories/user-repository";
 import { auth } from "@/lib/auth";
 import { getLogger } from "@/lib/logger";
-import prisma from "@/utils/prisma/client";
 
 const log = getLogger(["app", "actions", "user"]);
 
@@ -22,11 +22,7 @@ export default async function getCurrentUser() {
       return null;
     }
 
-    const currentUser = await prisma.user.findUnique({
-      where: {
-        email: session.user.email,
-      },
-    });
+    const currentUser = await userRepository.findByEmail(session.user.email);
 
     if (!currentUser) {
       return null;

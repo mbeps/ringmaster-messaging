@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import Header from "@/app/conversations/[conversationId]/_components/header";
 import useActiveList from "@/hooks/use-active-list";
 import { ROUTES } from "@/config/routes";
-import type { Conversation, User } from "@prisma/client";
+import type { Conversation, User } from "@/types/db";
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: vi.fn(), back: vi.fn() }),

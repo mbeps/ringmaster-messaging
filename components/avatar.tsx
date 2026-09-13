@@ -1,9 +1,9 @@
 "use client";
 
-import type { User } from "@prisma/client";
 import Image from "next/image";
 import { ASSETS } from "@/config/assets";
 import useActiveList from "@/hooks/use-active-list";
+import type { User } from "@/types/db";
 
 interface AvatarProps {
   user?: User;

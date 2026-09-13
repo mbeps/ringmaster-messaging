@@ -1,5 +1,5 @@
+import { messageRepository } from "@/db/repositories/message-repository";
 import { getLogger } from "@/lib/logger";
-import prisma from "@/utils/prisma/client";
 
 const log = getLogger(["app", "actions", "messages"]);
 
@@ -15,18 +15,8 @@ export default async function getMessages(conversationId: string) {
   });
   try {
     // find the messages in the database for the given conversation
-    const messages = await prisma.message.findMany({
-      where: {
-        conversationId: conversationId,
-      },
-      include: {
-        sender: true,
-        seen: true,
-      },
-      orderBy: {
-        createdAt: "asc",
-      },
-    });
+    const messages =
+      await messageRepository.findForConversation(conversationId);
 
     log.debug(
       "Fetched {count} messages for conversation (id: {conversationId})",

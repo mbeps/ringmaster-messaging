@@ -6,7 +6,6 @@ import {
   Transition,
   TransitionChild,
 } from "@headlessui/react";
-import type { Conversation, User } from "@prisma/client";
 import { format } from "date-fns";
 import { Fragment, useState } from "react";
 import { IoClose, IoTrash } from "react-icons/io5";
@@ -15,6 +14,7 @@ import AvatarGroup from "@/components/avatar-group";
 import ConfirmModal from "@/components/modals/confirm-modal";
 import useActiveList from "@/hooks/use-active-list";
 import useOtherUser from "@/hooks/use-other-user";
+import type { Conversation, User } from "@/types/db";
 
 interface ProfileDrawerProps {
   isOpen: boolean; // whether the drawer is open

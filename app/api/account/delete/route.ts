@@ -1,8 +1,10 @@
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
+import { conversationRepository } from "@/db/repositories/conversation-repository";
+import { messageRepository } from "@/db/repositories/message-repository";
+import { userRepository } from "@/db/repositories/user-repository";
 import { auth } from "@/lib/auth";
 import { getLogger } from "@/lib/logger";
-import prisma from "@/utils/prisma/client";
 
 const log = getLogger(["app", "api", "account"]);
 
@@ -11,7 +13,7 @@ const log = getLogger(["app", "api", "account"]);
  * This endpoint performs a cascade delete of:
  * - User's messages
  * - Conversations where user is the only member
- * - User's session and account records (handled by Prisma cascade)
+ * - User's session and account records
  * - The user themselves
  */
 export async function DELETE() {
@@ -25,13 +27,7 @@ export async function DELETE() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-      include: {
-        messages: true,
-        conversations: true,
-      },
-    });
+    const user = await userRepository.findByEmail(session.user.email);
 
     if (!user) {
       log.warn("Account not found for deletion");
@@ -39,62 +35,28 @@ export async function DELETE() {
     }
 
     // Delete all messages sent by this user
-    await prisma.message.deleteMany({
-      where: { senderId: user.id },
-    });
+    await messageRepository.deleteForSender(user.id);
+
+    // Fetch conversations this user belongs to
+    const userConversations = await conversationRepository.findForUser(user.id);
 
     // For each conversation, check if user is the only member
-    // If so, delete the conversation and its messages
-    for (const conversation of user.conversations) {
-      const fullConversation = await prisma.conversation.findUnique({
-        where: { id: conversation.id },
-        include: { users: true },
-      });
-
-      if (fullConversation && fullConversation.users.length <= 1) {
-        // Delete all messages in this conversation first
-        await prisma.message.deleteMany({
-          where: { conversationId: conversation.id },
-        });
-        // Delete the conversation
-        await prisma.conversation.delete({
-          where: { id: conversation.id },
-        });
-      } else if (fullConversation) {
-        // Remove user from conversation's userIds
-        await prisma.conversation.update({
-          where: { id: conversation.id },
-          data: {
-            userIds: {
-              set: fullConversation.userIds.filter((id) => id !== user.id),
-            },
-          },
-        });
+    for (const conversation of userConversations) {
+      if (conversation.users.length <= 1) {
+        await conversationRepository.delete(conversation.id);
+      } else {
+        await conversationRepository.removeUserFromConversation(
+          conversation.id,
+          user.id,
+        );
       }
     }
 
     // Remove user from seenIds in all messages they've seen
-    const seenMessages = await prisma.message.findMany({
-      where: {
-        seenIds: { has: user.id },
-      },
-    });
+    await messageRepository.removeSeenUser(user.id);
 
-    for (const message of seenMessages) {
-      await prisma.message.update({
-        where: { id: message.id },
-        data: {
-          seenIds: {
-            set: message.seenIds.filter((id) => id !== user.id),
-          },
-        },
-      });
-    }
-
-    // Delete the user (sessions and accounts will cascade delete via Prisma)
-    await prisma.user.delete({
-      where: { id: user.id },
-    });
+    // Delete the user and cascading sessions/accounts
+    await userRepository.delete(user.id);
 
     log.info(
       "User account and associated data deleted successfully (userId: {userId})",

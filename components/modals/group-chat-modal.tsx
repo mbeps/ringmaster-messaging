@@ -1,7 +1,6 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { User } from "@prisma/client";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -13,6 +12,7 @@ import Select from "@/components/inputs/select";
 import Modal from "@/components/modals/modal";
 import { API_ROUTES } from "@/config/routes";
 import { conversationSchema } from "@/schemas/conversation/conversation.schema";
+import type { User } from "@/types/db";
 
 interface GroupChatModalProps {
   isOpen?: boolean;

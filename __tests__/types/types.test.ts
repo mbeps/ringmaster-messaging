@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { FullConversationType } from "@/types/conversation/full-conversation";
 import type { FullMessageType } from "@/types/message/full-message";
-import type { Conversation, Message, User } from "@prisma/client";
+import type { Conversation, Message, User } from "@/types/db";
 
 const user: User = {
   id: "user-1",

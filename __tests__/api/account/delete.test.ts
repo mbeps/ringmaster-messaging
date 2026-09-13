@@ -1,18 +1,36 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { mockPrisma } from "@/__tests__/helpers/prisma";
 
-// account delete route needs more model methods than the shared mock provides
-Object.assign(mockPrisma.user, { delete: vi.fn() });
-Object.assign(mockPrisma.message, {
-  deleteMany: vi.fn(),
-  update: vi.fn(),
-});
-Object.assign(mockPrisma.conversation, {
-  delete: vi.fn(),
-  update: vi.fn(),
-});
+const {
+  mockUserRepository,
+  mockConversationRepository,
+  mockMessageRepository,
+} = vi.hoisted(() => ({
+  mockUserRepository: {
+    findByEmail: vi.fn(),
+    delete: vi.fn(),
+  },
+  mockConversationRepository: {
+    findForUser: vi.fn(),
+    delete: vi.fn(),
+    removeUserFromConversation: vi.fn(),
+  },
+  mockMessageRepository: {
+    deleteForSender: vi.fn(),
+    removeSeenUser: vi.fn(),
+  },
+}));
 
-vi.mock("@/utils/prisma/client", () => ({ __esModule: true, default: mockPrisma }));
+vi.mock("@/db/repositories/user-repository", () => ({
+  userRepository: mockUserRepository,
+}));
+
+vi.mock("@/db/repositories/conversation-repository", () => ({
+  conversationRepository: mockConversationRepository,
+}));
+
+vi.mock("@/db/repositories/message-repository", () => ({
+  messageRepository: mockMessageRepository,
+}));
 
 vi.mock("@/lib/auth", () => ({
   auth: { api: { getSession: vi.fn() } },
@@ -38,14 +56,14 @@ describe("DELETE /api/account/delete", () => {
     mockedGetSession.mockResolvedValue(null);
     const res = await DELETE();
     expect(res.status).toBe(401);
-    expect(mockPrisma.user.findUnique).not.toHaveBeenCalled();
+    expect(mockUserRepository.findByEmail).not.toHaveBeenCalled();
   });
 
   it("returns 404 when the user does not exist", async () => {
     mockedGetSession.mockResolvedValue({
       user: { email: "me@test.com" },
     });
-    mockPrisma.user.findUnique.mockResolvedValue(null);
+    mockUserRepository.findByEmail.mockResolvedValue(null);
     const res = await DELETE();
     expect(res.status).toBe(404);
   });
@@ -54,174 +72,103 @@ describe("DELETE /api/account/delete", () => {
     mockedGetSession.mockResolvedValue({
       user: { email: "me@test.com" },
     });
-    mockPrisma.user.findUnique.mockResolvedValue({
+    mockUserRepository.findByEmail.mockResolvedValue({
       id: "me",
       email: "me@test.com",
-      messages: [],
-      conversations: [{ id: "conv-1" }],
     });
-    // solo conversation
-    mockPrisma.conversation.findUnique.mockResolvedValue({
-      id: "conv-1",
-      users: [{ id: "me" }],
-      userIds: ["me"],
-    });
-    mockPrisma.message.findMany.mockResolvedValue([]); // no seen messages
+    // solo conversation where user is only member
+    mockConversationRepository.findForUser.mockResolvedValue([
+      {
+        id: "conv-1",
+        users: [{ id: "me" }],
+        userIds: ["me"],
+      },
+    ]);
 
     const res = await DELETE();
 
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual({ success: true });
-    expect(mockPrisma.message.deleteMany).toHaveBeenCalledWith({
-      where: { senderId: "me" },
-    });
-    expect(mockPrisma.message.deleteMany).toHaveBeenCalledWith({
-      where: { conversationId: "conv-1" },
-    });
-    expect(mockPrisma.conversation.delete).toHaveBeenCalledWith({
-      where: { id: "conv-1" },
-    });
-    expect(mockPrisma.user.delete).toHaveBeenCalledWith({
-      where: { id: "me" },
-    });
+    expect(mockMessageRepository.deleteForSender).toHaveBeenCalledWith("me");
+    expect(mockConversationRepository.delete).toHaveBeenCalledWith("conv-1");
+    expect(mockMessageRepository.removeSeenUser).toHaveBeenCalledWith("me");
+    expect(mockUserRepository.delete).toHaveBeenCalledWith("me");
   });
 
   it("removes the user from shared conversations instead of deleting them", async () => {
     mockedGetSession.mockResolvedValue({
       user: { email: "me@test.com" },
     });
-    mockPrisma.user.findUnique.mockResolvedValue({
+    mockUserRepository.findByEmail.mockResolvedValue({
       id: "me",
       email: "me@test.com",
-      messages: [],
-      conversations: [{ id: "conv-2" }],
     });
-    mockPrisma.conversation.findUnique.mockResolvedValue({
-      id: "conv-2",
-      users: [{ id: "me" }, { id: otherUserId }],
-      userIds: ["me", otherUserId],
-    });
-    mockPrisma.message.findMany.mockResolvedValue([]);
+    mockConversationRepository.findForUser.mockResolvedValue([
+      {
+        id: "conv-2",
+        users: [{ id: "me" }, { id: otherUserId }],
+        userIds: ["me", otherUserId],
+      },
+    ]);
 
     const res = await DELETE();
 
     expect(res.status).toBe(200);
-    expect(mockPrisma.conversation.delete).not.toHaveBeenCalled();
-    expect(mockPrisma.conversation.update).toHaveBeenCalledWith({
-      where: { id: "conv-2" },
-      data: { userIds: { set: [otherUserId] } },
-    });
-    expect(mockPrisma.user.delete).toHaveBeenCalled();
+    expect(mockConversationRepository.delete).not.toHaveBeenCalled();
+    expect(
+      mockConversationRepository.removeUserFromConversation
+    ).toHaveBeenCalledWith("conv-2", "me");
+    expect(mockUserRepository.delete).toHaveBeenCalledWith("me");
   });
 
   it("removes the user from seenIds of seen messages", async () => {
     mockedGetSession.mockResolvedValue({
       user: { email: "me@test.com" },
     });
-    mockPrisma.user.findUnique.mockResolvedValue({
+    mockUserRepository.findByEmail.mockResolvedValue({
       id: "me",
       email: "me@test.com",
-      messages: [],
-      conversations: [],
     });
-    mockPrisma.message.findMany.mockResolvedValue([
-      { id: "msg-1", seenIds: ["me", otherUserId] },
-    ]);
+    mockConversationRepository.findForUser.mockResolvedValue([]);
 
     const res = await DELETE();
 
     expect(res.status).toBe(200);
-    expect(mockPrisma.message.update).toHaveBeenCalledWith({
-      where: { id: "msg-1" },
-      data: { seenIds: { set: [otherUserId] } },
-    });
+    expect(mockMessageRepository.removeSeenUser).toHaveBeenCalledWith("me");
   });
 
   it("handles mixed solo and shared conversations", async () => {
     mockedGetSession.mockResolvedValue({
       user: { email: "me@test.com" },
     });
-    mockPrisma.user.findUnique.mockResolvedValue({
+    mockUserRepository.findByEmail.mockResolvedValue({
       id: "me",
       email: "me@test.com",
-      messages: [],
-      conversations: [{ id: "conv-solo" }, { id: "conv-shared" }],
     });
-    let call = 0;
-    mockPrisma.conversation.findUnique.mockImplementation(() => {
-      call += 1;
-      return call === 1
-        ? Promise.resolve({ id: "conv-solo", users: [{ id: "me" }], userIds: ["me"] })
-        : Promise.resolve({
-            id: "conv-shared",
-            users: [{ id: "me" }, { id: otherUserId }],
-            userIds: ["me", otherUserId],
-          });
-    });
-    mockPrisma.message.findMany.mockResolvedValue([]);
-
-    const res = await DELETE();
-
-    expect(res.status).toBe(200);
-    expect(mockPrisma.conversation.delete).toHaveBeenCalledTimes(1);
-    expect(mockPrisma.conversation.update).toHaveBeenCalledTimes(1);
-    expect(mockPrisma.user.delete).toHaveBeenCalled();
-  });
-
-  it("skips conversations that disappear mid-deletion", async () => {
-    mockedGetSession.mockResolvedValue({
-      user: { email: "me@test.com" },
-    });
-    mockPrisma.user.findUnique.mockResolvedValue({
-      id: "me",
-      email: "me@test.com",
-      messages: [],
-      conversations: [{ id: "conv-gone" }],
-    });
-    mockPrisma.conversation.findUnique.mockResolvedValue(null);
-    mockPrisma.message.findMany.mockResolvedValue([]);
-
-    const res = await DELETE();
-
-    expect(res.status).toBe(200);
-    expect(await res.json()).toEqual({ success: true });
-    expect(mockPrisma.conversation.delete).not.toHaveBeenCalled();
-    expect(mockPrisma.user.delete).toHaveBeenCalled();
-  });
-
-  it("cleans up multiple seen messages", async () => {
-    mockedGetSession.mockResolvedValue({
-      user: { email: "me@test.com" },
-    });
-    mockPrisma.user.findUnique.mockResolvedValue({
-      id: "me",
-      email: "me@test.com",
-      messages: [],
-      conversations: [],
-    });
-    mockPrisma.message.findMany.mockResolvedValue([
-      { id: "msg-1", seenIds: ["me"] },
-      { id: "msg-2", seenIds: [otherUserId, "me"] },
+    mockConversationRepository.findForUser.mockResolvedValue([
+      { id: "conv-solo", users: [{ id: "me" }], userIds: ["me"] },
+      {
+        id: "conv-shared",
+        users: [{ id: "me" }, { id: otherUserId }],
+        userIds: ["me", otherUserId],
+      },
     ]);
 
     const res = await DELETE();
 
     expect(res.status).toBe(200);
-    expect(mockPrisma.message.update).toHaveBeenCalledWith({
-      where: { id: "msg-1" },
-      data: { seenIds: { set: [] } },
-    });
-    expect(mockPrisma.message.update).toHaveBeenCalledWith({
-      where: { id: "msg-2" },
-      data: { seenIds: { set: [otherUserId] } },
-    });
+    expect(mockConversationRepository.delete).toHaveBeenCalledWith("conv-solo");
+    expect(
+      mockConversationRepository.removeUserFromConversation
+    ).toHaveBeenCalledWith("conv-shared", "me");
+    expect(mockUserRepository.delete).toHaveBeenCalledWith("me");
   });
 
-  it("returns 500 when prisma throws", async () => {
+  it("returns 500 when repository throws", async () => {
     mockedGetSession.mockResolvedValue({
       user: { email: "me@test.com" },
     });
-    mockPrisma.user.findUnique.mockRejectedValue(new Error("db down"));
+    mockUserRepository.findByEmail.mockRejectedValue(new Error("db down"));
     const res = await DELETE();
     expect(res.status).toBe(500);
     expect(await res.json()).toEqual({ error: "Failed to delete account" });
