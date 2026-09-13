@@ -1,9 +1,9 @@
+import { notFound } from "next/navigation";
 import getConversationById from "@/actions/conversation/get-conversation-by-id";
 import getMessages from "@/actions/message/get-messages";
 import Body from "@/app/conversations/[conversationId]/_components/body";
 import Form from "@/app/conversations/[conversationId]/_components/form";
 import Header from "@/app/conversations/[conversationId]/_components/header";
-import EmptyState from "@/components/empty-state";
 
 interface IParams {
   conversationId: string;
@@ -25,13 +25,7 @@ export default async function ConversationDetailPage({
   const messages = await getMessages(conversationId);
 
   if (!conversation) {
-    return (
-      <div className="h-full lg:pl-80">
-        <div className="flex h-full flex-col">
-          <EmptyState />
-        </div>
-      </div>
-    );
+    notFound();
   }
 
   return (
