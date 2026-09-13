@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 import getCurrentUser from "@/actions/user/get-current-user";
+import { conversationRepository } from "@/db/repositories/conversation-repository";
+import { messageRepository } from "@/db/repositories/message-repository";
 import { getLogger } from "@/lib/logger";
 import { messageSchema } from "@/schemas/message/message.schema";
-import prisma from "@/utils/prisma/client";
 import { pusherServer } from "@/utils/pusher/server";
 
 const log = getLogger(["app", "api", "messages"]);
@@ -30,64 +31,34 @@ export async function POST(request: Request) {
     }
 
     // creates a new message in the database using the message, image, and conversation ID
-    const newMessage = await prisma.message.create({
-      include: {
-        seen: true,
-        sender: true,
-      },
-      data: {
-        body: message,
-        image: image,
-        conversation: {
-          connect: { id: conversationId },
-        },
-        sender: {
-          connect: { id: currentUser.id },
-        },
-        seen: {
-          connect: {
-            id: currentUser.id, // sender automatically sees the message they sent
-          },
-        },
-      },
+    const newMessage = await messageRepository.create({
+      body: message,
+      image: image,
+      conversationId: conversationId,
+      senderId: currentUser.id,
     });
 
-    // find the conversation in the database with the provided conversation ID
-    const updatedConversation = await prisma.conversation.update({
-      where: {
-        id: conversationId,
-      },
-      data: {
-        lastMessageAt: new Date(),
-        messages: {
-          connect: {
-            id: newMessage.id,
-          },
-        },
-      },
-      include: {
-        users: true,
-        messages: {
-          include: {
-            seen: true,
-          },
-        },
-      },
-    });
+    // updates the conversation lastMessageAt and messagesIds list
+    const updatedConversation = await conversationRepository.updateLastMessage(
+      conversationId,
+      newMessage.id,
+    );
 
     // Update all connections with new message in real time
     await pusherServer.trigger(conversationId, "messages:new", newMessage);
 
     // find the last message in the conversation
-    const lastMessage =
-      updatedConversation.messages[updatedConversation.messages.length - 1];
+    const messages = updatedConversation.messages || [];
+    const lastMessage = messages[messages.length - 1] || newMessage;
 
     // updates the status of the last message to seen and notifies the other user in real time
     updatedConversation.users.forEach((user) => {
-      pusherServer.trigger(user.email!, "conversation:update", {
-        id: conversationId,
-        messages: [lastMessage],
-      });
+      if (user.email) {
+        pusherServer.trigger(user.email, "conversation:update", {
+          id: conversationId,
+          messages: [lastMessage],
+        });
+      }
     });
 
     log.info(

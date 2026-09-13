@@ -1,9 +1,9 @@
 "use client";
 
-import type { User } from "@prisma/client";
 import DesktopItem from "@/components/sidebar/desktop-item";
 import ProfileDropdown from "@/components/sidebar/profile-dropdown";
 import useRoutes from "@/hooks/use-routes";
+import type { User } from "@/types/db";
 
 interface DesktopSidebarProps {
   currentUser: User;

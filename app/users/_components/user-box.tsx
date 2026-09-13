@@ -1,12 +1,12 @@
 "use client";
 
-import type { User } from "@prisma/client";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Avatar from "@/components/avatar";
 import LoadingModal from "@/components/modals/loading-modal";
 import { API_ROUTES, ROUTES } from "@/config/routes";
+import type { User } from "@/types/db";
 
 interface UserBoxProps {
   data: User;

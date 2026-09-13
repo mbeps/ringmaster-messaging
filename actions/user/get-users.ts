@@ -1,6 +1,6 @@
 import getSession from "@/actions/auth/get-session";
+import { userRepository } from "@/db/repositories/user-repository";
 import { getLogger } from "@/lib/logger";
-import prisma from "@/utils/prisma/client";
 
 const log = getLogger(["app", "actions", "users"]);
 
@@ -24,16 +24,9 @@ export default async function getUsers() {
 
   try {
     // find the users in the database excluding the current user
-    const users = await prisma.user.findMany({
-      orderBy: {
-        createdAt: "desc",
-      },
-      where: {
-        NOT: {
-          email: session.user.email,
-        },
-      },
-    });
+    const users = await userRepository.findManyExcludingEmail(
+      session.user.email,
+    );
 
     log.debug("Fetched {count} users", {
       count: users.length,

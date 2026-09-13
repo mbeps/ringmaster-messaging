@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import UserList from "@/app/users/_components/user-list";
-import type { User } from "@prisma/client";
+import type { User } from "@/types/db";
 
 vi.mock("@/app/users/_components/user-box", () => ({
   default: ({ data }: { data: User }) => (

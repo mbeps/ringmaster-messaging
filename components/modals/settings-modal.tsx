@@ -1,7 +1,6 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { User } from "@prisma/client";
 import axios from "axios";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -19,6 +18,7 @@ import {
   type SettingsFormData,
   settingsSchema,
 } from "@/schemas/settings/settings.schema";
+import type { User } from "@/types/db";
 
 interface SettingsModalProps {
   isOpen?: boolean;

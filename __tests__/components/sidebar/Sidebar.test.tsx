@@ -1,7 +1,7 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import Sidebar from "@/components/sidebar/sidebar";
-import type { User } from "@prisma/client";
+import type { User } from "@/types/db";
 
 const { getCurrentUser } = vi.hoisted(() => ({
   getCurrentUser: vi.fn(),

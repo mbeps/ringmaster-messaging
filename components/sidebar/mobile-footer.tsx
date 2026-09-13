@@ -1,10 +1,10 @@
 "use client";
 
-import type { User } from "@prisma/client";
 import MobileItem from "@/components/sidebar/mobile-item";
 import ProfileDropdown from "@/components/sidebar/profile-dropdown";
 import useConversation from "@/hooks/use-conversation";
 import useRoutes from "@/hooks/use-routes";
+import type { User } from "@/types/db";
 
 interface MobileFooterProps {
   currentUser: User;

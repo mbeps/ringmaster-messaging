@@ -1,7 +1,7 @@
 import { betterAuth } from "better-auth";
-import { prismaAdapter } from "better-auth/adapters/prisma";
+import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { env } from "@/config/env";
-import prisma from "@/utils/prisma/client";
+import { db, mongoClient } from "@/utils/db/client";
 
 export const auth = betterAuth({
   secret: env.BETTER_AUTH_SECRET,
@@ -9,12 +9,34 @@ export const auth = betterAuth({
   trustedOrigins: env.BETTER_AUTH_TRUSTED_ORIGINS
     ? env.BETTER_AUTH_TRUSTED_ORIGINS.split(",")
     : [],
-  database: prismaAdapter(prisma, {
-    provider: "mongodb",
+  database: mongodbAdapter(db, {
+    client: mongoClient,
+    usePlural: false,
+    transaction: true,
   }),
+  user: {
+    modelName: "User",
+    deleteUser: {
+      enabled: true,
+    },
+  },
+  session: {
+    modelName: "Session",
+    cookieCache: {
+      enabled: false,
+    },
+  },
+  account: {
+    modelName: "Account",
+  },
+  verification: {
+    modelName: "Verification",
+  },
   advanced: {
     database: {
       generateId: false,
+      joins: true,
+      validateSchema: false,
     },
   },
   logger: {
@@ -46,18 +68,8 @@ export const auth = betterAuth({
       }
     },
   },
-  session: {
-    cookieCache: {
-      enabled: false,
-    },
-  },
   emailAndPassword: {
     enabled: true,
-  },
-  user: {
-    deleteUser: {
-      enabled: true,
-    },
   },
   socialProviders: {
     github: {

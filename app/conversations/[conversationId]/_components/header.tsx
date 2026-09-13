@@ -1,6 +1,5 @@
 "use client";
 
-import type { Conversation, User } from "@prisma/client";
 import Link from "next/link";
 import { useState } from "react";
 import { HiChevronLeft } from "react-icons/hi";
@@ -11,6 +10,7 @@ import AvatarGroup from "@/components/avatar-group";
 import { ROUTES } from "@/config/routes";
 import useActiveList from "@/hooks/use-active-list";
 import useOtherUser from "@/hooks/use-other-user";
+import type { Conversation, User } from "@/types/db";
 
 interface HeaderProps {
   conversation: Conversation & {

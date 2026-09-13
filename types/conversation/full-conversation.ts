@@ -1,4 +1,4 @@
-import type { Conversation, User } from "@prisma/client";
+import type { Conversation, User } from "@/types/db";
 import type { FullMessageType } from "@/types/message/full-message";
 
 /**

@@ -1,9 +1,13 @@
 import { describe, expect, it, beforeEach, vi } from "vitest";
-import { mockPrisma, resetPrismaMocks } from "@/__tests__/helpers/prisma";
 
-vi.mock("@/utils/prisma/client", () => ({
-  __esModule: true,
-  default: mockPrisma,
+const { mockConversationRepository } = vi.hoisted(() => ({
+  mockConversationRepository: {
+    findForUser: vi.fn(),
+  },
+}));
+
+vi.mock("@/db/repositories/conversation-repository", () => ({
+  conversationRepository: mockConversationRepository,
 }));
 
 vi.mock("@/actions/user/get-current-user", () => ({
@@ -19,8 +23,9 @@ const mockedGetCurrentUser = getCurrentUser as unknown as MockedFn;
 
 describe("getConversations", () => {
   beforeEach(() => {
-    resetPrismaMocks();
+    mockConversationRepository.findForUser.mockReset();
     mockedGetCurrentUser.mockReset();
+    vi.clearAllMocks();
   });
 
   it("returns an empty array when the user is missing", async () => {
@@ -29,37 +34,25 @@ describe("getConversations", () => {
     const result = await getConversations();
 
     expect(result).toEqual([]);
-    expect(mockPrisma.conversation.findMany).not.toHaveBeenCalled();
+    expect(mockConversationRepository.findForUser).not.toHaveBeenCalled();
   });
 
   it("returns conversations when the user exists", async () => {
     const mockConversations = [{ id: "1" }];
     mockedGetCurrentUser.mockResolvedValue({ id: "user-1" });
-    (mockPrisma.conversation.findMany as any).mockResolvedValue(
+    mockConversationRepository.findForUser.mockResolvedValue(
       mockConversations
     );
 
     const result = await getConversations();
 
     expect(result).toEqual(mockConversations);
-    expect(mockPrisma.conversation.findMany).toHaveBeenCalledWith({
-      orderBy: { lastMessageAt: "desc" },
-      where: { userIds: { has: "user-1" } },
-      include: {
-        users: true,
-        messages: {
-          include: {
-            sender: true,
-            seen: true,
-          },
-        },
-      },
-    });
+    expect(mockConversationRepository.findForUser).toHaveBeenCalledWith("user-1");
   });
 
-  it("returns an empty array when prisma throws", async () => {
+  it("returns an empty array when repository throws", async () => {
     mockedGetCurrentUser.mockResolvedValue({ id: "user-1" });
-    (mockPrisma.conversation.findMany as any).mockRejectedValue(
+    mockConversationRepository.findForUser.mockRejectedValue(
       new Error("db")
     );
 
@@ -74,7 +67,7 @@ describe("getConversations", () => {
     const result = await getConversations();
 
     expect(result).toEqual([]);
-    expect(mockPrisma.conversation.findMany).not.toHaveBeenCalled();
+    expect(mockConversationRepository.findForUser).not.toHaveBeenCalled();
   });
 
   it("returns an empty array when getCurrentUser resolves to an object without id", async () => {
@@ -83,26 +76,21 @@ describe("getConversations", () => {
     const result = await getConversations();
 
     expect(result).toEqual([]);
-    expect(mockPrisma.conversation.findMany).not.toHaveBeenCalled();
+    expect(mockConversationRepository.findForUser).not.toHaveBeenCalled();
   });
 
-  it("queries conversations ordered by lastMessageAt descending", async () => {
+  it("queries conversations for user", async () => {
     mockedGetCurrentUser.mockResolvedValue({ id: "user-9" });
-    (mockPrisma.conversation.findMany as any).mockResolvedValue([]);
+    mockConversationRepository.findForUser.mockResolvedValue([]);
 
     await getConversations();
 
-    expect(mockPrisma.conversation.findMany).toHaveBeenCalledWith(
-      expect.objectContaining({
-        orderBy: { lastMessageAt: "desc" },
-        where: { userIds: { has: "user-9" } },
-      })
-    );
+    expect(mockConversationRepository.findForUser).toHaveBeenCalledWith("user-9");
   });
 
   it("returns an empty array when the user has no conversations", async () => {
     mockedGetCurrentUser.mockResolvedValue({ id: "user-1" });
-    (mockPrisma.conversation.findMany as any).mockResolvedValue([]);
+    mockConversationRepository.findForUser.mockResolvedValue([]);
 
     const result = await getConversations();
 

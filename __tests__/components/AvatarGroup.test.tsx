@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import AvatarGroup from "@/components/avatar-group";
-import type { User } from "@prisma/client";
+import type { User } from "@/types/db";
 
 vi.mock("next/image", () => ({
   default: (props: Record<string, unknown>) => <img {...props} />,

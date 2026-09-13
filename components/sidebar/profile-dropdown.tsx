@@ -7,7 +7,6 @@ import {
   MenuItems,
   Transition,
 } from "@headlessui/react";
-import type { User } from "@prisma/client";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
 import { Fragment } from "react";
@@ -15,6 +14,7 @@ import { HiArrowLeftOnRectangle, HiUser } from "react-icons/hi2";
 import Avatar from "@/components/avatar";
 import { ROUTES } from "@/config/routes";
 import { authClient } from "@/lib/auth-client";
+import type { User } from "@/types/db";
 
 interface ProfileDropdownProps {
   currentUser: User;

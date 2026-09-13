@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { format } from "date-fns";
 import ConversationBox from "@/app/conversations/_components/conversation-box";
 import type { FullConversationType } from "@/types/conversation/full-conversation";
-import type { User } from "@prisma/client";
+import type { User } from "@/types/db";
 import { ROUTES } from "@/config/routes";
 
 const push = vi.fn();

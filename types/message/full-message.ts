@@ -1,4 +1,4 @@
-import type { Message, User } from "@prisma/client";
+import type { Message, User } from "@/types/db";
 
 /**
  * Defines a type to model messages with some additional information.

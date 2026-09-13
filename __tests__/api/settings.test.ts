@@ -1,12 +1,16 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { mockPrisma } from "@/__tests__/helpers/prisma";
 
-// settings route needs user.update which the shared mock lacks
-(mockPrisma.user as Record<string, unknown>).update = vi.fn();
+const { mockUserRepository, mockGetCurrentUser } = vi.hoisted(() => ({
+  mockUserRepository: {
+    update: vi.fn(),
+  },
+  mockGetCurrentUser: vi.fn(),
+}));
 
-vi.mock("@/utils/prisma/client", () => ({ __esModule: true, default: mockPrisma }));
+vi.mock("@/db/repositories/user-repository", () => ({
+  userRepository: mockUserRepository,
+}));
 
-const mockGetCurrentUser = vi.fn();
 vi.mock("@/actions/user/get-current-user", () => ({
   default: (...args: unknown[]) => mockGetCurrentUser(...args),
 }));
@@ -29,7 +33,7 @@ describe("POST /api/settings", () => {
       })
     );
     expect(res.status).toBe(401);
-    expect(mockPrisma.user.update).not.toHaveBeenCalled();
+    expect(mockUserRepository.update).not.toHaveBeenCalled();
   });
 
   it("returns 400 on validation failure", async () => {
@@ -47,9 +51,7 @@ describe("POST /api/settings", () => {
   it("updates the user and returns it", async () => {
     mockGetCurrentUser.mockResolvedValue(user);
     const updated = { ...user, name: "New", image: "new.png" };
-    (mockPrisma.user.update as ReturnType<typeof vi.fn>).mockResolvedValue(
-      updated
-    );
+    mockUserRepository.update.mockResolvedValue(updated);
 
     const res = await POST(
       new Request("http://localhost/api/settings", {
@@ -60,18 +62,16 @@ describe("POST /api/settings", () => {
 
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual(updated);
-    expect(mockPrisma.user.update).toHaveBeenCalledWith({
-      where: { id: "user-1" },
-      data: { name: "New", image: "new.png" },
+    expect(mockUserRepository.update).toHaveBeenCalledWith("user-1", {
+      name: "New",
+      image: "new.png",
     });
   });
 
   it("accepts an explicit null image", async () => {
     mockGetCurrentUser.mockResolvedValue(user);
     const updated = { ...user, image: null };
-    (mockPrisma.user.update as ReturnType<typeof vi.fn>).mockResolvedValue(
-      updated
-    );
+    mockUserRepository.update.mockResolvedValue(updated);
 
     const res = await POST(
       new Request("http://localhost/api/settings", {
@@ -82,17 +82,15 @@ describe("POST /api/settings", () => {
 
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual(updated);
-    expect(mockPrisma.user.update).toHaveBeenCalledWith({
-      where: { id: "user-1" },
-      data: { name: "New", image: null },
+    expect(mockUserRepository.update).toHaveBeenCalledWith("user-1", {
+      name: "New",
+      image: null,
     });
   });
 
-  it("returns 500 when prisma throws", async () => {
+  it("returns 500 when repository throws", async () => {
     mockGetCurrentUser.mockResolvedValue(user);
-    (mockPrisma.user.update as ReturnType<typeof vi.fn>).mockRejectedValue(
-      new Error("db down")
-    );
+    mockUserRepository.update.mockRejectedValue(new Error("db down"));
     const res = await POST(
       new Request("http://localhost/api/settings", {
         method: "POST",

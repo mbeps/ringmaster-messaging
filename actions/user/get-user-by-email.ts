@@ -1,4 +1,4 @@
-import prisma from "@/utils/prisma/client";
+import { userRepository } from "@/db/repositories/user-repository";
 
 /**
  * Retrieves a user by their email address.
@@ -8,9 +8,7 @@ import prisma from "@/utils/prisma/client";
  */
 export default async function getUserByEmail(email: string) {
   try {
-    const user = await prisma.user.findUnique({
-      where: { email },
-    });
+    const user = await userRepository.findByEmail(email);
     return user;
   } catch {
     return null;

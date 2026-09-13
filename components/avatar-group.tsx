@@ -1,8 +1,8 @@
 "use client";
 
-import type { User } from "@prisma/client";
 import Image from "next/image";
 import { ASSETS } from "@/config/assets";
+import type { User } from "@/types/db";
 
 interface AvatarGroupProps {
   users?: User[];

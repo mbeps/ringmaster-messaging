@@ -1,9 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { mockPrisma, resetPrismaMocks } from "@/__tests__/helpers/prisma";
 
-vi.mock("@/utils/prisma/client", () => ({
-  __esModule: true,
-  default: mockPrisma,
+const { mockUserRepository } = vi.hoisted(() => ({
+  mockUserRepository: {
+    findManyExcludingEmail: vi.fn(),
+  },
+}));
+
+vi.mock("@/db/repositories/user-repository", () => ({
+  userRepository: mockUserRepository,
 }));
 
 vi.mock("@/actions/auth/get-session", () => ({
@@ -19,8 +23,7 @@ const mockedGetSession = getSession as unknown as MockedFn;
 
 describe("getUsers", () => {
   beforeEach(() => {
-    resetPrismaMocks();
-    mockedGetSession.mockReset();
+    vi.clearAllMocks();
   });
 
   it("returns an empty array when the user is not logged in", async () => {
@@ -29,26 +32,23 @@ describe("getUsers", () => {
     const result = await getUsers();
 
     expect(result).toEqual([]);
-    expect(mockPrisma.user.findMany).not.toHaveBeenCalled();
+    expect(mockUserRepository.findManyExcludingEmail).not.toHaveBeenCalled();
   });
 
   it("returns users when the user is logged in", async () => {
     const mockUsers = [{ id: "user-1" }];
     mockedGetSession.mockResolvedValue({ user: { email: "me@example.com" } });
-    (mockPrisma.user.findMany as any).mockResolvedValue(mockUsers);
+    mockUserRepository.findManyExcludingEmail.mockResolvedValue(mockUsers);
 
     const result = await getUsers();
 
     expect(result).toEqual(mockUsers);
-    expect(mockPrisma.user.findMany).toHaveBeenCalledWith({
-      orderBy: { createdAt: "desc" },
-      where: { NOT: { email: "me@example.com" } },
-    });
+    expect(mockUserRepository.findManyExcludingEmail).toHaveBeenCalledWith("me@example.com");
   });
 
-  it("returns an empty array when prisma throws", async () => {
+  it("returns an empty array when repository throws", async () => {
     mockedGetSession.mockResolvedValue({ user: { email: "me@example.com" } });
-    (mockPrisma.user.findMany as any).mockRejectedValue(new Error("db"));
+    mockUserRepository.findManyExcludingEmail.mockRejectedValue(new Error("db"));
 
     const result = await getUsers();
 
@@ -61,19 +61,15 @@ describe("getUsers", () => {
     const result = await getUsers();
 
     expect(result).toEqual([]);
-    expect(mockPrisma.user.findMany).not.toHaveBeenCalled();
+    expect(mockUserRepository.findManyExcludingEmail).not.toHaveBeenCalled();
   });
 
   it("excludes the current user's email from the query", async () => {
     mockedGetSession.mockResolvedValue({ user: { email: "me@example.com" } });
-    (mockPrisma.user.findMany as any).mockResolvedValue([]);
+    mockUserRepository.findManyExcludingEmail.mockResolvedValue([]);
 
     await getUsers();
 
-    expect(mockPrisma.user.findMany).toHaveBeenCalledWith(
-      expect.objectContaining({
-        where: { NOT: { email: "me@example.com" } },
-      })
-    );
+    expect(mockUserRepository.findManyExcludingEmail).toHaveBeenCalledWith("me@example.com");
   });
 });

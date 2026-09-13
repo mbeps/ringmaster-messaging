@@ -1,23 +1,24 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { mockPrisma, resetPrismaMocks } from "@/__tests__/helpers/prisma";
 
-vi.mock("@/utils/prisma/client", () => ({
-  __esModule: true,
-  default: mockPrisma,
-}));
-
-vi.mock("@/actions/user/get-current-user", () => ({
-  __esModule: true,
-  default: vi.fn(),
-}));
-
-const { mockLog } = vi.hoisted(() => ({
+const { mockConversationRepository, mockLog } = vi.hoisted(() => ({
+  mockConversationRepository: {
+    findById: vi.fn(),
+  },
   mockLog: {
     debug: vi.fn(),
     info: vi.fn(),
     warn: vi.fn(),
     error: vi.fn(),
   },
+}));
+
+vi.mock("@/db/repositories/conversation-repository", () => ({
+  conversationRepository: mockConversationRepository,
+}));
+
+vi.mock("@/actions/user/get-current-user", () => ({
+  __esModule: true,
+  default: vi.fn(),
 }));
 
 vi.mock("@/lib/logger", () => ({
@@ -32,7 +33,7 @@ const mockedGetCurrentUser = getCurrentUser as unknown as MockedFn;
 
 describe("getConversationById", () => {
   beforeEach(() => {
-    resetPrismaMocks();
+    mockConversationRepository.findById.mockReset();
     mockedGetCurrentUser.mockReset();
     vi.clearAllMocks();
   });
@@ -47,28 +48,23 @@ describe("getConversationById", () => {
     const result = await getConversationById("test-id");
 
     expect(result).toBeNull();
-    expect(mockPrisma.conversation.findUnique).not.toHaveBeenCalled();
+    expect(mockConversationRepository.findById).not.toHaveBeenCalled();
   });
 
   it("returns the conversation when the user is authenticated", async () => {
     const mockConversation = { id: "abc", users: [] };
     mockedGetCurrentUser.mockResolvedValue({ email: "user@test.com" });
-    (mockPrisma.conversation.findUnique as any).mockResolvedValue(
-      mockConversation
-    );
+    mockConversationRepository.findById.mockResolvedValue(mockConversation);
 
     const result = await getConversationById("abc");
 
     expect(result).toEqual(mockConversation);
-    expect(mockPrisma.conversation.findUnique).toHaveBeenCalledWith({
-      where: { id: "abc" },
-      include: { users: true },
-    });
+    expect(mockConversationRepository.findById).toHaveBeenCalledWith("abc");
   });
 
-  it("returns null and logs when prisma throws", async () => {
+  it("returns null and logs when repository throws", async () => {
     mockedGetCurrentUser.mockResolvedValue({ email: "user@test.com" });
-    (mockPrisma.conversation.findUnique as any).mockRejectedValue(
+    mockConversationRepository.findById.mockRejectedValue(
       new Error("db error")
     );
 
@@ -88,7 +84,7 @@ describe("getConversationById", () => {
     mockedGetCurrentUser.mockResolvedValue({ email: "user@test.com" });
     const dynamicError = new Error("Dynamic server usage");
     (dynamicError as any).digest = "DYNAMIC_SERVER_USAGE";
-    (mockPrisma.conversation.findUnique as any).mockRejectedValue(dynamicError);
+    mockConversationRepository.findById.mockRejectedValue(dynamicError);
 
     await expect(getConversationById("abc")).rejects.toThrow("Dynamic server usage");
   });

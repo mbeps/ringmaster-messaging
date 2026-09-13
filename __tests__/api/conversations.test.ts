@@ -1,16 +1,23 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { mockPrisma } from "@/__tests__/helpers/prisma";
 
-Object.assign(mockPrisma.conversation, { create: vi.fn() });
+const { mockConversationRepository, mockPusherTrigger, mockGetCurrentUser } = vi.hoisted(() => ({
+  mockConversationRepository: {
+    createGroup: vi.fn(),
+    findSingleBetweenUsers: vi.fn(),
+    createSingle: vi.fn(),
+  },
+  mockPusherTrigger: vi.fn(),
+  mockGetCurrentUser: vi.fn(),
+}));
 
-vi.mock("@/utils/prisma/client", () => ({ __esModule: true, default: mockPrisma }));
+vi.mock("@/db/repositories/conversation-repository", () => ({
+  conversationRepository: mockConversationRepository,
+}));
 
-const { mockPusherTrigger } = vi.hoisted(() => ({ mockPusherTrigger: vi.fn() }));
 vi.mock("@/utils/pusher/server", () => ({
   pusherServer: { trigger: mockPusherTrigger },
 }));
 
-const mockGetCurrentUser = vi.fn();
 vi.mock("@/actions/user/get-current-user", () => ({
   default: (...args: unknown[]) => mockGetCurrentUser(...args),
 }));
@@ -36,7 +43,8 @@ describe("POST /api/conversations", () => {
     mockGetCurrentUser.mockResolvedValue(null);
     const res = await post({ userId: "other" });
     expect(res.status).toBe(400);
-    expect(mockPrisma.conversation.create).not.toHaveBeenCalled();
+    expect(mockConversationRepository.createGroup).not.toHaveBeenCalled();
+    expect(mockConversationRepository.createSingle).not.toHaveBeenCalled();
   });
 
   it("returns 400 on zod validation failure (group without members)", async () => {
@@ -58,7 +66,7 @@ describe("POST /api/conversations", () => {
         { id: "me", email: "me@test.com" },
       ],
     };
-    mockPrisma.conversation.create.mockResolvedValue(created);
+    mockConversationRepository.createGroup.mockResolvedValue(created);
 
     const res = await post({
       isGroup: true,
@@ -68,20 +76,10 @@ describe("POST /api/conversations", () => {
 
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual(created);
-    expect(mockPrisma.conversation.create).toHaveBeenCalledWith(
-      expect.objectContaining({
-        data: expect.objectContaining({
-          name: "Group",
-          isGroup: true,
-          users: {
-            connect: [
-              { id: "a" },
-              { id: "b" },
-              { id: "me" },
-            ],
-          },
-        }),
-      })
+    expect(mockConversationRepository.createGroup).toHaveBeenCalledWith(
+      "Group",
+      true,
+      ["a", "b", "me"]
     );
     // only users with an email get a pusher event
     expect(mockPusherTrigger).toHaveBeenCalledTimes(2);
@@ -102,26 +100,22 @@ describe("POST /api/conversations", () => {
   it("returns the existing single conversation when one already exists", async () => {
     mockGetCurrentUser.mockResolvedValue(currentUser);
     const existing = { id: "conv-1", users: [] };
-    mockPrisma.conversation.findMany.mockResolvedValue([existing]);
+    mockConversationRepository.findSingleBetweenUsers.mockResolvedValue(existing);
 
     const res = await post({ userId: "other" });
 
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual(existing);
-    expect(mockPrisma.conversation.create).not.toHaveBeenCalled();
-    expect(mockPrisma.conversation.findMany).toHaveBeenCalledWith({
-      where: {
-        OR: [
-          { userIds: { equals: ["me", "other"] } },
-          { userIds: { equals: ["other", "me"] } },
-        ],
-      },
-    });
+    expect(mockConversationRepository.createSingle).not.toHaveBeenCalled();
+    expect(mockConversationRepository.findSingleBetweenUsers).toHaveBeenCalledWith(
+      "me",
+      "other"
+    );
   });
 
   it("creates a new single conversation when none exists", async () => {
     mockGetCurrentUser.mockResolvedValue(currentUser);
-    mockPrisma.conversation.findMany.mockResolvedValue([]);
+    mockConversationRepository.findSingleBetweenUsers.mockResolvedValue(null);
     const created = {
       id: "conv-2",
       users: [
@@ -129,16 +123,16 @@ describe("POST /api/conversations", () => {
         { id: "other", email: "other@test.com" },
       ],
     };
-    mockPrisma.conversation.create.mockResolvedValue(created);
+    mockConversationRepository.createSingle.mockResolvedValue(created);
 
     const res = await post({ userId: "other" });
 
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual(created);
-    expect(mockPrisma.conversation.create).toHaveBeenCalledWith({
-      data: { users: { connect: [{ id: "me" }, { id: "other" }] } },
-      include: { users: true },
-    });
+    expect(mockConversationRepository.createSingle).toHaveBeenCalledWith(
+      "me",
+      "other"
+    );
     expect(mockPusherTrigger).toHaveBeenCalledWith(
       "me@test.com",
       "conversation:new",
@@ -151,17 +145,17 @@ describe("POST /api/conversations", () => {
     );
   });
 
-  it("returns 500 when prisma throws", async () => {
+  it("returns 500 when repository throws", async () => {
     mockGetCurrentUser.mockResolvedValue(currentUser);
-    mockPrisma.conversation.findMany.mockRejectedValue(new Error("db down"));
+    mockConversationRepository.findSingleBetweenUsers.mockRejectedValue(new Error("db down"));
     const res = await post({ userId: "other" });
     expect(res.status).toBe(500);
   });
 
   it("returns 500 when creating a single conversation fails", async () => {
     mockGetCurrentUser.mockResolvedValue(currentUser);
-    mockPrisma.conversation.findMany.mockResolvedValue([]);
-    mockPrisma.conversation.create.mockRejectedValue(new Error("db down"));
+    mockConversationRepository.findSingleBetweenUsers.mockResolvedValue(null);
+    mockConversationRepository.createSingle.mockRejectedValue(new Error("db down"));
 
     const res = await post({ userId: "other" });
 
@@ -173,7 +167,7 @@ describe("POST /api/conversations", () => {
     mockGetCurrentUser.mockResolvedValue(currentUser);
     const res = await post({ isGroup: true, members: [{ value: "a" }] });
     expect(res.status).toBe(400);
-    expect(mockPrisma.conversation.create).not.toHaveBeenCalled();
+    expect(mockConversationRepository.createGroup).not.toHaveBeenCalled();
   });
 
   it("returns 400 for an empty members list in a group", async () => {

@@ -1,6 +1,6 @@
 import getCurrentUser from "@/actions/user/get-current-user";
+import { conversationRepository } from "@/db/repositories/conversation-repository";
 import { getLogger } from "@/lib/logger";
-import prisma from "@/utils/prisma/client";
 
 const log = getLogger(["app", "actions", "conversations"]);
 
@@ -28,25 +28,9 @@ export default async function getConversations() {
 
   try {
     // find the conversations in the database for the current user
-    const conversations = await prisma.conversation.findMany({
-      orderBy: {
-        lastMessageAt: "desc",
-      },
-      where: {
-        userIds: {
-          has: currentUser.id,
-        },
-      },
-      include: {
-        users: true,
-        messages: {
-          include: {
-            sender: true,
-            seen: true, // list of people who saw message
-          },
-        },
-      },
-    });
+    const conversations = await conversationRepository.findForUser(
+      currentUser.id,
+    );
 
     log.debug("Fetched {count} conversations", {
       count: conversations.length,

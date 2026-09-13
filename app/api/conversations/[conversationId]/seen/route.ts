@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import getCurrentUser from "@/actions/user/get-current-user";
+import { conversationRepository } from "@/db/repositories/conversation-repository";
+import { messageRepository } from "@/db/repositories/message-repository";
 import { getLogger } from "@/lib/logger";
-import prisma from "@/utils/prisma/client";
 import { pusherServer } from "@/utils/pusher/server";
 
 const log = getLogger(["app", "api", "conversations"]);
@@ -40,19 +41,13 @@ export async function POST(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
+    if (!conversationId) {
+      return new NextResponse("Invalid ID", { status: 400 });
+    }
+
     // Find existing conversation
-    const conversation = await prisma.conversation.findUnique({
-      where: {
-        id: conversationId,
-      },
-      include: {
-        messages: {
-          include: {
-            seen: true,
-          },
-        },
-        users: true,
-      },
+    const conversation = await conversationRepository.findById(conversationId, {
+      includeMessages: true,
     });
 
     // If the conversation does not exist, return an error
@@ -64,8 +59,9 @@ export async function POST(
       return new NextResponse("Invalid ID", { status: 400 });
     }
 
+    const messages = conversation.messages || [];
     // Find last message in the conversation
-    const lastMessage = conversation.messages[conversation.messages.length - 1];
+    const lastMessage = messages[messages.length - 1];
 
     // If there is no last message, return the conversation
     if (!lastMessage) {
@@ -77,22 +73,14 @@ export async function POST(
     }
 
     // Update seen of last message
-    const updatedMessage = await prisma.message.update({
-      where: {
-        id: lastMessage.id,
-      },
-      include: {
-        sender: true,
-        seen: true,
-      },
-      data: {
-        seen: {
-          connect: {
-            id: currentUser.id,
-          },
-        },
-      },
-    });
+    const updatedMessage = await messageRepository.markSeen(
+      lastMessage.id,
+      currentUser.id,
+    );
+
+    if (!updatedMessage) {
+      return new NextResponse("Error", { status: 500 });
+    }
 
     // Update all connections with new seen message in real time
     await pusherServer.trigger(currentUser.email, "conversation:update", {
@@ -101,13 +89,13 @@ export async function POST(
     });
 
     // If user has already seen the message, no need to go further
-    if (lastMessage.seenIds.indexOf(currentUser.id) !== -1) {
+    if ((lastMessage.seenIds || []).indexOf(currentUser.id) !== -1) {
       return NextResponse.json(conversation);
     }
 
     // Update last message seen
     await pusherServer.trigger(
-      conversationId!,
+      conversationId,
       "message:update",
       updatedMessage,
     );

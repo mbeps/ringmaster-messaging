@@ -1,9 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { mockPrisma, resetPrismaMocks } from "@/__tests__/helpers/prisma";
 
-vi.mock("@/utils/prisma/client", () => ({
-  __esModule: true,
-  default: mockPrisma,
+const { mockUserRepository } = vi.hoisted(() => ({
+  mockUserRepository: {
+    findByEmail: vi.fn(),
+  },
+}));
+
+vi.mock("@/db/repositories/user-repository", () => ({
+  userRepository: mockUserRepository,
 }));
 
 vi.mock("@/lib/auth", () => ({
@@ -27,8 +31,7 @@ const mockedGetSession = auth.api.getSession as unknown as MockedFn;
 
 describe("getCurrentUser", () => {
   beforeEach(() => {
-    resetPrismaMocks();
-    mockedGetSession.mockReset();
+    vi.clearAllMocks();
   });
 
   it("returns null when there is no active session", async () => {
@@ -37,12 +40,12 @@ describe("getCurrentUser", () => {
     const result = await getCurrentUser();
 
     expect(result).toBeNull();
-    expect(mockPrisma.user.findUnique).not.toHaveBeenCalled();
+    expect(mockUserRepository.findByEmail).not.toHaveBeenCalled();
   });
 
-  it("returns null when prisma cannot find the user", async () => {
+  it("returns null when repository cannot find the user", async () => {
     mockedGetSession.mockResolvedValue({ user: { email: "test@example.com" } });
-    (mockPrisma.user.findUnique as any).mockResolvedValue(null);
+    mockUserRepository.findByEmail.mockResolvedValue(null);
 
     const result = await getCurrentUser();
 
@@ -52,19 +55,17 @@ describe("getCurrentUser", () => {
   it("returns the user info when everything succeeds", async () => {
     const mockUser = { id: "user-1", email: "test@example.com" };
     mockedGetSession.mockResolvedValue({ user: { email: "test@example.com" } });
-    (mockPrisma.user.findUnique as any).mockResolvedValue(mockUser);
+    mockUserRepository.findByEmail.mockResolvedValue(mockUser);
 
     const result = await getCurrentUser();
 
     expect(result).toEqual(mockUser);
-    expect(mockPrisma.user.findUnique).toHaveBeenCalledWith({
-      where: { email: "test@example.com" },
-    });
+    expect(mockUserRepository.findByEmail).toHaveBeenCalledWith("test@example.com");
   });
 
-  it("swallows prisma errors and returns null", async () => {
+  it("swallows repository errors and returns null", async () => {
     mockedGetSession.mockResolvedValue({ user: { email: "test@example.com" } });
-    (mockPrisma.user.findUnique as any).mockRejectedValue(new Error("db"));
+    mockUserRepository.findByEmail.mockRejectedValue(new Error("db"));
 
     const result = await getCurrentUser();
 
@@ -77,7 +78,7 @@ describe("getCurrentUser", () => {
     const result = await getCurrentUser();
 
     expect(result).toBeNull();
-    expect(mockPrisma.user.findUnique).not.toHaveBeenCalled();
+    expect(mockUserRepository.findByEmail).not.toHaveBeenCalled();
   });
 
   it("returns null when the session has no user at all", async () => {

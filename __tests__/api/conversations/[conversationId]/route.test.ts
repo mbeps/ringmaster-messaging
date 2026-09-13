@@ -1,18 +1,22 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { mockPrisma } from "@/__tests__/helpers/prisma";
 
-Object.assign(mockPrisma.conversation, {
-  deleteMany: vi.fn(),
-});
+const { mockConversationRepository, mockPusherTrigger, mockGetCurrentUser } = vi.hoisted(() => ({
+  mockConversationRepository: {
+    findById: vi.fn(),
+    deleteForUser: vi.fn(),
+  },
+  mockPusherTrigger: vi.fn(),
+  mockGetCurrentUser: vi.fn(),
+}));
 
-vi.mock("@/utils/prisma/client", () => ({ __esModule: true, default: mockPrisma }));
+vi.mock("@/db/repositories/conversation-repository", () => ({
+  conversationRepository: mockConversationRepository,
+}));
 
-const { mockPusherTrigger } = vi.hoisted(() => ({ mockPusherTrigger: vi.fn() }));
 vi.mock("@/utils/pusher/server", () => ({
   pusherServer: { trigger: mockPusherTrigger },
 }));
 
-const mockGetCurrentUser = vi.fn();
 vi.mock("@/actions/user/get-current-user", () => ({
   default: (...args: unknown[]) => mockGetCurrentUser(...args),
 }));
@@ -33,12 +37,12 @@ describe("DELETE /api/conversations/[conversationId]", () => {
     const res = await DELETE(new Request("http://localhost/x"), params("c1"));
     expect(res.status).toBe(200);
     expect(await res.json()).toBeNull();
-    expect(mockPrisma.conversation.findUnique).not.toHaveBeenCalled();
+    expect(mockConversationRepository.findById).not.toHaveBeenCalled();
   });
 
   it("returns 400 when the conversation does not exist", async () => {
     mockGetCurrentUser.mockResolvedValue({ id: "me" });
-    mockPrisma.conversation.findUnique.mockResolvedValue(null);
+    mockConversationRepository.findById.mockResolvedValue(null);
     const res = await DELETE(new Request("http://localhost/x"), params("c1"));
     expect(res.status).toBe(400);
     expect(await res.text()).toBe("Invalid ID");
@@ -53,17 +57,14 @@ describe("DELETE /api/conversations/[conversationId]", () => {
         { id: "other", email: null },
       ],
     };
-    mockPrisma.conversation.findUnique.mockResolvedValue(existing);
-    const deleted = { count: 1 };
-    mockPrisma.conversation.deleteMany.mockResolvedValue(deleted);
+    mockConversationRepository.findById.mockResolvedValue(existing);
+    mockConversationRepository.deleteForUser.mockResolvedValue(true);
 
     const res = await DELETE(new Request("http://localhost/x"), params("c1"));
 
     expect(res.status).toBe(200);
-    expect(await res.json()).toEqual(deleted);
-    expect(mockPrisma.conversation.deleteMany).toHaveBeenCalledWith({
-      where: { id: "c1", userIds: { hasSome: ["me"] } },
-    });
+    expect(await res.json()).toEqual({ count: 1 });
+    expect(mockConversationRepository.deleteForUser).toHaveBeenCalledWith("c1", "me");
     // only users with an email get a pusher event
     expect(mockPusherTrigger).toHaveBeenCalledTimes(1);
     expect(mockPusherTrigger).toHaveBeenCalledWith(
@@ -73,13 +74,13 @@ describe("DELETE /api/conversations/[conversationId]", () => {
     );
   });
 
-  it("returns null json when deleteMany throws", async () => {
+  it("returns null json when deleteForUser throws", async () => {
     mockGetCurrentUser.mockResolvedValue({ id: "me" });
-    mockPrisma.conversation.findUnique.mockResolvedValue({
+    mockConversationRepository.findById.mockResolvedValue({
       id: "c1",
       users: [],
     });
-    mockPrisma.conversation.deleteMany.mockRejectedValue(
+    mockConversationRepository.deleteForUser.mockRejectedValue(
       new Error("db down")
     );
     const res = await DELETE(new Request("http://localhost/x"), params("c1"));
@@ -87,7 +88,7 @@ describe("DELETE /api/conversations/[conversationId]", () => {
     expect(await res.json()).toBeNull();
   });
 
-  it("returns null json when prisma throws", async () => {
+  it("returns null json when user fetch throws", async () => {
     mockGetCurrentUser.mockRejectedValue(new Error("db down"));
     const res = await DELETE(new Request("http://localhost/x"), params("c1"));
     expect(res.status).toBe(200);

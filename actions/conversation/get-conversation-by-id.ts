@@ -1,7 +1,7 @@
 import { unstable_rethrow } from "next/navigation";
 import getCurrentUser from "@/actions/user/get-current-user";
+import { conversationRepository } from "@/db/repositories/conversation-repository";
 import { getLogger } from "@/lib/logger";
-import prisma from "@/utils/prisma/client";
 
 const log = getLogger(["app", "actions", "conversations"]);
 
@@ -29,14 +29,7 @@ export default async function getConversationById(conversationId: string) {
 
   try {
     // find the conversation in the database with the provided conversation ID
-    const conversation = await prisma.conversation.findUnique({
-      where: {
-        id: conversationId,
-      },
-      include: {
-        users: true,
-      },
-    });
+    const conversation = await conversationRepository.findById(conversationId);
 
     return conversation;
   } catch (error) {
