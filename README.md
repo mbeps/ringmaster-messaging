@@ -45,7 +45,6 @@ Ringmaster Messaging is a responsive web application for real-time digital commu
 ## Backend
 
 - [Better Auth](https://better-auth.com/docs): Authentication framework for session and credential management.
-- [Prisma](https://www.prisma.io/docs): Type-safe ORM for database queries and schema management.
 - [LogTape](https://logtape.org/): Structured, non-blocking telemetry and logging library.
 - [Pusher](https://pusher.com/docs): Hosted WebSocket service for real-time messaging events.
 - [Cloudinary](https://cloudinary.com/documentation): Cloud-based media storage and delivery service.
@@ -53,6 +52,7 @@ Ringmaster Messaging is a responsive web application for real-time digital commu
 ## Database
 
 - [MongoDB](https://www.mongodb.com/docs/): Document database for application data storage.
+- [MongoDB Node Driver](https://www.mongodb.com/docs/drivers/node/current/): Official Node.js driver for native database operations.
 
 # Setting Up Project
 
@@ -80,6 +80,7 @@ Create a `.env` file in the project root with the following configuration.
 ```sh
 # Database
 DATABASE_URL="mongodb://admin:password123@localhost:27017/ringmaster?authSource=admin&replicaSet=rs0"
+NODE_ENV="development"
 
 # Logging
 LOG_LEVEL="info"
@@ -110,27 +111,30 @@ NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET="your-unsigned-upload-preset"
 # Docker MongoDB Credentials (Optional)
 MONGO_INITDB_ROOT_USERNAME="admin"
 MONGO_INITDB_ROOT_PASSWORD="password123"
+MONGO_INITDB_DATABASE="ringmaster"
 ```
 
 - `DATABASE_URL`: Connection string for the MongoDB instance. Pre-configured for the local Docker replica set.
-- `LOG_LEVEL`: Log verbosity level for LogTape (`debug`, `info`, `warn`, `warning`, `error`, `fatal`). Defaults to `info`. Set to `debug` to view query traces and middleware routing.
+- `NODE_ENV`: Runtime environment mode (`development`, `test`, `production`).
+- `LOG_LEVEL`: Log verbosity level for LogTape (`debug`, `info`, `warn`, `warning`, `error`, `fatal`). Defaults to `info`.
 - `BETTER_AUTH_SECRET`: Secret key used for session encryption. Generate with `openssl rand -base64 32`.
 - `BETTER_AUTH_URL`: Base URL of the application. Required in production.
 - `BETTER_AUTH_TRUSTED_ORIGINS`: Comma-separated list of allowed origins for authentication requests.
 - `AUTH_TRUST_HOST`: Flag to trust the host header during authentication requests.
 - `NEXT_PUBLIC_APP_URL`: Client-side base URL for authentication endpoints.
-- `CLIENT_ID_GITHUB`: GitHub OAuth application client identifier.
-- `CLIENT_SECRET_GITHUB`: GitHub OAuth application client secret.
-- `CLIENT_ID_GOOGLE`: Google Cloud OAuth client identifier.
-- `CLIENT_SECRET_GOOGLE`: Google Cloud OAuth client secret.
+- `CLIENT_ID_GITHUB`: GitHub OAuth application client identifier (Optional).
+- `CLIENT_SECRET_GITHUB`: GitHub OAuth application client secret (Optional).
+- `CLIENT_ID_GOOGLE`: Google Cloud OAuth client identifier (Optional).
+- `CLIENT_SECRET_GOOGLE`: Google Cloud OAuth client secret (Optional).
 - `PUSHER_APP_ID`: Application ID from your Pusher Channels dashboard.
 - `PUSHER_SECRET`: Secret key from your Pusher Channels dashboard.
 - `NEXT_PUBLIC_PUSHER_APP_KEY`: Public client key from your Pusher Channels dashboard.
 - `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME`: Cloud name from your Cloudinary account dashboard.
 - `NEXT_PUBLIC_CLOUDINARY_PRESET`: Unsigned upload preset for client-side uploads.
 - `NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET`: Fallback preset name matching `NEXT_PUBLIC_CLOUDINARY_PRESET`.
-- `MONGO_INITDB_ROOT_USERNAME`: Username for initializing the MongoDB Docker container.
-- `MONGO_INITDB_ROOT_PASSWORD`: Password for initializing the MongoDB Docker container.
+- `MONGO_INITDB_ROOT_USERNAME`: Username for initializing the MongoDB Docker container (Optional).
+- `MONGO_INITDB_ROOT_PASSWORD`: Password for initializing the MongoDB Docker container (Optional).
+- `MONGO_INITDB_DATABASE`: Database name for initializing the MongoDB Docker container (Optional).
 
 ## 4. Start the Database
 
@@ -138,14 +142,6 @@ Start the MongoDB replica set using Docker Compose.
 
 ```sh
 docker compose up -d
-```
-
-## 5. Configure the Database
-
-Push the Prisma schema to the MongoDB database and generate the Prisma client.
-
-```sh
-yarn prisma db push
 ```
 
 # Run Application
@@ -173,8 +169,8 @@ The application should now be running at http://localhost:3000.
 - [Tailwind CSS documentation](https://tailwindcss.com/docs) - utility-first CSS framework
 - [Headless UI documentation](https://headlessui.com/) - unstyled UI components
 - [Better Auth documentation](https://better-auth.com/docs) - authentication framework
-- [Prisma documentation](https://www.prisma.io/docs) - ORM and database client
 - [LogTape documentation](https://logtape.org/) - structured logging library
 - [Pusher documentation](https://pusher.com/docs) - real-time messaging service
 - [Cloudinary documentation](https://next.cloudinary.dev/) - image management and hosting
 - [MongoDB documentation](https://www.mongodb.com/docs/) - document database
+- [MongoDB Node Driver documentation](https://www.mongodb.com/docs/drivers/node/current/) - official driver for MongoDB
